@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8FB168AF2AD9BCE200426906 /* FullArenaModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB168AE2AD9BCE200426906 /* FullArenaModel.swift */; };
+		8FB168B32ADA192000426906 /* ArenaSampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB168B22ADA192000426906 /* ArenaSampleData.swift */; };
+		8FB168B52ADA53DF00426906 /* ChannelFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB168B42ADA53DF00426906 /* ChannelFetcher.swift */; };
+		8FB168B72ADA565D00426906 /* ChannelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB168B62ADA565D00426906 /* ChannelView.swift */; };
+		8FB168B92ADA5C3B00426906 /* BlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB168B82ADA5C3B00426906 /* BlockView.swift */; };
 		8FF0C5A22AD89C3B007D5959 /* ArenaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF0C5A12AD89C3B007D5959 /* ArenaApp.swift */; };
 		8FF0C5A42AD89C3B007D5959 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF0C5A32AD89C3B007D5959 /* ContentView.swift */; };
 		8FF0C5A62AD89C3D007D5959 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8FF0C5A52AD89C3D007D5959 /* Assets.xcassets */; };
@@ -14,6 +19,9 @@
 		8FF0C5B32AD89C3D007D5959 /* ArenaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF0C5B22AD89C3D007D5959 /* ArenaTests.swift */; };
 		8FF0C5BD2AD89C3D007D5959 /* ArenaUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF0C5BC2AD89C3D007D5959 /* ArenaUITests.swift */; };
 		8FF0C5BF2AD89C3D007D5959 /* ArenaUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF0C5BE2AD89C3D007D5959 /* ArenaUITestsLaunchTests.swift */; };
+		8FF0C5CC2AD8C09F007D5959 /* ChannelsFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF0C5CB2AD8C09F007D5959 /* ChannelsFetcher.swift */; };
+		8FF0C5CE2AD8C40E007D5959 /* ArenaModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF0C5CD2AD8C40E007D5959 /* ArenaModels.swift */; };
+		8FF0C5D12AD8CA7D007D5959 /* ChannelsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF0C5D02AD8CA7D007D5959 /* ChannelsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +42,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8FB168AD2AD9ADF300426906 /* TODO.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = TODO.md; sourceTree = "<group>"; };
+		8FB168AE2AD9BCE200426906 /* FullArenaModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullArenaModel.swift; sourceTree = "<group>"; };
+		8FB168B12AD9C8AA00426906 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		8FB168B22ADA192000426906 /* ArenaSampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArenaSampleData.swift; sourceTree = "<group>"; };
+		8FB168B42ADA53DF00426906 /* ChannelFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelFetcher.swift; sourceTree = "<group>"; };
+		8FB168B62ADA565D00426906 /* ChannelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelView.swift; sourceTree = "<group>"; };
+		8FB168B82ADA5C3B00426906 /* BlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockView.swift; sourceTree = "<group>"; };
 		8FF0C59E2AD89C3B007D5959 /* Arena.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Arena.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FF0C5A12AD89C3B007D5959 /* ArenaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArenaApp.swift; sourceTree = "<group>"; };
 		8FF0C5A32AD89C3B007D5959 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -44,6 +59,10 @@
 		8FF0C5B82AD89C3D007D5959 /* ArenaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ArenaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FF0C5BC2AD89C3D007D5959 /* ArenaUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArenaUITests.swift; sourceTree = "<group>"; };
 		8FF0C5BE2AD89C3D007D5959 /* ArenaUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArenaUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		8FF0C5CB2AD8C09F007D5959 /* ChannelsFetcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsFetcher.swift; sourceTree = "<group>"; };
+		8FF0C5CD2AD8C40E007D5959 /* ArenaModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArenaModels.swift; sourceTree = "<group>"; };
+		8FF0C5D02AD8CA7D007D5959 /* ChannelsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsView.swift; sourceTree = "<group>"; };
+		8FF0C5D22AD8CBBF007D5959 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,9 +90,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8FB168B02AD9BD0800426906 /* ArenaArchive */ = {
+			isa = PBXGroup;
+			children = (
+				8FB168AE2AD9BCE200426906 /* FullArenaModel.swift */,
+			);
+			path = ArenaArchive;
+			sourceTree = "<group>";
+		};
 		8FF0C5952AD89C3B007D5959 = {
 			isa = PBXGroup;
 			children = (
+				8FB168B02AD9BD0800426906 /* ArenaArchive */,
 				8FF0C5A02AD89C3B007D5959 /* Arena */,
 				8FF0C5B12AD89C3D007D5959 /* ArenaTests */,
 				8FF0C5BB2AD89C3D007D5959 /* ArenaUITests */,
@@ -94,10 +122,18 @@
 		8FF0C5A02AD89C3B007D5959 /* Arena */ = {
 			isa = PBXGroup;
 			children = (
+				8FF0C5D22AD8CBBF007D5959 /* Info.plist */,
+				8FF0C5CF2AD8CA6F007D5959 /* Screens */,
 				8FF0C5A12AD89C3B007D5959 /* ArenaApp.swift */,
 				8FF0C5A32AD89C3B007D5959 /* ContentView.swift */,
+				8FF0C5CB2AD8C09F007D5959 /* ChannelsFetcher.swift */,
+				8FB168B42ADA53DF00426906 /* ChannelFetcher.swift */,
+				8FF0C5CD2AD8C40E007D5959 /* ArenaModels.swift */,
+				8FB168B22ADA192000426906 /* ArenaSampleData.swift */,
 				8FF0C5A52AD89C3D007D5959 /* Assets.xcassets */,
 				8FF0C5A72AD89C3D007D5959 /* Preview Content */,
+				8FB168AD2AD9ADF300426906 /* TODO.md */,
+				8FB168B12AD9C8AA00426906 /* README.md */,
 			);
 			path = Arena;
 			sourceTree = "<group>";
@@ -125,6 +161,16 @@
 				8FF0C5BE2AD89C3D007D5959 /* ArenaUITestsLaunchTests.swift */,
 			);
 			path = ArenaUITests;
+			sourceTree = "<group>";
+		};
+		8FF0C5CF2AD8CA6F007D5959 /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				8FF0C5D02AD8CA7D007D5959 /* ChannelsView.swift */,
+				8FB168B62ADA565D00426906 /* ChannelView.swift */,
+				8FB168B82ADA5C3B00426906 /* BlockView.swift */,
+			);
+			path = Screens;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -258,7 +304,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				8FF0C5A42AD89C3B007D5959 /* ContentView.swift in Sources */,
+				8FB168B52ADA53DF00426906 /* ChannelFetcher.swift in Sources */,
+				8FF0C5CC2AD8C09F007D5959 /* ChannelsFetcher.swift in Sources */,
+				8FB168B72ADA565D00426906 /* ChannelView.swift in Sources */,
+				8FB168AF2AD9BCE200426906 /* FullArenaModel.swift in Sources */,
+				8FF0C5D12AD8CA7D007D5959 /* ChannelsView.swift in Sources */,
+				8FB168B92ADA5C3B00426906 /* BlockView.swift in Sources */,
+				8FB168B32ADA192000426906 /* ArenaSampleData.swift in Sources */,
 				8FF0C5A22AD89C3B007D5959 /* ArenaApp.swift in Sources */,
+				8FF0C5CE2AD8C40E007D5959 /* ArenaModels.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -424,6 +478,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Arena/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Arena/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -452,6 +507,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Arena/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Arena/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
