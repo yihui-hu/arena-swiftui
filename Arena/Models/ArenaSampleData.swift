@@ -43,7 +43,7 @@ let sampleArenaChannels: ArenaChannels = ArenaChannels(
                 avatarImage: AvatarImage(thumb: "thumb-url", display: "display-url"),
                 channelCount: 2,
                 followingCount: 5,
-                profileid: 4,
+                profileId: 4,
                 followerCount: 8,
                 initials: "FL",
                 badge: "Badge",

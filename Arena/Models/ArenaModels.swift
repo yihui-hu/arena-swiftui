@@ -181,11 +181,12 @@ class Block: Codable {
     let metadata: Metadata?
     let contentClass: String
     let user: User // original user who added block to Are.na
-    let selected: Bool
-    let connectionId: Int
-    let connectedAt: String // describes when block was added to channel
-    let connectedByUserId: Int // describes who added the block to channel
-    let connectedByUsername, connectedByUserSlug: String
+    let selected: Bool?
+    let connectionId: Int?
+    let connectedAt: String? // describes when block was added to channel
+    let connectedByUserId: Int? // describes who added the block to channel
+    let connectedByUsername, connectedByUserSlug: String?
+    let connections: [BlockConnections]?
     let collaboratorCount: Int?
     let nsfw: Bool?
     
@@ -203,11 +204,12 @@ class Block: Codable {
         case connectedByUserId = "connected_by_user_id"
         case connectedByUsername = "connected_by_username"
         case connectedByUserSlug = "connected_by_user_slug"
+        case connections
         case collaboratorCount = "collaborator_count"
         case nsfw = "nsfw?"
     }
     
-    init(title: String, updatedAt: String, createdAt: String, commentCount: Int?, generatedTitle: String?, visibility: String?, content: String?, description: String?, source: ArenaSource?, image: ArenaImage?, attachment: ArenaAttachment?, metadata: Metadata?, id: Int, contentClass: String, user: User, selected: Bool, connectionId: Int, connectedAt: String, connectedByUserId: Int, connectedByUsername: String, connectedByUserSlug: String, collaboratorCount: Int?, nsfw: Bool?) {
+    init(title: String, updatedAt: String, createdAt: String, commentCount: Int?, generatedTitle: String?, visibility: String?, content: String?, description: String?, source: ArenaSource?, image: ArenaImage?, attachment: ArenaAttachment?, metadata: Metadata?, id: Int, contentClass: String, user: User, selected: Bool?, connectionId: Int?, connectedAt: String?, connectedByUserId: Int?, connectedByUsername: String?, connectedByUserSlug: String?, connections: [BlockConnections]?, collaboratorCount: Int?, nsfw: Bool?) {
         self.title = title
         self.updatedAt = updatedAt
         self.createdAt = createdAt
@@ -229,9 +231,31 @@ class Block: Codable {
         self.connectedByUserId = connectedByUserId
         self.connectedByUsername = connectedByUsername
         self.connectedByUserSlug = connectedByUserSlug
+        self.connections = connections
         self.collaboratorCount = collaboratorCount
         self.nsfw = nsfw
     }
+}
+
+class BlockConnections: Codable {
+    let id: Int
+    let title: String
+    let updatedAt, createdAt: String // describes when block was updated and created
+    let published, open, collaboration: Bool
+    let slug: String
+    let length: Int
+    let status: String
+    let userId: Int
+    let metadata: Metadata?
+    
+    enum CodingKeys: String, CodingKey {
+        case id, title, published, open, collaboration, slug, length, status, metadata
+        case updatedAt = "updated_at"
+        case createdAt = "created_at"
+        case userId = "user_id"
+    }
+    
+    // TODO: initializer here
 }
 
 class ArenaAttachment: Codable {
@@ -331,7 +355,8 @@ class User: Codable {
     let createdAt, slug, username, firstName: String
     let lastName, fullName: String
     let avatarImage: AvatarImage
-    let channelCount, followingCount, profileid, followerCount: Int
+    let channelCount, followingCount, followerCount: Int
+    let profileId: Int?
     let initials: String
     let badge: String?
     let id: Int
@@ -345,13 +370,13 @@ class User: Codable {
         case avatarImage = "avatar_image"
         case channelCount = "channel_count"
         case followingCount = "following_count"
-        case profileid = "profile_id"
+        case profileId = "profile_id"
         case followerCount = "follower_count"
         case initials
         case badge, id
     }
     
-    init(createdAt: String, slug: String, username: String, firstName: String, lastName: String, fullName: String, avatarImage: AvatarImage, channelCount: Int, followingCount: Int, profileid: Int, followerCount: Int, initials: String, badge: String?, id: Int) {
+    init(createdAt: String, slug: String, username: String, firstName: String, lastName: String, fullName: String, avatarImage: AvatarImage, channelCount: Int, followingCount: Int, profileId: Int?, followerCount: Int, initials: String, badge: String?, id: Int) {
         self.createdAt = createdAt
         self.slug = slug
         self.username = username
@@ -361,7 +386,7 @@ class User: Codable {
         self.avatarImage = avatarImage
         self.channelCount = channelCount
         self.followingCount = followingCount
-        self.profileid = profileid
+        self.profileId = profileId
         self.followerCount = followerCount
         self.initials = initials
         self.badge = badge

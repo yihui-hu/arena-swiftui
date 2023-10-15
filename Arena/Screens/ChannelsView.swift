@@ -27,7 +27,7 @@ struct ChannelsView: View {
                                             image
                                                 .resizable()
                                                 .aspectRatio(contentMode: .fit)
-                                                .clipShape(                     RoundedRectangle(cornerRadius: 20, style: .continuous))
+                                                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                                         } else {
                                             // placeholder / error image
                                             Image(systemName: "photo")

@@ -1,5 +1,5 @@
 //
-//  ChannelFetcher.swift
+//  BlockFetcher.swift
 //  Arena
 //
 //  Created by Yihui Hu on 14/10/23.
@@ -7,36 +7,26 @@
 
 import Foundation
 
-class ChannelFetcher: ObservableObject {
-    @Published var channel: ArenaChannel?
+class BlockFetcher: ObservableObject {
+    @Published var block: Block?
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
     
-    var currentPage: Int = 1
-    var totalPages: Int = 1
-    
-    init(channelSlug: String) {
-        fetchChannel(channelSlug)
+    init(blockId: Int) {
+        fetchBlock(blockId)
     }
     
     // Lol unnecessary but useful for semantic organization
-    func loadMore(channelSlug: String) {
-        fetchChannel(channelSlug)
+    func loadMore(blockId: Int) {
+        fetchBlock(blockId)
     }
     
-    func refresh(channelSlug: String) {
-        channel = nil
-        currentPage = 1
-        totalPages = 1
-        fetchChannel(channelSlug)
+    func refresh(blockId: Int) {
+        block = nil
+        fetchBlock(blockId)
     }
     
-    func fetchChannel(_ channelSlug: String) {
-        // Check if we've finished fetching all pages
-        guard currentPage <= totalPages else {
-            return
-        }
-        
+    func fetchBlock(_ blockId: Int) {
         guard !isLoading else {
             return
         }
@@ -44,7 +34,7 @@ class ChannelFetcher: ObservableObject {
         self.isLoading = true
         errorMessage = nil
 
-        guard let url = URL(string: "https://api.are.na/v2/channels/\(channelSlug)?page=\(currentPage)") else {
+        guard let url = URL(string: "https://api.are.na/v2/blocks/\(blockId)") else {
             self.isLoading = false
             errorMessage = "Invalid URL"
             return
@@ -64,21 +54,11 @@ class ChannelFetcher: ObservableObject {
                 let decoder = JSONDecoder()
                 do {
                     // Attempt to decode the data
-                    let newChannelContent = try decoder.decode(ArenaChannel.self, from: data)
+                    let newBlock = try decoder.decode(Block.self, from: data)
                     DispatchQueue.main.async {
-                        if self.channel != nil {
-                            if self.channel?.contents == nil {
-                                self.channel?.contents = []
-                            }
-                            self.channel?.contents!.append(contentsOf: newChannelContent.contents ?? [])
-                        } else {
-                            self.channel = newChannelContent
-                        }
-                        self.totalPages = newChannelContent.length / 20
-                        self.currentPage += 1
+                        self.block = newBlock
                     }
                 } catch let decodingError {
-                    // Print the decoding error for debugging
                     print("Decoding Error: \(decodingError)")
                     errorMessage = "Error decoding data: \(decodingError.localizedDescription)"
                     return

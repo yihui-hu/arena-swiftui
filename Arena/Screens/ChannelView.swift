@@ -20,9 +20,9 @@ struct ChannelView: View {
         NavigationStack{
             ScrollView {
                 LazyVStack {
-                    ForEach(channelFetcher.channel?.contents ?? [], id: \.self.id) { item in
-                        NavigationLink(destination: BlockView()) {
-                            Text("\(item.title)")
+                    ForEach(channelFetcher.channel?.contents ?? [], id: \.self.id) { block in
+                        NavigationLink(destination: BlockView(blockId: block.id)) {
+                            Text("\(block.title)")
                         }
                     }
                     
@@ -51,6 +51,6 @@ struct ChannelView: View {
 }
 
 #Preview {
-    ChannelView(channelSlug: "software-4mduyaqjx4i")
+    ChannelView(channelSlug: "competitive-design-website-repo")
 }
 

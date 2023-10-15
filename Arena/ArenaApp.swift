@@ -11,7 +11,7 @@ import SwiftUI
 struct ArenaApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            ArenaView()
         }
     }
 }

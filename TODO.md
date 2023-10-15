@@ -25,3 +25,8 @@
 
 - [ ] Refactor Channel model (to work for both API endpoints; ownerId and ownerSlug are optional)
 - [ ] Remodel Models (ArenaChannelPreview will be its own model, with very few fields – when user clicks into a channel, then it will fetch and populate the proper ArenaChannel model)
+
+## Features
+
+- [ ] [Are.na neighbours](https://www.are.na/block/22017787) displayed as an [infinite list](https://stackoverflow.com/questions/65614647/infinite-vertical-scrollview-both-ways-add-items-dynamically-at-top-bottom-tha)
+- [ ] Sort channel contents by random, ascending, descending, most connections, least connections, etc. 
