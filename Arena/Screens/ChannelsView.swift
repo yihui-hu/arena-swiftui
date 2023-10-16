@@ -8,13 +8,13 @@
 import SwiftUI
 
 struct ChannelsView: View {
-    @StateObject var channelsFetcher = ChannelsFetcher()
+    @StateObject var channelsData = ChannelsData()
     
     var body: some View {
         NavigationStack{
             ScrollView {
                 LazyVStack {
-                    ForEach(channelsFetcher.channels?.channels ?? [], id: \.self.id) { channel in
+                    ForEach(channelsData.channels?.channels ?? [], id: \.self.id) { channel in
                         NavigationLink(destination: ChannelView(channelSlug: channel.slug)) {
                             HStack {
                                 // move this logic to a different view, probably, dedicated for handling image previews
@@ -40,6 +40,7 @@ struct ChannelsView: View {
                                         .aspectRatio(contentMode: .fit)
                                         .foregroundColor(Color.gray)
                                 }
+                                // move the logic above to a different view, probably
                                 
                                 Spacer()
                                 
@@ -60,27 +61,31 @@ struct ChannelsView: View {
                                     .stroke(Color(red: 0.3333, green: 0.3333, blue: 0.3333, opacity: 0.2), lineWidth: 3)
                             )
                         }
+                        .contentMargins(.bottom, 10)
                     }
                     
-                    if channelsFetcher.isLoading {
+                    if channelsData.isLoading {
                         ProgressView()
                             .progressViewStyle(.circular)
                     } else {
                         Color.clear
                             .onAppear {
-                                channelsFetcher.loadMore()
+                                channelsData.loadMore()
                             }
                     }
                     
-                    if channelsFetcher.currentPage > channelsFetcher.totalPages {
-                        Text("Finished loading all channels!")
+                    if channelsData.currentPage > channelsData.totalPages {
+                        Text("Finished loading all channels")
+                            .foregroundStyle(Color.gray)
                     }
+                    
+                    Text("\n\n")
                 }
             }
             .contentMargins(20)
             .scrollIndicators(.hidden)
             .refreshable {
-                channelsFetcher.refresh()
+                channelsData.refresh()
             }
         }
     }

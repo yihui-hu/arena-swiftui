@@ -103,7 +103,7 @@ class ArenaChannel: Codable {
     let length: Int
     let kind, status: String
     let userId: Int
-    var contents: [Block]?
+//    var contents: [Block]? // is a separate component in ChannelFetcher
     let baseClass: String
     let page, per: Int
     let collaborators: [User]
@@ -124,7 +124,7 @@ class ArenaChannel: Codable {
         case collaboratorCount = "collaborator_count"
         case slug, length, kind, status
         case userId = "user_id"
-        case contents
+//        case contents
         case baseClass = "base_class"
         case page, per, collaborators
         case followerCount = "follower_count"
@@ -150,7 +150,7 @@ class ArenaChannel: Codable {
         self.kind = kind
         self.status = status
         self.userId = userId
-        self.contents = contents
+//        self.contents = contents
         self.baseClass = baseClass
         self.page = page
         self.per = per
@@ -163,6 +163,10 @@ class ArenaChannel: Codable {
         self.owner = owner
         self.user = user
     }
+}
+
+class ArenaChannelContents: Codable {
+    let contents: [Block]?
 }
 
 // MARK: - Block

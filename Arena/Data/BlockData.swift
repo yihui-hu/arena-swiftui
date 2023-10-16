@@ -7,7 +7,7 @@
 
 import Foundation
 
-class BlockFetcher: ObservableObject {
+class BlockData: ObservableObject {
     @Published var block: Block?
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil

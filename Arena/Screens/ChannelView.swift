@@ -8,44 +8,75 @@
 import SwiftUI
 
 struct ChannelView: View {
-    @StateObject var channelFetcher: ChannelFetcher
+    @StateObject var channelData: ChannelData
     let channelSlug: String
+    
+    @Environment(\.dismiss) private var dismiss
+    @State private var selection = "Newest First"
+    let colors = ["Newest First", "Oldest First"]
+    
     
     init(channelSlug: String) {
         self.channelSlug = channelSlug
-        _channelFetcher = StateObject(wrappedValue: ChannelFetcher(channelSlug: channelSlug))
+        _channelData = StateObject(wrappedValue: ChannelData(channelSlug: channelSlug, selection: "Newest First"))
     }
     
     var body: some View {
         NavigationStack{
             ScrollView {
                 LazyVStack {
-                    ForEach(channelFetcher.channel?.contents ?? [], id: \.self.id) { block in
+                    ForEach(channelData.contents ?? [], id: \.self.id) { block in
                         NavigationLink(destination: BlockView(blockId: block.id)) {
                             Text("\(block.title)")
                         }
                     }
                     
-                    if channelFetcher.isLoading {
+                    if channelData.isLoading {
                         ProgressView()
                             .progressViewStyle(.circular)
                     } else {
                         Color.clear
                             .onAppear {
-                                channelFetcher.loadMore(channelSlug: self.channelSlug)
+                                channelData.loadMore(channelSlug: self.channelSlug)
                             }
                     }
                     
-                    if channelFetcher.currentPage > channelFetcher.totalPages {
-                        Text("Finished loading all blocks!")
+                    if channelData.currentPage > channelData.totalPages {
+                        Text("Finished loading all blocks")
+                            .foregroundStyle(Color.gray)
                     }
+                    
+                    Text("\n\n")
                 }
             }
             .contentMargins(20)
             .scrollIndicators(.hidden)
             .refreshable {
-                channelFetcher.refresh(channelSlug: self.channelSlug)
+                channelData.refresh(channelSlug: self.channelSlug)
             }
+        }
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    Image(systemName: "chevron.backward")
+                }
+            }
+            
+            ToolbarItem(placement: .topBarTrailing) {
+                Picker("Select a sort order", selection: $selection) {
+                    ForEach(colors, id: \.self) {
+                        Text($0)
+                    }
+                }
+                .pickerStyle(.menu)
+            }
+        }
+        .onChange(of: selection, initial: true) { oldSelection, newSelection in
+            channelData.selection = newSelection
+            channelData.refresh(channelSlug: self.channelSlug)
         }
     }
 }

@@ -8,17 +8,17 @@
 import SwiftUI
 
 struct BlockView: View {
-    @StateObject var blockFetcher: BlockFetcher
+    @StateObject var blockData: BlockData
     let blockId: Int
     
     init(blockId: Int) {
         self.blockId = blockId
-        _blockFetcher = StateObject(wrappedValue: BlockFetcher(blockId: blockId))
+        _blockData = StateObject(wrappedValue: BlockData(blockId: blockId))
     }
     
     var body: some View {
         HStack {
-            let firstImage = blockFetcher.block?.image?.large.url ?? ""
+            let firstImage = blockData.block?.image?.large.url ?? ""
             
             AsyncImage(url: URL(string: firstImage)) { phase in
                 if let image = phase.image {
@@ -35,7 +35,7 @@ struct BlockView: View {
             }.frame(alignment: .center)
         }
         
-        if blockFetcher.isLoading {
+        if blockData.isLoading {
             ProgressView()
                 .progressViewStyle(.circular)
         }

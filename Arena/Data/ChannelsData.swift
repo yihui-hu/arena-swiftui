@@ -7,7 +7,7 @@
 
 import Foundation
 
-class ChannelsFetcher: ObservableObject {
+class ChannelsData: ObservableObject {
     @Published var channels: ArenaChannels?
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil

@@ -1,0 +1,32 @@
+{
+  "pins" : [
+    {
+      "identity" : "swiftui-introspect",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/siteline/swiftui-introspect",
+      "state" : {
+        "revision" : "3ced72fccb284235c266c1e8a32f1bf93129fc74",
+        "version" : "1.1.0"
+      }
+    },
+    {
+      "identity" : "swiftui-navigation-transitions",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/davdroman/swiftui-navigation-transitions",
+      "state" : {
+        "revision" : "4a1397f6402ec0f14173ff51855ff307e5e08ac4",
+        "version" : "0.13.1"
+      }
+    },
+    {
+      "identity" : "swiftui-tab-bar#visibility-with-animation-and-transition",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/zijievv/swiftui-tab-bar#visibility-with-animation-and-transition",
+      "state" : {
+        "revision" : "ea2d605173e0fb2d101509f413a96953ac40e979",
+        "version" : "1.0.0"
+      }
+    }
+  ],
+  "version" : 2
+}

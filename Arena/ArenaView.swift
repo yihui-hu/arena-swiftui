@@ -6,20 +6,38 @@
 //
 
 import SwiftUI
+import NavigationTransitions
+import TabBarModule
+
 
 struct ArenaView: View {
+    @State private var item: Int = 0
+    
     var body: some View {
-        TabView {
+        TabBar(selection: $item) {
             ChannelsView()
-                .tabItem {
-                    Label("Home", systemImage: "house")
+                .tabItem(0) {
+                    Image(systemName: "heart.fill")
+                        .padding(.top, 10)
+                        .imageScale(.large)
+                        .foregroundColor(item == 0 ? Color.black : Color.gray)
                 }
             
             Text("WE LIVE IN A WORLD OF DATA")
-                .tabItem {
-                    Label("Data", systemImage: "aqi.medium")
+                .tabItem(1) {
+                    Image(systemName: "aqi.medium")
+                        .padding(.top, 10)
+                        .imageScale(.large)
+                        .foregroundColor(item == 1 ? Color.black : Color.gray)
                 }
         }
+        .tabBarFill(.thinMaterial)
+//        .tabBarFill(.regularMaterial)
+//        .tabBarMargins(.vertical, 8)
+//        .tabBarPadding(.vertical, 8)
+//        .tabBarPadding(.horizontal, 60)
+//        .tabBarShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+//        .tabBarShadow(radius: 1, y: 1)
     }
 }
 
