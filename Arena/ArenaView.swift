@@ -18,7 +18,7 @@ struct ArenaView: View {
             ChannelsView()
                 .tabItem(0) {
                     Image(systemName: "heart.fill")
-                        .padding(.top, 10)
+                        .padding(.top, 4)
                         .imageScale(.large)
                         .foregroundColor(item == 0 ? Color.black : Color.gray)
                 }
@@ -26,18 +26,18 @@ struct ArenaView: View {
             Text("WE LIVE IN A WORLD OF DATA")
                 .tabItem(1) {
                     Image(systemName: "aqi.medium")
-                        .padding(.top, 10)
+                        .padding(.top, 4)
                         .imageScale(.large)
                         .foregroundColor(item == 1 ? Color.black : Color.gray)
                 }
         }
         .tabBarFill(.thinMaterial)
-//        .tabBarFill(.regularMaterial)
-//        .tabBarMargins(.vertical, 8)
-//        .tabBarPadding(.vertical, 8)
-//        .tabBarPadding(.horizontal, 60)
-//        .tabBarShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-//        .tabBarShadow(radius: 1, y: 1)
+        //        .tabBarFill(.regularMaterial)
+        //        .tabBarMargins(.vertical, 8)
+        //        .tabBarPadding(.vertical, 8)
+        //        .tabBarPadding(.horizontal, 60)
+        //        .tabBarShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+        //        .tabBarShadow(radius: 1, y: 1)
     }
 }
 

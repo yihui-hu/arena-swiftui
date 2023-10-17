@@ -9,11 +9,12 @@ import SwiftUI
 
 struct ChannelsView: View {
     @StateObject var channelsData = ChannelsData()
+    @State private var selectedChannelSlug: String?
     
     var body: some View {
-        NavigationStack{
+        NavigationStack {
             ScrollView {
-                LazyVStack {
+                VStack {
                     ForEach(channelsData.channels?.channels ?? [], id: \.self.id) { channel in
                         NavigationLink(destination: ChannelView(channelSlug: channel.slug)) {
                             HStack {

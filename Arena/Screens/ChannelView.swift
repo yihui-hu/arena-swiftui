@@ -15,41 +15,48 @@ struct ChannelView: View {
     @State private var selection = "Newest First"
     let colors = ["Newest First", "Oldest First"]
     
-    
     init(channelSlug: String) {
         self.channelSlug = channelSlug
         _channelData = StateObject(wrappedValue: ChannelData(channelSlug: channelSlug, selection: "Newest First"))
     }
     
     var body: some View {
-        NavigationStack{
+        
+        let columns: [GridItem] = Array(repeating: .init(.flexible(), spacing: 5), count: 2)
+        let gridItemSize = (UIScreen.main.bounds.width - 40) / 2
+        let gridItemAspectRatio: CGFloat = 1.0
+        
+        NavigationView{
             ScrollView {
-                LazyVStack {
+                LazyVGrid(columns: columns, spacing: 10) {
                     ForEach(channelData.contents ?? [], id: \.self.id) { block in
                         NavigationLink(destination: BlockView(blockId: block.id)) {
-                            Text("\(block.title)")
+                            BlockPreview(blockData: block)
+                                .frame(width: gridItemSize, height: gridItemSize * gridItemAspectRatio)
+                                .border(Color(red: 0.3333, green: 0.3333, blue: 0.3333, opacity: 0.4), width: 0.5)
                         }
                     }
-                    
-                    if channelData.isLoading {
-                        ProgressView()
-                            .progressViewStyle(.circular)
-                    } else {
-                        Color.clear
-                            .onAppear {
-                                channelData.loadMore(channelSlug: self.channelSlug)
-                            }
-                    }
-                    
-                    if channelData.currentPage > channelData.totalPages {
-                        Text("Finished loading all blocks")
-                            .foregroundStyle(Color.gray)
-                    }
-                    
-                    Text("\n\n")
                 }
+                
+                if channelData.isLoading {
+                    ProgressView()
+                        .progressViewStyle(.circular)
+                } else {
+                    Color.clear
+                        .onAppear {
+                            channelData.loadMore(channelSlug: self.channelSlug)
+                        }
+                }
+                
+                if channelData.currentPage > channelData.totalPages {
+                    Text("Finished loading all blocks")
+                        .foregroundStyle(Color.gray)
+                }
+                
+                Text("\n\n")
             }
-            .contentMargins(20)
+            .padding(.horizontal, 10)
+            .padding(.bottom, 20)
             .scrollIndicators(.hidden)
             .refreshable {
                 channelData.refresh(channelSlug: self.channelSlug)
@@ -75,8 +82,10 @@ struct ChannelView: View {
             }
         }
         .onChange(of: selection, initial: true) { oldSelection, newSelection in
-            channelData.selection = newSelection
-            channelData.refresh(channelSlug: self.channelSlug)
+            if oldSelection != newSelection {
+                channelData.selection = newSelection
+                channelData.refresh(channelSlug: self.channelSlug)
+            }
         }
     }
 }

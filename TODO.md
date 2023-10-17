@@ -31,3 +31,4 @@
 - [ ] [Are.na neighbours](https://www.are.na/block/22017787) displayed as an [infinite list](https://stackoverflow.com/questions/65614647/infinite-vertical-scrollview-both-ways-add-items-dynamically-at-top-bottom-tha)
 - [ ] Sort channel contents by random, ascending, descending, most connections, least connections, etc. 
 - [ ] Are.na Cards - random blocks appear on bottom of screen as cards (one at a time), swipe up to throw them into a "holding / staging" area, swipe down to discard / move to next card, press next to add blocks to relevant channels
+- [ ] In expanded Block view, can swipe right / left to view neighbouring blocks (use TabView)

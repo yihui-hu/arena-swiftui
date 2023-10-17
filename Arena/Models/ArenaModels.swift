@@ -170,7 +170,7 @@ class ArenaChannelContents: Codable {
 }
 
 // MARK: - Block
-class Block: Codable {
+class Block: Codable, ObservableObject {
     let id: Int
     let title: String
     let updatedAt, createdAt: String // describes when block was updated and created

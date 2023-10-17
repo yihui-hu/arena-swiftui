@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8F2844092ADEC3C2001EE26D /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F2844082ADEC3C2001EE26D /* HomeView.swift */; };
+		8F28440B2ADEC3E8001EE26D /* FavouritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F28440A2ADEC3E8001EE26D /* FavouritesView.swift */; };
 		8FB168AF2AD9BCE200426906 /* FullArenaModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB168AE2AD9BCE200426906 /* FullArenaModel.swift */; };
 		8FB168B32ADA192000426906 /* ArenaSampleData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB168B22ADA192000426906 /* ArenaSampleData.swift */; };
 		8FB168B52ADA53DF00426906 /* ChannelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB168B42ADA53DF00426906 /* ChannelData.swift */; };
@@ -26,6 +28,7 @@
 		8FF0C5D12AD8CA7D007D5959 /* ChannelsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF0C5D02AD8CA7D007D5959 /* ChannelsView.swift */; };
 		8FF1E9242ADBA94D002D4B26 /* NavigationTransitions in Frameworks */ = {isa = PBXBuildFile; productRef = 8FF1E9232ADBA94D002D4B26 /* NavigationTransitions */; };
 		8FF1E9272ADCA491002D4B26 /* TabBarModule in Frameworks */ = {isa = PBXBuildFile; productRef = 8FF1E9262ADCA491002D4B26 /* TabBarModule */; };
+		8FF1E9292ADD740A002D4B26 /* ChannelPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF1E9282ADD740A002D4B26 /* ChannelPreview.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +49,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8F2844082ADEC3C2001EE26D /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		8F28440A2ADEC3E8001EE26D /* FavouritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavouritesView.swift; sourceTree = "<group>"; };
 		8FB168AD2AD9ADF300426906 /* TODO.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = TODO.md; sourceTree = "<group>"; };
 		8FB168AE2AD9BCE200426906 /* FullArenaModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullArenaModel.swift; sourceTree = "<group>"; };
 		8FB168B12AD9C8AA00426906 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
@@ -69,6 +74,7 @@
 		8FF0C5CD2AD8C40E007D5959 /* ArenaModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArenaModels.swift; sourceTree = "<group>"; };
 		8FF0C5D02AD8CA7D007D5959 /* ChannelsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsView.swift; sourceTree = "<group>"; };
 		8FF0C5D22AD8CBBF007D5959 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		8FF1E9282ADD740A002D4B26 /* ChannelPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelPreview.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -110,6 +116,7 @@
 			isa = PBXGroup;
 			children = (
 				8FD7E3F22ADB6EEC00A15E16 /* BlockPreview.swift */,
+				8FF1E9282ADD740A002D4B26 /* ChannelPreview.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -203,6 +210,8 @@
 				8FF0C5D02AD8CA7D007D5959 /* ChannelsView.swift */,
 				8FB168B62ADA565D00426906 /* ChannelView.swift */,
 				8FB168B82ADA5C3B00426906 /* BlockView.swift */,
+				8F2844082ADEC3C2001EE26D /* HomeView.swift */,
+				8F28440A2ADEC3E8001EE26D /* FavouritesView.swift */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
@@ -346,16 +355,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				8FF0C5A42AD89C3B007D5959 /* ArenaView.swift in Sources */,
+				8F2844092ADEC3C2001EE26D /* HomeView.swift in Sources */,
 				8FB168B52ADA53DF00426906 /* ChannelData.swift in Sources */,
 				8FD7E3F32ADB6EEC00A15E16 /* BlockPreview.swift in Sources */,
 				8FD7E3F02ADADF9000A15E16 /* BlockData.swift in Sources */,
 				8FF0C5CC2AD8C09F007D5959 /* ChannelsData.swift in Sources */,
 				8FB168B72ADA565D00426906 /* ChannelView.swift in Sources */,
 				8FB168AF2AD9BCE200426906 /* FullArenaModel.swift in Sources */,
+				8FF1E9292ADD740A002D4B26 /* ChannelPreview.swift in Sources */,
 				8FF0C5D12AD8CA7D007D5959 /* ChannelsView.swift in Sources */,
 				8FB168B92ADA5C3B00426906 /* BlockView.swift in Sources */,
 				8FB168B32ADA192000426906 /* ArenaSampleData.swift in Sources */,
 				8FF0C5A22AD89C3B007D5959 /* ArenaApp.swift in Sources */,
+				8F28440B2ADEC3E8001EE26D /* FavouritesView.swift in Sources */,
 				8FF0C5CE2AD8C40E007D5959 /* ArenaModels.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

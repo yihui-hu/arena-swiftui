@@ -17,32 +17,23 @@ struct BlockView: View {
     }
     
     var body: some View {
-        HStack {
-            let firstImage = blockData.block?.image?.large.url ?? ""
+        NavigationView {
+            HStack {
+                BlockPreview(blockData: self.blockData.block ?? nil)
+            }
             
-            AsyncImage(url: URL(string: firstImage)) { phase in
-                if let image = phase.image {
-                    // if the image is valid
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                } else {
-                    // placeholder / error image
-                    Image(systemName: "photo")
-                        .aspectRatio(contentMode: .fit)
-                        .foregroundColor(Color.gray)
-                }
-            }.frame(alignment: .center)
-        }
-        
-        if blockData.isLoading {
-            ProgressView()
-                .progressViewStyle(.circular)
+            if blockData.isLoading {
+                ProgressView()
+                    .progressViewStyle(.circular)
+            }
         }
     }
 }
 
 #Preview {
-    BlockView(blockId: 19393606)
+    Group {
+        BlockView(blockId: 19393606)
+//        BlockView(blockId: 24178618)
+    }
 }
 
