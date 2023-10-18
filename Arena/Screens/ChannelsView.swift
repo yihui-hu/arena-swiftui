@@ -13,6 +13,7 @@ struct ChannelsView: View {
     
     var body: some View {
         NavigationStack {
+            
             ScrollView {
                 VStack {
                     ForEach(channelsData.channels?.channels ?? [], id: \.self.id) { channel in
@@ -83,11 +84,11 @@ struct ChannelsView: View {
                     Text("\n\n")
                 }
             }
-            .contentMargins(20)
-            .scrollIndicators(.hidden)
-            .refreshable {
-                channelsData.refresh()
-            }
+        }
+        .contentMargins(20)
+        .scrollIndicators(.hidden)
+        .refreshable {
+            channelsData.refresh()
         }
     }
 }

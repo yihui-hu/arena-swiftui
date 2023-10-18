@@ -26,41 +26,47 @@ struct ChannelView: View {
         let gridItemSize = (UIScreen.main.bounds.width - 40) / 2
         let gridItemAspectRatio: CGFloat = 1.0
         
-        NavigationView{
-            ScrollView {
-                LazyVGrid(columns: columns, spacing: 10) {
-                    ForEach(channelData.contents ?? [], id: \.self.id) { block in
-                        NavigationLink(destination: BlockView(blockId: block.id)) {
+        ScrollView {
+            LazyVGrid(columns: columns, spacing: 10) {
+                ForEach(channelData.contents ?? [], id: \.self.id) { block in
+                    NavigationLink(destination: destinationView(for: block)) {
+                        if block.baseClass == "Block" {
                             BlockPreview(blockData: block)
                                 .frame(width: gridItemSize, height: gridItemSize * gridItemAspectRatio)
                                 .border(Color(red: 0.3333, green: 0.3333, blue: 0.3333, opacity: 0.4), width: 0.5)
+                            // figure out better preview for channel
+                        } else {
+                            Text("\(block.title) by \(block.user.username)")
+                                .frame(width: gridItemSize, height: gridItemSize * gridItemAspectRatio)
+                                .border(Color.orange, width: 0.5)
                         }
                     }
                 }
-                
-                if channelData.isLoading {
-                    ProgressView()
-                        .progressViewStyle(.circular)
-                } else {
-                    Color.clear
-                        .onAppear {
-                            channelData.loadMore(channelSlug: self.channelSlug)
-                        }
-                }
-                
-                if channelData.currentPage > channelData.totalPages {
-                    Text("Finished loading all blocks")
-                        .foregroundStyle(Color.gray)
-                }
-                
-                Text("\n\n")
             }
-            .padding(.horizontal, 10)
-            .padding(.bottom, 20)
-            .scrollIndicators(.hidden)
-            .refreshable {
-                channelData.refresh(channelSlug: self.channelSlug)
+            
+            if channelData.isLoading {
+                ProgressView()
+                    .progressViewStyle(.circular)
+            } else {
+                Color.clear
+                    .onAppear {
+                        channelData.loadMore(channelSlug: self.channelSlug)
+                    }
             }
+            
+            if channelData.currentPage > channelData.totalPages {
+                Text("Finished loading all blocks")
+                    .foregroundStyle(Color.gray)
+            }
+            
+            Text("\n\n")
+        }
+        .contentMargins(.top, 10)
+        .contentMargins(.horizontal, 10)
+        .padding(.bottom, 20)
+        .scrollIndicators(.hidden)
+        .refreshable {
+            channelData.refresh(channelSlug: self.channelSlug)
         }
         .navigationBarBackButtonHidden()
         .toolbar {
@@ -90,7 +96,18 @@ struct ChannelView: View {
     }
 }
 
+@ViewBuilder
+func destinationView(for block: Block) -> some View {
+    if block.baseClass == "Block" {
+        BlockView(blockData: block)
+    } else {
+        ChannelView(channelSlug: block.slug ?? "")
+    }
+}
+
 #Preview {
-    ChannelView(channelSlug: "competitive-design-website-repo")
+    NavigationView {
+        ChannelView(channelSlug: "competitive-design-website-repo")
+    }
 }
 
