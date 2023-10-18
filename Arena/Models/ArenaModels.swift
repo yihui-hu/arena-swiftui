@@ -183,8 +183,10 @@ class Block: Codable, ObservableObject {
     let image: ArenaImage?
     let attachment: ArenaAttachment?
     let metadata: Metadata?
+    let baseClass: String
     let contentClass: String
     let user: User // original user who added block to Are.na
+    let slug: String? // block itself might be a channel, so this is here for that
     let selected: Bool?
     let connectionId: Int?
     let connectedAt: String? // describes when block was added to channel
@@ -201,8 +203,9 @@ class Block: Codable, ObservableObject {
         case commentCount = "comment_count"
         case generatedTitle = "generated_title"
         case visibility, content, description, source, image, metadata, id, attachment
+        case baseClass = "base_class"
         case contentClass = "class"
-        case user, selected
+        case user, slug, selected
         case connectionId = "connection_id"
         case connectedAt = "connected_at"
         case connectedByUserId = "connected_by_user_id"
@@ -213,7 +216,7 @@ class Block: Codable, ObservableObject {
         case nsfw = "nsfw?"
     }
     
-    init(title: String, updatedAt: String, createdAt: String, commentCount: Int?, generatedTitle: String?, visibility: String?, content: String?, description: String?, source: ArenaSource?, image: ArenaImage?, attachment: ArenaAttachment?, metadata: Metadata?, id: Int, contentClass: String, user: User, selected: Bool?, connectionId: Int?, connectedAt: String?, connectedByUserId: Int?, connectedByUsername: String?, connectedByUserSlug: String?, connections: [BlockConnections]?, collaboratorCount: Int?, nsfw: Bool?) {
+    init(title: String, updatedAt: String, createdAt: String, commentCount: Int?, generatedTitle: String?, visibility: String?, content: String?, description: String?, source: ArenaSource?, image: ArenaImage?, attachment: ArenaAttachment?, metadata: Metadata?, id: Int, baseClass: String, contentClass: String, user: User, slug: String?, selected: Bool?, connectionId: Int?, connectedAt: String?, connectedByUserId: Int?, connectedByUsername: String?, connectedByUserSlug: String?, connections: [BlockConnections]?, collaboratorCount: Int?, nsfw: Bool?) {
         self.title = title
         self.updatedAt = updatedAt
         self.createdAt = createdAt
@@ -227,8 +230,10 @@ class Block: Codable, ObservableObject {
         self.attachment = attachment
         self.metadata = metadata
         self.id = id
+        self.baseClass = baseClass
         self.contentClass = contentClass
         self.user = user
+        self.slug = slug
         self.selected = selected
         self.connectionId = connectionId
         self.connectedAt = connectedAt

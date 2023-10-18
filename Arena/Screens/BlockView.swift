@@ -8,32 +8,34 @@
 import SwiftUI
 
 struct BlockView: View {
-    @StateObject var blockData: BlockData
-    let blockId: Int
-    
-    init(blockId: Int) {
-        self.blockId = blockId
-        _blockData = StateObject(wrappedValue: BlockData(blockId: blockId))
-    }
+    let blockData: Block?
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        NavigationView {
-            HStack {
-                BlockPreview(blockData: self.blockData.block ?? nil)
+        ScrollView {
+            VStack {
+                BlockPreview(blockData: self.blockData ?? nil)
+                Text("\(blockData?.title ?? "")")
+                Text("\(blockData?.createdAt ?? "")")
+                Text("Connected by \(blockData?.connectedByUsername ?? "unknown")")
             }
-            
-            if blockData.isLoading {
-                ProgressView()
-                    .progressViewStyle(.circular)
+        }
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    Image(systemName: "chevron.backward")
+                }
             }
         }
     }
 }
 
-#Preview {
-    Group {
-        BlockView(blockId: 19393606)
-//        BlockView(blockId: 24178618)
-    }
-}
-
+//#Preview {
+//    NavigationView {
+//        BlockView(blockData: BlockData(blockId: 24185173).block ?? nil)
+//    }
+//}
+//
