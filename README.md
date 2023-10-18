@@ -23,6 +23,10 @@ Priority of block preview:
     - Attachment
     - Embed
     - Put title below block (like in Are.na)
+    
+## Are.na specific resources
+
+- [Are.na Multiplexer](https://github.com/mguidetti/are.na-multiplexer/blob/09ebb35f35ab3e33c4abd45530d0944cb38c4d0f/src/components/ChannelLoader.tsx) - referenced API calls and organization
 
 ## Resources
 

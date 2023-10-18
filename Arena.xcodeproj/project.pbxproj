@@ -51,7 +51,6 @@
 /* Begin PBXFileReference section */
 		8F2844082ADEC3C2001EE26D /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		8F28440A2ADEC3E8001EE26D /* FavouritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavouritesView.swift; sourceTree = "<group>"; };
-		8FB168AD2AD9ADF300426906 /* TODO.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = TODO.md; sourceTree = "<group>"; };
 		8FB168AE2AD9BCE200426906 /* FullArenaModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullArenaModel.swift; sourceTree = "<group>"; };
 		8FB168B12AD9C8AA00426906 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		8FB168B22ADA192000426906 /* ArenaSampleData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArenaSampleData.swift; sourceTree = "<group>"; };
@@ -147,7 +146,6 @@
 				8FF0C5B12AD89C3D007D5959 /* ArenaTests */,
 				8FF0C5BB2AD89C3D007D5959 /* ArenaUITests */,
 				8FB168B02AD9BD0800426906 /* ArenaArchive */,
-				8FB168AD2AD9ADF300426906 /* TODO.md */,
 				8FB168B12AD9C8AA00426906 /* README.md */,
 				8FF0C59F2AD89C3B007D5959 /* Products */,
 			);
