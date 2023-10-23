@@ -7,19 +7,19 @@
 
 import SwiftUI
 
-struct ContentPreview: View {
+struct ChannelContentPreview: View {
     let block: Block
     let gridItemSize: CGFloat
     
     var body: some View {
         if block.baseClass == "Block" {
-            BlockPreview(blockData: block)
+            BlockPreview(blockData: block, fontSize: 16)
                 .frame(width: gridItemSize, height: gridItemSize)
                 .border(Color("surface-secondary"))
         } else {
-            Text("\(block.title) by \(block.user.username)")
+            ChannelPreview(blockData: block, fontSize: 16)
                 .frame(width: gridItemSize, height: gridItemSize)
-                .border(Color.orange)
+                .border(Color("arena-orange"))
         }
     }
 }

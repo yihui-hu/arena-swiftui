@@ -9,7 +9,14 @@ import SwiftUI
 
 struct DataView: View {
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        NavigationStack {
+            ScrollView {
+                Spacer()
+                Text("WE LIVE IN A WORLD OF DATA")
+            }
+            .frame(maxWidth: .infinity)
+            .background(Color("background"))
+        }
     }
 }
 

@@ -7,7 +7,7 @@
 
 import Foundation
 
-class ChannelsData: ObservableObject {
+final class ChannelsData: ObservableObject {
     @Published var channels: ArenaChannels?
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
@@ -16,22 +16,21 @@ class ChannelsData: ObservableObject {
     var totalPages: Int = 1
     
     init() {
-        fetchChannels()
+        fetchChannels(refresh: false)
     }
     
-    // Lol unnecessary but useful for semantic organization
-    func loadMore() {
-        fetchChannels()
+    final func loadMore() {
+        print("Fetching channels: page \(self.currentPage) of \(self.totalPages)")
+        fetchChannels(refresh: false)
     }
     
-    func refresh() {
-        channels = nil
+    final func refresh() {
         currentPage = 1
         totalPages = 1
-        fetchChannels()
+        fetchChannels(refresh: true)
     }
     
-    func fetchChannels() {
+    final func fetchChannels(refresh: Bool) {
         // Check if we've finished fetching all pages
         guard currentPage <= totalPages else {
             return
@@ -66,7 +65,7 @@ class ChannelsData: ObservableObject {
                     // Attempt to decode the data
                     let newChannels = try decoder.decode(ArenaChannels.self, from: data)
                     DispatchQueue.main.async {
-                        if self.channels != nil {
+                        if self.channels != nil, !refresh {
                             self.channels?.channels.append(contentsOf: newChannels.channels)
                         } else {
                             self.channels = newChannels

@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import Modals
 
 @main
 struct ArenaApp: App {
     var body: some Scene {
         WindowGroup {
-            ArenaView()
+            ModalStackView {
+                ArenaView()
+            }
         }
     }
 }

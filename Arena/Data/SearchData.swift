@@ -7,7 +7,7 @@
 
 import Foundation
 
-class SearchChannelsData: ObservableObject {
+final class SearchData: ObservableObject {
     @Published var searchResults: ArenaSearchResults?
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
@@ -17,7 +17,7 @@ class SearchChannelsData: ObservableObject {
     var currentPage: Int = 1
     var totalPages: Int = 1
     
-    // MARK: - ChannelData Initializer
+    // MARK: - Search Initializer
     init() {
         if searchTerm != "" {
             fetchSearchResults()
@@ -27,7 +27,7 @@ class SearchChannelsData: ObservableObject {
     }
     
     // MARK: - Fetch more content
-    func loadMore() {
+    final func loadMore() {
         print("Fetching channel content: page \(self.currentPage) of \(self.totalPages)")
         if searchTerm != "" {
             fetchSearchResults()
@@ -37,14 +37,14 @@ class SearchChannelsData: ObservableObject {
     }
     
     // MARK: - Refresh Channel Metadata & Contents
-    func refresh() {
+    final func refresh() {
         reset()
         if searchTerm != "" {
             fetchSearchResults()
         }
     }
     
-    func reset() {
+    final func reset() {
         searchResults = nil
         currentPage = 1
         totalPages = 1
@@ -52,7 +52,7 @@ class SearchChannelsData: ObservableObject {
     
     
     // MARK: - Fetch Channel Contents
-    func fetchSearchResults() {
+    final func fetchSearchResults() {
         guard currentPage <= totalPages else {
             return
         }
@@ -64,21 +64,19 @@ class SearchChannelsData: ObservableObject {
         self.isLoading = true
         errorMessage = nil
         
-//        let option: String
-//        switch selection {
-//        case "All":
-//            option = ""
-//        case "Channels":
-//            option = "/channels"
-//        case "Blocks":
-//            option = "/blocks"
-//        case "Users":
-//            option = "/users"
-//        default:
-//            option = ""
-//        }
+        let option: String
+        switch selection {
+        case "Channels":
+            option = "channels"
+        case "Blocks":
+            option = "blocks"
+        case "Users":
+            option = "users"
+        default:
+            option = "channels"
+        }
         
-        guard let url = URL(string: "https://api.are.na/v2/search/?q=\(searchTerm)&page=\(currentPage)&per=20") else {
+        guard let url = URL(string: "https://api.are.na/v2/search/\(option)?q=\(searchTerm)&page=\(currentPage)&per=20") else {
             self.isLoading = false
             errorMessage = "Invalid URL"
             return

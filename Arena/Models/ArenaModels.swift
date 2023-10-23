@@ -8,10 +8,11 @@
 import Foundation
 import SwiftUI
 
-class ArenaChannels: Codable {
+// MARK: - ArenaChannels
+final class ArenaChannels: Codable {
     let id: Int // id of user
     let length, totalPages, currentPage: Int
-    var channels: [ArenaChannelPreview]
+    var channels: ContiguousArray<ArenaChannelPreview>
     
     enum CodingKeys: String, CodingKey {
         case id
@@ -21,7 +22,7 @@ class ArenaChannels: Codable {
         case channels
     }
     
-    init(length: Int, totalPages: Int, currentPage: Int, id: Int, channels: [ArenaChannelPreview]) {
+    init(length: Int, totalPages: Int, currentPage: Int, id: Int, channels: ContiguousArray<ArenaChannelPreview>) {
         self.length = length
         self.totalPages = totalPages
         self.currentPage = currentPage
@@ -31,7 +32,7 @@ class ArenaChannels: Codable {
 }
 
 // MARK: - ArenaChannelPreview
-class ArenaChannelPreview: Codable {
+final class ArenaChannelPreview: Codable {
     let id: Int
     let title, createdAt, updatedAt, addedToAt: String
     let published, channelOpen, collaboration: Bool
@@ -94,7 +95,7 @@ class ArenaChannelPreview: Codable {
 }
 
 // MARK: - ArenaChannel
-class ArenaChannel: Codable {
+final class ArenaChannel: Codable {
     let id: Int
     let title, createdAt, updatedAt, addedToAt: String
     let published, open, collaboration: Bool
@@ -103,7 +104,6 @@ class ArenaChannel: Codable {
     let length: Int
     let kind, status: String
     let userId: Int
-//    var contents: [Block]? // is a separate component in ChannelFetcher
     let baseClass: String
     let page, per: Int
     let collaborators: [User]
@@ -111,8 +111,9 @@ class ArenaChannel: Codable {
     let metadata: Metadata?
     let className: String
     let canIndex, nsfw: Bool
-    let owner, user: User
-
+    let user: User
+    //    let owner: // TODO: Support ability to handle both Users and Groups lol
+    
     enum CodingKeys: String, CodingKey {
         case id, title
         case createdAt = "created_at"
@@ -124,7 +125,6 @@ class ArenaChannel: Codable {
         case collaboratorCount = "collaborator_count"
         case slug, length, kind, status
         case userId = "user_id"
-//        case contents
         case baseClass = "base_class"
         case page, per, collaborators
         case followerCount = "follower_count"
@@ -132,9 +132,10 @@ class ArenaChannel: Codable {
         case className = "class_name"
         case canIndex = "can_index"
         case nsfw = "nsfw?"
-        case owner, user
+        case user
+        //        case owner
     }
-
+    
     init(id: Int, title: String, createdAt: String, updatedAt: String, addedToAt: String, published: Bool, open: Bool, collaboration: Bool, collaboratorCount: Int, slug: String, length: Int, kind: String, status: String, userId: Int, contents: [Block]?, baseClass: String, page: Int, per: Int, collaborators: [User], followerCount: Int, metadata: Metadata?, className: String, canIndex: Bool, nsfw: Bool, owner: User, user: User) {
         self.id = id
         self.title = title
@@ -150,7 +151,6 @@ class ArenaChannel: Codable {
         self.kind = kind
         self.status = status
         self.userId = userId
-//        self.contents = contents
         self.baseClass = baseClass
         self.page = page
         self.per = per
@@ -160,17 +160,131 @@ class ArenaChannel: Codable {
         self.className = className
         self.canIndex = canIndex
         self.nsfw = nsfw
-        self.owner = owner
+        //        self.owner = owner
         self.user = user
     }
 }
 
-class ArenaChannelContents: Codable {
+// MARK: - ArenaChannelContents
+final class ArenaChannelContents: Codable {
     let contents: [Block]?
 }
 
+// MARK: - ArenaSearchResults
+final class ArenaSearchResults: Codable {
+    let currentPage, totalPages: Int
+    var channels: [ArenaSearchedChannel]
+    var blocks: [ArenaSearchedBlock]
+    var users: [ArenaSearchedUser]
+    
+    enum CodingKeys: String, CodingKey {
+        case totalPages = "total_pages"
+        case currentPage = "current_page"
+        case channels, blocks, users
+    }
+    
+    init(currentPage: Int, totalPages: Int, channels: [ArenaSearchedChannel], blocks: [ArenaSearchedBlock], users: [ArenaSearchedUser]) {
+        self.currentPage = currentPage
+        self.totalPages = totalPages
+        self.channels = channels
+        self.blocks = blocks
+        self.users = users
+    }
+}
+
+// MARK: - ArenaSearchedChannel
+final class ArenaSearchedChannel: Codable {
+    let title, createdAt, updatedAt, addedToAt: String
+    let slug: String
+    let length: Int
+    let status: String
+    let userId: Int
+    let contents: [Block]?
+    let ownerSlug: String
+    let state: String
+    let user: User
+    let id: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case title
+        case createdAt = "created_at"
+        case updatedAt = "updated_at"
+        case addedToAt = "added_to_at"
+        case slug, length, status
+        case userId = "user_id"
+        case contents
+        case ownerSlug = "owner_slug"
+        case state, user, id
+    }
+    
+    init(title: String, createdAt: String, updatedAt: String, addedToAt: String, slug: String, length: Int, status: String, userId: Int, contents: [Block]?, ownerSlug: String, state: String, user: User, id: Int) {
+        self.title = title
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
+        self.addedToAt = addedToAt
+        self.slug = slug
+        self.length = length
+        self.status = status
+        self.userId = userId
+        self.contents = contents
+        self.ownerSlug = ownerSlug
+        self.state = state
+        self.user = user
+        self.id = id
+    }
+}
+
+// MARK: - ArenaSearchedBlock
+final class ArenaSearchedBlock: Codable {
+    let title, generatedTitle: String
+    let content: String?
+    let source: ArenaSource?
+    let attachment: ArenaAttachment?
+    let image: ArenaImage?
+    let id: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case title, content, source, attachment, image, id
+        case generatedTitle = "generated_title"
+    }
+    
+    init(title: String, generatedTitle: String, content: String?, source: ArenaSource?, attachment: ArenaAttachment?, image: ArenaImage?, id: Int) {
+        self.title = title
+        self.generatedTitle = generatedTitle
+        self.content = content
+        self.source = source
+        self.attachment = attachment
+        self.image = image
+        self.id = id
+    }
+}
+
+// MARK: - ArenaSearchedUser
+final class ArenaSearchedUser: Codable {
+    let slug, username, initials: String
+    let id: Int
+    let avatarImage: AvatarImage
+    
+    enum CodingKeys: String, CodingKey {
+        case slug, username, id, initials
+        case avatarImage = "avatar_image"
+    }
+    
+    init(slug: String, username: String, initials: String, id: Int, avatarImage: AvatarImage) {
+        self.slug = slug
+        self.username = username
+        self.initials = initials
+        self.id = id
+        self.avatarImage = avatarImage
+    }
+}
+
 // MARK: - Block
-class Block: Codable, ObservableObject {
+final class Block: Codable, ObservableObject, Equatable {
+    static func == (lhs: Block, rhs: Block) -> Bool {
+        return lhs.id == rhs.id // Compare using a unique identifier, such as the 'id' property
+    }
+    
     let id: Int
     let title: String
     let updatedAt, createdAt: String // describes when block was updated and created
@@ -192,8 +306,9 @@ class Block: Codable, ObservableObject {
     let connectedAt: String? // describes when block was added to channel
     let connectedByUserId: Int? // describes who added the block to channel
     let connectedByUsername, connectedByUserSlug: String?
-    let connections: [BlockConnections]?
+    let connections: [BlockConnection]?
     let collaboratorCount: Int?
+    let position: Int?
     let nsfw: Bool?
     
     enum CodingKeys: String, CodingKey {
@@ -213,10 +328,11 @@ class Block: Codable, ObservableObject {
         case connectedByUserSlug = "connected_by_user_slug"
         case connections
         case collaboratorCount = "collaborator_count"
+        case position
         case nsfw = "nsfw?"
     }
     
-    init(title: String, updatedAt: String, createdAt: String, commentCount: Int?, generatedTitle: String?, visibility: String?, content: String?, description: String?, source: ArenaSource?, image: ArenaImage?, attachment: ArenaAttachment?, metadata: Metadata?, id: Int, baseClass: String, contentClass: String, user: User, slug: String?, selected: Bool?, connectionId: Int?, connectedAt: String?, connectedByUserId: Int?, connectedByUsername: String?, connectedByUserSlug: String?, connections: [BlockConnections]?, collaboratorCount: Int?, nsfw: Bool?) {
+    init(title: String, updatedAt: String, createdAt: String, commentCount: Int?, generatedTitle: String?, visibility: String?, content: String?, description: String?, source: ArenaSource?, image: ArenaImage?, attachment: ArenaAttachment?, metadata: Metadata?, id: Int, baseClass: String, contentClass: String, user: User, slug: String?, selected: Bool?, connectionId: Int?, connectedAt: String?, connectedByUserId: Int?, connectedByUsername: String?, connectedByUserSlug: String?, connections: [BlockConnection]?, collaboratorCount: Int?, position: Int?, nsfw: Bool?) {
         self.title = title
         self.updatedAt = updatedAt
         self.createdAt = createdAt
@@ -242,11 +358,13 @@ class Block: Codable, ObservableObject {
         self.connectedByUserSlug = connectedByUserSlug
         self.connections = connections
         self.collaboratorCount = collaboratorCount
+        self.position = position
         self.nsfw = nsfw
     }
 }
 
-class BlockConnections: Codable {
+// MARK: - BlockConnection
+final class BlockConnection: Codable {
     let id: Int
     let title: String
     let updatedAt, createdAt: String // describes when block was updated and created
@@ -267,7 +385,8 @@ class BlockConnections: Codable {
     // TODO: initializer here
 }
 
-class ArenaAttachment: Codable {
+// MARK: - ArenaAttachment
+final class ArenaAttachment: Codable {
     let filename, fileSizeDisplay, fileExtension, contentType, url: String
     let fileSize: Int
     
@@ -291,7 +410,7 @@ class ArenaAttachment: Codable {
 }
 
 // MARK: - Image
-class ArenaImage: Codable {
+final class ArenaImage: Codable {
     let filename, contentType, updatedAt: String
     let thumb, square, display, large: Display
     let original: OriginalImage
@@ -321,7 +440,7 @@ struct Display: Codable {
 }
 
 // MARK: - Original
-class OriginalImage: Codable {
+final class OriginalImage: Codable {
     let url: String
     let fileSize: Int
     let fileSizeDisplay: String
@@ -340,7 +459,7 @@ class OriginalImage: Codable {
 }
 
 // MARK: - Metadata
-class Metadata: Codable {
+final class Metadata: Codable {
     let description: String?
     
     init(description: String?) {
@@ -349,7 +468,7 @@ class Metadata: Codable {
 }
 
 // MARK: - Source
-class ArenaSource: Codable {
+final class ArenaSource: Codable {
     let url: String?
     let title: String?
     
@@ -360,7 +479,7 @@ class ArenaSource: Codable {
 }
 
 // MARK: - User
-class User: Codable {
+final class User: Codable {
     let createdAt, slug, username, firstName: String
     let lastName, fullName: String
     let avatarImage: AvatarImage
@@ -404,7 +523,7 @@ class User: Codable {
 }
 
 // MARK: - AvatarImage
-class AvatarImage: Codable {
+final class AvatarImage: Codable {
     let thumb, display: String
     
     init(thumb: String, display: String) {
@@ -412,11 +531,3 @@ class AvatarImage: Codable {
         self.display = display
     }
 }
-
-// MARK: - ArenaError
-enum ArenaError: Error {
-    case invalidURL
-    case invalidResponse
-    case invalidData
-}
-

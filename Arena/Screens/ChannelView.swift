@@ -7,107 +7,117 @@
 
 import SwiftUI
 
+enum SortOption: String {
+    case position = "Position"
+    case newest = "Newest First"
+    case oldest = "Oldest First"
+}
+
 struct ChannelView: View {
-    @StateObject var channelData: ChannelData
+    @StateObject private var channelData: ChannelData
     let channelSlug: String
     
     @Environment(\.dismiss) private var dismiss
-    @State private var selection = "Newest First"
-    let colors = ["Newest First", "Oldest First"]
+    @State private var selection = SortOption.position
+    let sortOptions = [SortOption.position, SortOption.newest, SortOption.oldest]
     
     init(channelSlug: String) {
         self.channelSlug = channelSlug
-        _channelData = StateObject(wrappedValue: ChannelData(channelSlug: channelSlug, selection: "Newest First"))
+        self._channelData = StateObject(wrappedValue: ChannelData(channelSlug: channelSlug, selection: SortOption.position))
+    }
+    
+    @ViewBuilder
+    private func destinationView(for block: Block, channelData: ChannelData, channelSlug: String) -> some View {
+        if block.baseClass == "Block" {
+            BlockView(blockData: block, channelData: channelData, channelSlug: channelSlug)
+        } else {
+            ChannelView(channelSlug: block.slug ?? "")
+        }
     }
     
     var body: some View {
+        // Setting up grid
+        let gridGap: CGFloat = 8
+        let columns: [GridItem] = Array(repeating: .init(.flexible(), spacing: gridGap), count: 2)
+        let gridItemSize = (UIScreen.main.bounds.width - (gridGap * 3)) / 2
         
-        let columns: [GridItem] = Array(repeating: .init(.flexible(), spacing: 5), count: 2)
-        let gridItemSize = (UIScreen.main.bounds.width - 40) / 2
-        let gridItemAspectRatio: CGFloat = 1.0
-        
-        ScrollView {
-            LazyVGrid(columns: columns, spacing: 10) {
-                ForEach(channelData.contents ?? [], id: \.self.id) { block in
-                    NavigationLink(destination: destinationView(for: block)) {
-                        if block.baseClass == "Block" {
-                            BlockPreview(blockData: block)
-                                .frame(width: gridItemSize, height: gridItemSize * gridItemAspectRatio)
-                                .border(Color(red: 0.3333, green: 0.3333, blue: 0.3333, opacity: 0.4), width: 0.5)
-                            // figure out better preview for channel
-                        } else {
-                            Text("\(block.title) by \(block.user.username)")
-                                .frame(width: gridItemSize, height: gridItemSize * gridItemAspectRatio)
-                                .border(Color.orange, width: 0.5)
+        ScrollViewReader { proxy in
+            ScrollView {
+                ZStack {}.id(0) // Hacky implementation of scroll to top
+                
+                LazyVGrid(columns: columns, spacing: gridGap) {
+                    ForEach(channelData.contents ?? [], id: \.self.id) { block in
+                        NavigationLink(destination: destinationView(for: block, channelData: channelData, channelSlug: channelSlug)) {
+                            ChannelContentPreview(block: block, gridItemSize: gridItemSize)
+                        }
+                        .onAppear {
+                            if channelData.contents?.last?.id ?? -1 == block.id {
+                                if !channelData.isContentsLoading {
+                                    channelData.loadMore(channelSlug: self.channelSlug)
+                                }
+                            }
                         }
                     }
                 }
-            }
-            
-            if channelData.isLoading {
-                ProgressView()
-                    .progressViewStyle(.circular)
-            } else {
-                Color.clear
-                    .onAppear {
-                        channelData.loadMore(channelSlug: self.channelSlug)
-                    }
-            }
-            
-            if channelData.currentPage > channelData.totalPages {
-                Text("Finished loading all blocks")
-                    .foregroundStyle(Color.gray)
-            }
-            
-            Text("\n\n")
-        }
-        .contentMargins(.top, 10)
-        .contentMargins(.horizontal, 10)
-        .padding(.bottom, 20)
-        .scrollIndicators(.hidden)
-        .refreshable {
-            channelData.refresh(channelSlug: self.channelSlug)
-        }
-        .navigationBarBackButtonHidden()
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button(action: {
-                    dismiss()
-                }) {
-                    Image(systemName: "chevron.backward")
-                }
-            }
-            
-            ToolbarItem(placement: .topBarTrailing) {
-                Picker("Select a sort order", selection: $selection) {
-                    ForEach(colors, id: \.self) {
-                        Text($0)
+                
+                ZStack {
+                    if (channelData.isLoading || channelData.isContentsLoading) {
+                        LoadingSpinner()
                     }
                 }
-                .pickerStyle(.menu)
+                
+                // Make a channelData.finishedLoading state
+                if channelData.currentPage > channelData.totalPages {
+                    Text("End of channel")
+                        .foregroundStyle(Color("surface-text-secondary"))
+                }
+            }
+            .background(Color("background"))
+            .contentMargins(gridGap)
+            .contentMargins(.leading, 0, for: .scrollIndicators)
+            .refreshable {
+                do { try await Task.sleep(nanoseconds: 500_000_000) } catch {}
+                channelData.refresh(channelSlug: self.channelSlug, selection: selection)
+            }
+            .navigationBarBackButtonHidden()
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image(systemName: "chevron.backward")
+                    }
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Picker("Select a sort order", selection: $selection) {
+                        ForEach(sortOptions, id: \.self) {
+                            Text($0.rawValue)
+                        }
+                    }
+                    .pickerStyle(.menu)
+                }
+            }
+            .toolbarBackground(.visible, for: .navigationBar)
+            .onChange(of: selection, initial: true) { oldSelection, newSelection in
+                if oldSelection != newSelection {
+                    withAnimation {
+                        proxy.scrollTo(0)
+                    }
+                    channelData.selection = newSelection
+                    channelData.refresh(channelSlug: self.channelSlug, selection: newSelection)
+                }
             }
         }
-        .onChange(of: selection, initial: true) { oldSelection, newSelection in
-            if oldSelection != newSelection {
-                channelData.selection = newSelection
-                channelData.refresh(channelSlug: self.channelSlug)
-            }
-        }
-    }
-}
-
-@ViewBuilder
-func destinationView(for block: Block) -> some View {
-    if block.baseClass == "Block" {
-        BlockView(blockData: block)
-    } else {
-        ChannelView(channelSlug: block.slug ?? "")
     }
 }
 
 #Preview {
     NavigationView {
+        // ChannelView(channelSlug: "hi-christina-will-you-go-out-with-me")
         ChannelView(channelSlug: "competitive-design-website-repo")
+        // ChannelView(channelSlug: "christina-bgfz4hkltss")
+        // ChannelView(channelSlug: "arena-swift-models-test")
     }
 }
 

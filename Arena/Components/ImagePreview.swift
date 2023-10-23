@@ -6,13 +6,62 @@
 //
 
 import SwiftUI
+import Giffy
+import CachedAsyncImage
 
 struct ImagePreview: View {
+    let imageURL: String
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        let url = URL(string: imageURL)
+        let fileExtension = url?.pathExtension
+        
+        if fileExtension == "gif" {
+            AsyncGiffy(url: url!) { phase in
+                switch phase {
+                case .loading:
+                    ImageLoading()
+                case .error:
+                    ImageError()
+                case .success(let image):
+                    image
+                }
+            }
+            .frame(alignment: .center)
+        } else {
+            CachedAsyncImage(url: url) { phase in
+                switch phase {
+                case .success(let image):
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                case .empty:
+                    ImageLoading()
+                case .failure(_):
+                    ImageError()
+                default:
+                    ImageError()
+                }
+            }
+            .frame(alignment: .center)
+        }
     }
 }
 
-#Preview {
-    ImagePreview()
+struct ImageLoading: View {
+    var body: some View {
+        ProgressView()
+            .frame(minWidth: 132, minHeight: 132)
+            .progressViewStyle(CircularProgressViewStyle(tint: Color("surface-text-secondary")))
+            .aspectRatio(contentMode: .fit)
+    }
+}
+
+struct ImageError: View {
+    var body: some View {
+        Image(systemName: "questionmark.folder")
+            .frame(minWidth: 132, minHeight: 132)
+            .foregroundStyle(Color("surface-text-secondary"))
+            .aspectRatio(contentMode: .fit)
+    }
 }

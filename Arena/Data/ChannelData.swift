@@ -7,36 +7,41 @@
 
 import Foundation
 
-class ChannelData: ObservableObject {
+final class ChannelData: ObservableObject {
     @Published var channel: ArenaChannel?
     @Published var contents: [Block]?
     @Published var isLoading: Bool = false
+    @Published var isContentsLoading: Bool = false
     @Published var errorMessage: String? = nil
-    @Published var selection: String = "Newest First"
+    @Published var selection: SortOption = SortOption.newest
     
     var currentPage: Int = 1
     var totalPages: Int = 1
     
-    init(channelSlug: String, selection: String) {
+    // MARK: - ChannelData Initializer
+    init(channelSlug: String, selection: SortOption) {
         self.selection = selection
         fetchChannel(channelSlug)
-        fetchChannelContents(channelSlug)
+        fetchChannelContents(channelSlug, refresh: false)
     }
     
-    func loadMore(channelSlug: String) {
-        fetchChannelContents(channelSlug)
+    // MARK: - Fetch more content
+    final func loadMore(channelSlug: String) {
+        print("Fetching channel content: page \(self.currentPage) of \(self.totalPages)")
+        fetchChannelContents(channelSlug, refresh: false)
     }
     
-    func refresh(channelSlug: String) {
-        channel = nil
-        contents = nil
+    // MARK: - Refresh Channel Metadata & Contents
+    final func refresh(channelSlug: String, selection: SortOption) {
         currentPage = 1
         totalPages = 1
+        self.selection = selection
         fetchChannel(channelSlug)
-        fetchChannelContents(channelSlug)
+        fetchChannelContents(channelSlug, refresh: true)
     }
     
-    func fetchChannel(_ channelSlug: String) {
+    // MARK: - Fetch Channel Metadata
+    final func fetchChannel(_ channelSlug: String) {
         guard !isLoading else {
             return
         }
@@ -85,30 +90,45 @@ class ChannelData: ObservableObject {
         task.resume()
     }
     
-    func fetchChannelContents(_ channelSlug: String) {
-        // Check if we've finished fetching all pages
+    // MARK: - Fetch Channel Contents
+    final func fetchChannelContents(_ channelSlug: String, refresh: Bool) {
         guard currentPage <= totalPages else {
+            print("Done fetching, so returning now...")
             return
         }
         
-        guard !isLoading else {
+        guard !isContentsLoading else {
             return
         }
         
-        self.isLoading = true
+        self.isContentsLoading = true
         errorMessage = nil
         
-        guard let url = URL(string: "https://api.are.na/v2/channels/\(channelSlug)/contents?page=\(currentPage)&sort=created_at&direction=\(selection == "Newest First" ? "desc" : "asc")") else {
-                            self.isLoading = false
-                            errorMessage = "Invalid URL"
-                            return
-                            }
-                            
-                            // Create a URLRequest and set the "Authorization" header with your bearer token
-                            var request = URLRequest(url: url)
-                            request.setValue("Bearer cfsNlJe3Ns9Vnj8SAKHLvDCaeh3uMm1sNwsIX6ESdeY", forHTTPHeaderField: "Authorization")
-                            
-                            let task = URLSession.shared.dataTask(with: request) { [unowned self] (data, response, error) in
+        let sortOption: String
+        let sortDirection: String
+        switch selection {
+        case .position:
+            sortOption = "position"
+            sortDirection = "desc"
+        case .newest:
+            sortOption = "created_at"
+            sortDirection = "desc"
+        case .oldest:
+            sortOption = "created_at"
+            sortDirection = "asc"
+        }
+        
+        guard let url = URL(string: "https://api.are.na/v2/channels/\(channelSlug)/contents?page=\(currentPage)&sort=\(sortOption)&direction=\(sortDirection)") else {
+            self.isContentsLoading = false
+            errorMessage = "Invalid URL"
+            return
+        }
+        
+        // Create a URLRequest and set the "Authorization" header with your bearer token
+        var request = URLRequest(url: url)
+        request.setValue("Bearer cfsNlJe3Ns9Vnj8SAKHLvDCaeh3uMm1sNwsIX6ESdeY", forHTTPHeaderField: "Authorization")
+        
+        let task = URLSession.shared.dataTask(with: request) { [unowned self] (data, response, error) in
             if error != nil {
                 errorMessage = "Error retrieving data."
                 return
@@ -120,7 +140,7 @@ class ChannelData: ObservableObject {
                     // Attempt to decode the data
                     let newChannelContent = try decoder.decode(ArenaChannelContents.self, from: data)
                     DispatchQueue.main.async {
-                        if self.channel != nil {
+                        if self.channel != nil, !refresh {
                             if self.contents == nil {
                                 self.contents = []
                             }
@@ -139,10 +159,10 @@ class ChannelData: ObservableObject {
             }
             
             DispatchQueue.main.async {
-                self.isLoading = false
+                self.isContentsLoading = false
             }
         }
-                            
-                            task.resume()
-                            }
-                            }
+        
+        task.resume()
+    }
+}

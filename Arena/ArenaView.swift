@@ -6,9 +6,7 @@
 //
 
 import SwiftUI
-import NavigationTransitions
 import TabBarModule
-
 
 struct ArenaView: View {
     @State private var item: Int = 0
@@ -17,27 +15,46 @@ struct ArenaView: View {
         TabBar(selection: $item) {
             ChannelsView()
                 .tabItem(0) {
-                    Image(systemName: "heart.fill")
-                        .padding(.top, 4)
-                        .imageScale(.large)
-                        .foregroundColor(item == 0 ? Color.black : Color.gray)
+                    TabItem(iconName: "heart.fill", tabIndex: 0, item: $item)
                 }
             
-            Text("WE LIVE IN A WORLD OF DATA")
+            SearchView()
                 .tabItem(1) {
-                    Image(systemName: "aqi.medium")
-                        .padding(.top, 4)
-                        .imageScale(.large)
-                        .foregroundColor(item == 1 ? Color.black : Color.gray)
+                    TabItem(iconName: "magnifyingglass", tabIndex: 1, item: $item)
+                }
+            
+            SearchView()
+                .tabItem(2) {
+                    TabItem(iconName: "safari.fill", tabIndex: 2, item: $item)
+                }
+            
+            DataView()
+                .tabItem(3) {
+                    TabItem(iconName: "clock.fill", tabIndex: 3, item: $item)
+                }
+            
+            ProfileView()
+                .tabItem(4) {
+                    TabItem(iconName: "person.fill", tabIndex: 4, item: $item)
                 }
         }
-        .tabBarFill(.thinMaterial)
-        //        .tabBarFill(.regularMaterial)
-        //        .tabBarMargins(.vertical, 8)
-        //        .tabBarPadding(.vertical, 8)
-        //        .tabBarPadding(.horizontal, 60)
-        //        .tabBarShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-        //        .tabBarShadow(radius: 1, y: 1)
+        .tabBarFill(.regularMaterial)
+        .tabBarMargins(.bottom, 8)
+        .tabBarMargins(.top, 16)
+        .tabBarMargins(.horizontal, 20)
+        .tabBarShadow(color: Color("surface-text-secondary"), radius: 1, y: 0)
+    }
+}
+
+struct TabItem: View {
+    let iconName: String
+    let tabIndex: Int
+    @Binding var item: Int
+    
+    var body: some View {
+        Image(systemName: iconName)
+            .imageScale(.large)
+            .foregroundColor(item == tabIndex ? Color("tab-selected") : Color("tab-unselected"))
     }
 }
 
@@ -46,7 +63,7 @@ extension UINavigationController: UIGestureRecognizerDelegate {
         super.viewDidLoad()
         interactivePopGestureRecognizer?.delegate = self
     }
-
+    
     public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         return viewControllers.count > 1
     }

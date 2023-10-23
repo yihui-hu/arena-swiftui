@@ -7,7 +7,7 @@
 
 import Foundation
 
-class BlockData: ObservableObject {
+final class BlockData: ObservableObject {
     @Published var block: Block?
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
@@ -16,17 +16,16 @@ class BlockData: ObservableObject {
         fetchBlock(blockId)
     }
     
-    // Lol unnecessary but useful for semantic organization
-    func loadMore(blockId: Int) {
+    final func loadMore(blockId: Int) {
         fetchBlock(blockId)
     }
     
-    func refresh(blockId: Int) {
+    final func refresh(blockId: Int) {
         block = nil
         fetchBlock(blockId)
     }
     
-    func fetchBlock(_ blockId: Int) {
+    final func fetchBlock(_ blockId: Int) {
         guard !isLoading else {
             return
         }

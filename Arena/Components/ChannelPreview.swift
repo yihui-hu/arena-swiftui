@@ -8,11 +8,16 @@
 import SwiftUI
 
 struct ChannelPreview: View {
+    let blockData: Block // I know semantically this doesn't make sense, but just roll with it for previews
+    let fontSize: CGFloat?
+    
     var body: some View {
-        Text("Channel preview goes here")
+        VStack {
+            Text("\(blockData.title)")
+                .foregroundStyle(Color("arena-orange"))
+            Text("by \(blockData.user.username)")
+        }
+        .font(.system(size: fontSize ?? 16))
+        .padding(16)
     }
-}
-
-#Preview {
-    ChannelPreview()
 }

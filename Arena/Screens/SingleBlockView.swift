@@ -8,11 +8,30 @@
 import SwiftUI
 
 struct SingleBlockView: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+    let blockId: Int
+    @Environment(\.dismiss) private var dismiss
+    
+    init(blockId: Int) {
+        self.blockId = blockId
     }
-}
-
-#Preview {
-    SingleBlockView()
+    
+    var body: some View {
+        VStack() {
+            Text("\(blockId)")
+                .foregroundColor(Color("text-primary"))
+        }
+        .background(Color("background"))
+        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    Image(systemName: "chevron.backward")
+                }
+            }
+        }
+        .toolbarBackground(.visible, for: .navigationBar)
+    }
 }

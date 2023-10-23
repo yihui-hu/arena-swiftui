@@ -1,6 +1,69 @@
 {
   "pins" : [
     {
+      "identity" : "debouncedonchange",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Tunous/DebouncedOnChange.git",
+      "state" : {
+        "revision" : "b699017e13966e35c9388c8cc97151c8883dda1e",
+        "version" : "1.1.0"
+      }
+    },
+    {
+      "identity" : "flanimatedimage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Flipboard/FLAnimatedImage.git",
+      "state" : {
+        "revision" : "d4f07b6f164d53c1212c3e54d6460738b1981e9f",
+        "version" : "1.0.17"
+      }
+    },
+    {
+      "identity" : "giffy",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/tfmart/giffy",
+      "state" : {
+        "branch" : "main",
+        "revision" : "7300767fc9509ce7f86d9c6a2750ceb18f93a464"
+      }
+    },
+    {
+      "identity" : "modals",
+      "kind" : "remoteSourceControl",
+      "location" : "http://github.com/fieldday-ai/Modals.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "b39c66a473dd6ba5309b4263027ccce514b08186"
+      }
+    },
+    {
+      "identity" : "swift-collections",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/apple/swift-collections",
+      "state" : {
+        "revision" : "a902f1823a7ff3c9ab2fba0f992396b948eda307",
+        "version" : "1.0.5"
+      }
+    },
+    {
+      "identity" : "swift-identified-collections",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/pointfreeco/swift-identified-collections",
+      "state" : {
+        "revision" : "d1e45f3e1eee2c9193f5369fa9d70a6ddad635e8",
+        "version" : "1.0.0"
+      }
+    },
+    {
+      "identity" : "swiftui-cached-async-image",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/lorenzofiamingo/swiftui-cached-async-image",
+      "state" : {
+        "revision" : "467a3d17479887943ab917a379e62bbaff60ac8a",
+        "version" : "2.1.1"
+      }
+    },
+    {
       "identity" : "swiftui-introspect",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/siteline/swiftui-introspect",
@@ -25,6 +88,15 @@
       "state" : {
         "revision" : "ea2d605173e0fb2d101509f413a96953ac40e979",
         "version" : "1.0.0"
+      }
+    },
+    {
+      "identity" : "swiftui-vertical-tab-view",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/lorenzofiamingo/swiftui-vertical-tab-view",
+      "state" : {
+        "revision" : "e029f75f9c43e52e351528a78e293a997200b9f8",
+        "version" : "2.0.0"
       }
     }
   ],
