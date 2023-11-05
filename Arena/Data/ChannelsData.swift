@@ -43,7 +43,7 @@ final class ChannelsData: ObservableObject {
         self.isLoading = true
         errorMessage = nil
 
-        guard let url = URL(string: "https://api.are.na/v2/users/49570/channels?page=\(currentPage)&per=20") else {
+        guard let url = URL(string: "https://api.are.na/v2/users/49570/channels?page=\(currentPage)&per=10") else {
             self.isLoading = false
             errorMessage = "Invalid URL"
             return

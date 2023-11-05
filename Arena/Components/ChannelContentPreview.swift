@@ -7,13 +7,14 @@
 
 import SwiftUI
 
+// Used in ChannelView
 struct ChannelContentPreview: View {
     let block: Block
     let gridItemSize: CGFloat
     
     var body: some View {
         if block.baseClass == "Block" {
-            BlockPreview(blockData: block, fontSize: 16)
+            ChannelViewBlockPreview(blockData: block, fontSize: 16)
                 .frame(width: gridItemSize, height: gridItemSize)
                 .border(Color("surface-secondary"))
         } else {

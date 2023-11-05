@@ -30,8 +30,10 @@
 		8FB168B52ADA53DF00426906 /* ChannelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB168B42ADA53DF00426906 /* ChannelData.swift */; };
 		8FB168B72ADA565D00426906 /* ChannelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB168B62ADA565D00426906 /* ChannelView.swift */; };
 		8FB168B92ADA5C3B00426906 /* BlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB168B82ADA5C3B00426906 /* BlockView.swift */; };
+		8FD047FF2AF7324700AFB7BD /* ModalTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD047FE2AF7324700AFB7BD /* ModalTest.swift */; };
 		8FD7E3F02ADADF9000A15E16 /* BlockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD7E3EF2ADADF9000A15E16 /* BlockData.swift */; };
-		8FD7E3F32ADB6EEC00A15E16 /* BlockPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD7E3F22ADB6EEC00A15E16 /* BlockPreview.swift */; };
+		8FD7E3F32ADB6EEC00A15E16 /* BlockPreviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD7E3F22ADB6EEC00A15E16 /* BlockPreviews.swift */; };
+		8FD811092AF6D6F4001E847F /* ScrollKit in Frameworks */ = {isa = PBXBuildFile; productRef = 8FD811082AF6D6F4001E847F /* ScrollKit */; };
 		8FF0C5A22AD89C3B007D5959 /* ArenaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF0C5A12AD89C3B007D5959 /* ArenaApp.swift */; };
 		8FF0C5A42AD89C3B007D5959 /* ArenaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF0C5A32AD89C3B007D5959 /* ArenaView.swift */; };
 		8FF0C5A62AD89C3D007D5959 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8FF0C5A52AD89C3D007D5959 /* Assets.xcassets */; };
@@ -45,6 +47,7 @@
 		8FF1E9242ADBA94D002D4B26 /* NavigationTransitions in Frameworks */ = {isa = PBXBuildFile; productRef = 8FF1E9232ADBA94D002D4B26 /* NavigationTransitions */; };
 		8FF1E9272ADCA491002D4B26 /* TabBarModule in Frameworks */ = {isa = PBXBuildFile; productRef = 8FF1E9262ADCA491002D4B26 /* TabBarModule */; };
 		8FF1E9292ADD740A002D4B26 /* ChannelPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF1E9282ADD740A002D4B26 /* ChannelPreview.swift */; };
+		8FF510D22AE6CD8100E2EC03 /* ExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF510D12AE6CD8100E2EC03 /* ExploreView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,8 +87,9 @@
 		8FB168B42ADA53DF00426906 /* ChannelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelData.swift; sourceTree = "<group>"; };
 		8FB168B62ADA565D00426906 /* ChannelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelView.swift; sourceTree = "<group>"; };
 		8FB168B82ADA5C3B00426906 /* BlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockView.swift; sourceTree = "<group>"; };
+		8FD047FE2AF7324700AFB7BD /* ModalTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModalTest.swift; sourceTree = "<group>"; };
 		8FD7E3EF2ADADF9000A15E16 /* BlockData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockData.swift; sourceTree = "<group>"; };
-		8FD7E3F22ADB6EEC00A15E16 /* BlockPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockPreview.swift; sourceTree = "<group>"; };
+		8FD7E3F22ADB6EEC00A15E16 /* BlockPreviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockPreviews.swift; sourceTree = "<group>"; };
 		8FF0C59E2AD89C3B007D5959 /* Arena.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Arena.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FF0C5A12AD89C3B007D5959 /* ArenaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArenaApp.swift; sourceTree = "<group>"; };
 		8FF0C5A32AD89C3B007D5959 /* ArenaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArenaView.swift; sourceTree = "<group>"; };
@@ -101,6 +105,7 @@
 		8FF0C5D02AD8CA7D007D5959 /* ChannelsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelsView.swift; sourceTree = "<group>"; };
 		8FF0C5D22AD8CBBF007D5959 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8FF1E9282ADD740A002D4B26 /* ChannelPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelPreview.swift; sourceTree = "<group>"; };
+		8FF510D12AE6CD8100E2EC03 /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +113,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8FD811092AF6D6F4001E847F /* ScrollKit in Frameworks */,
 				8FF1E9272ADCA491002D4B26 /* TabBarModule in Frameworks */,
 				8F2844192AE1FC4C001EE26D /* DebouncedOnChange in Frameworks */,
 				8F6B06232AE4A9EF00EEDE9C /* Giffy in Frameworks */,
@@ -157,7 +163,7 @@
 			children = (
 				8F6B061F2AE4A60F00EEDE9C /* ProfilePic.swift */,
 				8F6B06242AE4B0A100EEDE9C /* ImagePreview.swift */,
-				8FD7E3F22ADB6EEC00A15E16 /* BlockPreview.swift */,
+				8FD7E3F22ADB6EEC00A15E16 /* BlockPreviews.swift */,
 				8F6B06332AE5B87400EEDE9C /* ChannelCard.swift */,
 				8FF1E9282ADD740A002D4B26 /* ChannelPreview.swift */,
 				8F6B062C2AE5A80D00EEDE9C /* ChannelContentPreview.swift */,
@@ -213,7 +219,7 @@
 			isa = PBXGroup;
 			children = (
 				8FF0C5D22AD8CBBF007D5959 /* Info.plist */,
-				8FF0C5CF2AD8CA6F007D5959 /* Screens */,
+				8FF0C5CF2AD8CA6F007D5959 /* Views */,
 				8FD7E3F12ADB6ED200A15E16 /* Components */,
 				8F6B06322AE5AE5000EEDE9C /* Modifiers */,
 				8FD7E3F42ADB6F0A00A15E16 /* Models */,
@@ -222,6 +228,7 @@
 				8FF0C5A32AD89C3B007D5959 /* ArenaView.swift */,
 				8FF0C5A52AD89C3D007D5959 /* Assets.xcassets */,
 				8FF0C5A72AD89C3D007D5959 /* Preview Content */,
+				8FD047FE2AF7324700AFB7BD /* ModalTest.swift */,
 			);
 			path = Arena;
 			sourceTree = "<group>";
@@ -251,7 +258,7 @@
 			path = ArenaUITests;
 			sourceTree = "<group>";
 		};
-		8FF0C5CF2AD8CA6F007D5959 /* Screens */ = {
+		8FF0C5CF2AD8CA6F007D5959 /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				8FF0C5D02AD8CA7D007D5959 /* ChannelsView.swift */,
@@ -261,8 +268,9 @@
 				8F6B061B2AE41C4000EEDE9C /* SingleBlockView.swift */,
 				8F6B061D2AE4281800EEDE9C /* DataView.swift */,
 				8F7A03E62AE5EC9F005C4096 /* ProfileView.swift */,
+				8FF510D12AE6CD8100E2EC03 /* ExploreView.swift */,
 			);
-			path = Screens;
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -289,6 +297,7 @@
 				8F6B06222AE4A9EF00EEDE9C /* Giffy */,
 				8F6B06272AE566DE00EEDE9C /* VTabView */,
 				8F6B062A2AE5A33C00EEDE9C /* CachedAsyncImage */,
+				8FD811082AF6D6F4001E847F /* ScrollKit */,
 			);
 			productName = Arena;
 			productReference = 8FF0C59E2AD89C3B007D5959 /* Arena.app */;
@@ -370,6 +379,7 @@
 				8F6B06212AE4A9EF00EEDE9C /* XCRemoteSwiftPackageReference "giffy" */,
 				8F6B06262AE566DE00EEDE9C /* XCRemoteSwiftPackageReference "swiftui-vertical-tab-view" */,
 				8F6B06292AE5A33C00EEDE9C /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */,
+				8FD811072AF6D6F4001E847F /* XCRemoteSwiftPackageReference "ScrollKit" */,
 			);
 			productRefGroup = 8FF0C59F2AD89C3B007D5959 /* Products */;
 			projectDirPath = "";
@@ -414,7 +424,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				8FF0C5A42AD89C3B007D5959 /* ArenaView.swift in Sources */,
+				8FF510D22AE6CD8100E2EC03 /* ExploreView.swift in Sources */,
 				8F2844122AE1CF1B001EE26D /* SearchView.swift in Sources */,
+				8FD047FF2AF7324700AFB7BD /* ModalTest.swift in Sources */,
 				8F6B061C2AE41C4000EEDE9C /* SingleBlockView.swift in Sources */,
 				8F2844162AE1D502001EE26D /* SearchData.swift in Sources */,
 				8F6B06252AE4B0A100EEDE9C /* ImagePreview.swift in Sources */,
@@ -423,7 +435,7 @@
 				8F7A03E72AE5EC9F005C4096 /* ProfileView.swift in Sources */,
 				8FB168B52ADA53DF00426906 /* ChannelData.swift in Sources */,
 				8F7A03E92AE6C5A0005C4096 /* OnBecomingVisible.swift in Sources */,
-				8FD7E3F32ADB6EEC00A15E16 /* BlockPreview.swift in Sources */,
+				8FD7E3F32ADB6EEC00A15E16 /* BlockPreviews.swift in Sources */,
 				8FD7E3F02ADADF9000A15E16 /* BlockData.swift in Sources */,
 				8F6B062D2AE5A80D00EEDE9C /* ChannelContentPreview.swift in Sources */,
 				8FF0C5CC2AD8C09F007D5959 /* ChannelsData.swift in Sources */,
@@ -610,7 +622,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -640,7 +652,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -808,6 +820,14 @@
 				minimumVersion = 2.1.1;
 			};
 		};
+		8FD811072AF6D6F4001E847F /* XCRemoteSwiftPackageReference "ScrollKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/danielsaidi/ScrollKit";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.3.0;
+			};
+		};
 		8FF1E9222ADBA94D002D4B26 /* XCRemoteSwiftPackageReference "swiftui-navigation-transitions" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/davdroman/swiftui-navigation-transitions";
@@ -851,6 +871,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8F6B06292AE5A33C00EEDE9C /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */;
 			productName = CachedAsyncImage;
+		};
+		8FD811082AF6D6F4001E847F /* ScrollKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8FD811072AF6D6F4001E847F /* XCRemoteSwiftPackageReference "ScrollKit" */;
+			productName = ScrollKit;
 		};
 		8FF1E9232ADBA94D002D4B26 /* NavigationTransitions */ = {
 			isa = XCSwiftPackageProductDependency;

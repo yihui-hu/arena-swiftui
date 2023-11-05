@@ -3,6 +3,9 @@
 //  Arena
 //
 //  Created by Yihui Hu on 23/10/23.
+//
+//  Custom view modifier to determine if a view is visible in the viewport (not just drawn offscreen), to be used
+//  mainly in conjunction with non-lazy Views
 //  https://stackoverflow.com/questions/60595900/how-to-check-if-a-view-is-displayed-on-the-screen-swift-5-and-swiftui
 //
 

@@ -15,6 +15,10 @@ struct ArenaApp: App {
             ModalStackView {
                 ArenaView()
             }
+            .contentBackgroundColor(Color("background"))
+            .containerBackgroundColor(Color("backdrop"))
+            .contentSaturation(false)
+            .contentScaling(false)
         }
     }
 }

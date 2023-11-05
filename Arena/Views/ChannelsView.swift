@@ -15,13 +15,15 @@ struct ChannelsView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 12) {
+                LazyVStack(spacing: 12) {
                     ForEach(channelsData.channels?.channels ?? [], id: \.self.id) { channel in
                         ChannelCard(channel: channel)
-                        .onBecomingVisible {
-                            if channelsData.channels?.channels.last?.id ?? -1 == channel.id {
-                                if !channelsData.isLoading {
-                                    channelsData.loadMore()
+                        .onAppear {
+                            if let channels = channelsData.channels?.channels, channels.count >= 3 {
+                                if channels[channels.count - 3].id == channel.id {
+                                    if !channelsData.isLoading {
+                                        channelsData.loadMore()
+                                    }
                                 }
                             }
                         }
@@ -45,14 +47,8 @@ struct ChannelsView: View {
                         .fontDesign(.rounded)
                         .fontWeight(.semibold)
                 }
-//                ToolbarItem(placement: .topBarTrailing) {
-//                    NavigationLink(destination: SearchView()) {
-//                        Image(systemName: "magnifyingglass")
-//                            .imageScale(.medium)
-//                    }
-//                }
             }
-            .toolbarBackground(.thinMaterial, for: .navigationBar)
+            .toolbarBackground(Color("background"), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .background(Color("background"))
         }

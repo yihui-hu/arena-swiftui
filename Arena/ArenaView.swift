@@ -23,7 +23,7 @@ struct ArenaView: View {
                     TabItem(iconName: "magnifyingglass", tabIndex: 1, item: $item)
                 }
             
-            SearchView()
+            ExploreView()
                 .tabItem(2) {
                     TabItem(iconName: "safari.fill", tabIndex: 2, item: $item)
                 }

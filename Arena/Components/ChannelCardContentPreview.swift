@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// Used in ChannelsView, to display content in each ChannelCard
 struct ChannelCardContentPreview: View {
     let block: Block
     

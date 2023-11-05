@@ -64,16 +64,15 @@ final class SearchData: ObservableObject {
         self.isLoading = true
         errorMessage = nil
         
-        let option: String
-        switch selection {
+        let option: String = switch selection {
         case "Channels":
-            option = "channels"
+            "channels"
         case "Blocks":
-            option = "blocks"
+            "blocks"
         case "Users":
-            option = "users"
+            "users"
         default:
-            option = "channels"
+            "channels"
         }
         
         guard let url = URL(string: "https://api.are.na/v2/search/\(option)?q=\(searchTerm)&page=\(currentPage)&per=20") else {

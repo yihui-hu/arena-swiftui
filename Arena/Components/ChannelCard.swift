@@ -50,24 +50,26 @@ struct ChannelCard: View {
                 .lineLimit(1)
                 
                 if let contents = channel.contents, !contents.isEmpty {
-                    HorizontalImageScroll(contents: Array(contents.prefix(6)))
+                    let channelContents = Array(contents.prefix(6)) // TODO: Load more for larger screen sizes?
+                    HorizontalImageScroll(contents: channelContents)
                 }
             }
             .fontDesign(.rounded)
             .padding(16)
             .background(Color("surface"))
             .cornerRadius(32)
-            .opacity(isFaded ? 1 : 0)
-            .onAppear {
-                withAnimation(.easeIn(duration: 0.1)) {
-                    isFaded = true
-                }
-            }
-            .onDisappear {
-                withAnimation(.easeOut(duration: 0.1)) {
-                    isFaded = false
-                }
-            }
+            // TODO: Fix animation when switching between navigation views
+//            .opacity(isFaded ? 1 : 0)
+//            .onAppear {
+//                withAnimation(.easeIn(duration: 0.1)) {
+//                    isFaded = true
+//                }
+//            }
+//            .onDisappear {
+//                withAnimation(.easeOut(duration: 0.1)) {
+//                    isFaded = false
+//                }
+//            }
         }
     }
 }
