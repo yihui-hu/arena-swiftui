@@ -8,15 +8,21 @@
 import SwiftUI
 import VTabView
 import Modals
+import BetterSafariView
 
 struct BlockView: View {
     let blockData: Block
     let channelSlug: String
     @ObservedObject private var channelData: ChannelData
-    @State private var currentIndex: Int
+    @StateObject private var connectionsViewModel = BlockConnectionsData()
     @Environment(\.dismiss) private var dismiss
     
-    @State var isInfoModalPresented: Bool = false
+    @State private var currentIndex: Int
+    @State private var presentingSafariView = false
+    @State private var isInfoModalPresented: Bool = false
+    @State private var isLoadingBlockConnections: Bool = false
+    @State private var shouldNavigateToChannelView = false
+    @State private var selectedConnectionSlug: String?
     
     init(blockData: Block, channelData: ChannelData, channelSlug: String) {
         self.blockData = blockData
@@ -27,7 +33,7 @@ struct BlockView: View {
     
     var body: some View {
         ZStack {
-            VTabView(selection: $currentIndex) {
+            TabView(selection: $currentIndex) {
                 ForEach(channelData.contents ?? [], id: \.self.id) { block in
                     let screenHeight = UIScreen.main.bounds.size.height
                     let maxPreviewHeight = screenHeight * 0.6
@@ -35,6 +41,7 @@ struct BlockView: View {
                     // Display the block content
                     HStack {
                         BlockPreview(blockData: block, fontSize: 16)
+                            .padding(.horizontal, 6)
                             .frame(maxHeight: maxPreviewHeight)
                     }
                     .foregroundColor(Color("text-primary"))
@@ -50,27 +57,6 @@ struct BlockView: View {
                     }
                 }
             }
-//            .modal(isPresented: $isInfoModalPresented, size: .small, options: [.prefersDragHandle]) {
-//                VStack(spacing: 4) {
-//                    // TODO: Handle channels (!)
-//                    let title = channelData.contents?[currentIndex].title ?? ""
-//                    let description = channelData.contents?[currentIndex].description ?? ""
-//                    let createdAt = channelData.contents?[currentIndex].createdAt ?? ""
-//                    let connectedBy = channelData.contents?[currentIndex].connectedByUsername ?? ""
-//                    
-//                    Text("\(title != "" ? title : "No title")")
-//                        .frame(maxWidth: .infinity, alignment: .topLeading)
-//                    Text("\(description != "" ? description : "No description")")
-//                        .frame(maxWidth: .infinity, alignment: .topLeading)
-//                    Text("\(createdAt != "" ? createdAt : "Unknown creation date")")
-//                        .frame(maxWidth: .infinity, alignment: .topLeading)
-//                    Text("Connected by \(connectedBy != "" ? connectedBy : "unknown")")
-//                        .frame(maxWidth: .infinity, alignment: .topLeading)
-//                }
-//                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-//                .padding(.horizontal, 20)
-//                .padding(.top, 64)
-//            }
             .modal(isPresented: $isInfoModalPresented, size: .small, options: [.prefersDragHandle, .disableContentDragging]) {
                 ScrollView {
                     VStack(spacing: 20) {
@@ -82,7 +68,7 @@ struct BlockView: View {
                         let updatedAt = currentBlock?.updatedAt ?? ""
                         let connectedBy = currentBlock?.connectedByUsername ?? ""
                         let source = currentBlock?.source?.title ?? currentBlock?.source?.url ?? ""
-                        let connections = currentBlock?.connections ?? []
+                        let sourceURL = currentBlock?.source?.url ?? "https://are.na/block/\(currentBlock?.id ?? 435)" // TODO: Have an error block, lol
                         
                         VStack(spacing: 4) {
                             Text("\(title != "" ? title : "No title")")
@@ -104,7 +90,7 @@ struct BlockView: View {
                                     .fontDesign(.rounded)
                                     .fontWeight(.semibold)
                                 Spacer()
-                                Text("\(createdAt != "" ? createdAt : "unknown")")
+                                Text("\(createdAt != "" ? relativeTime(createdAt) : "unknown")")
                                     .foregroundStyle(Color("surface-text-secondary"))
                             }
                             Divider()
@@ -114,7 +100,7 @@ struct BlockView: View {
                                     .fontDesign(.rounded)
                                     .fontWeight(.semibold)
                                 Spacer()
-                                Text("\(updatedAt != "" ? updatedAt : "unknown")")
+                                Text("\(updatedAt != "" ? relativeTime(updatedAt) : "unknown")")
                                     .foregroundStyle(Color("surface-text-secondary"))
                             }
                             Divider()
@@ -129,27 +115,46 @@ struct BlockView: View {
                             }
                             Divider()
                             
-                            HStack(spacing: 20) {
-                                Text("Source")
-                                    .fontDesign(.rounded)
-                                    .fontWeight(.semibold)
-                                Spacer()
-                                Text("\(source != "" ? source : "unknown")")
-                                    .lineLimit(1)
-                                    .fontWeight(.medium)
+                            if source != "" {
+                                HStack(spacing: 20) {
+                                    Text("Source")
+                                        .fontDesign(.rounded)
+                                        .fontWeight(.semibold)
+                                    Spacer()
+                                    
+                                    Button(action: {
+                                        self.presentingSafariView = true
+                                    }) {
+                                        Text("\(source)")
+                                            .lineLimit(1)
+                                            .fontWeight(.medium)
+                                    }
+                                    .safariView(isPresented: $presentingSafariView) {
+                                        SafariView(
+                                            url: URL(string: sourceURL)!,
+                                            configuration: SafariView.Configuration(
+                                                entersReaderIfAvailable: false,
+                                                barCollapsingEnabled: true
+                                            )
+                                        )
+                                        .preferredBarAccentColor(.clear)
+                                        .preferredControlAccentColor(.accentColor)
+                                        .dismissButtonStyle(.done)
+                                    }
+                                }
+                                Divider()
                             }
-                            Divider()
                             
                             // TODO: Handle different block types (dimensions for images, fileSize for attachments, etc.)
-    //                        HStack(spacing: 20) {
-    //                            Text("Dimensions")
-    //                                .fontDesign(.rounded)
-    //                                .fontWeight(.semibold)
-    //                            Spacer()
-    //                            Text("656 x 454")
-    //                                .foregroundStyle(Color("surface-text-secondary"))
-    //                        }
-    //                        Divider()
+                            //                        HStack(spacing: 20) {
+                            //                            Text("Dimensions")
+                            //                                .fontDesign(.rounded)
+                            //                                .fontWeight(.semibold)
+                            //                            Spacer()
+                            //                            Text("656 x 454")
+                            //                                .foregroundStyle(Color("surface-text-secondary"))
+                            //                        }
+                            //                        Divider()
                         }
                         .font(.system(size: 16))
                         
@@ -191,7 +196,7 @@ struct BlockView: View {
                             HStack {
                                 Spacer()
                                 Button(action: { print("Comments") }) {
-                                    Text("Connections (200)")
+                                    Text("Connections (\(connectionsViewModel.connections.count))")
                                         .frame(maxWidth: .infinity)
                                 }
                                 Spacer()
@@ -214,29 +219,42 @@ struct BlockView: View {
                                     .frame(maxWidth: .infinity, maxHeight: 1)
                             }
                             
-                            VStack(spacing: 12) {
-                                ForEach(connections, id: \.self.id) { connection in
-                                    VStack(spacing: 4) {
-                                        Text("\(connection.title)")
-                                            .font(.system(size: 16))
-                                            .fontDesign(.rounded)
-                                            .fontWeight(.medium)
-                                            .frame(maxWidth: .infinity, alignment: .leading)
-//                                        Text("\(connection.userId) • \(connection.length) items") // TODO: Fetch username from userId?
-//                                            .font(.system(size: 14))
-//                                            .foregroundStyle(Color("surface-text-secondary"))
-//                                            .frame(maxWidth: .infinity, alignment: .leading)
+                            if isLoadingBlockConnections {
+                                ProgressView("Loading...")
+                                .frame(maxWidth: .infinity, maxHeight: .infinity) }
+                            else {
+                                VStack(spacing: 12) {
+                                    ForEach(connectionsViewModel.connections, id: \.id) { connection in
+                                        Button(action: {
+                                            isInfoModalPresented = false // TODO: Figure out why this isn't working
+                                            selectedConnectionSlug = connection.slug
+                                            shouldNavigateToChannelView = true
+                                        }) {
+                                            VStack(spacing: 4) {
+                                                Text("\(connection.title)")
+                                                    .font(.system(size: 16))
+                                                    .lineLimit(1)
+                                                    .fontDesign(.rounded)
+                                                    .fontWeight(.medium)
+                                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                                Text("\(connection.userId) • \(connection.length) items") // TODO: Get user data, replace userId lol
+                                                    .font(.system(size: 14))
+                                                    .lineLimit(1)
+                                                    .foregroundStyle(Color("surface-text-secondary"))
+                                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                            }
+                                            .padding(12)
+                                            .frame(maxWidth: .infinity)
+                                            .cornerRadius(12)
+                                            .overlay(
+                                                RoundedRectangle(cornerRadius: 12)
+                                                    .stroke(Color("surface"), lineWidth: 2)
+                                            )
+                                        }
                                     }
-                                    .padding(12)
-                                    .frame(maxWidth: .infinity)
-                                    .cornerRadius(12)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 12)
-                                            .stroke(Color("surface"), lineWidth: 2)
-                                    )
                                 }
+                                .padding(.top, 12)
                             }
-                            .padding(.top, 12)
                         }
                         .padding(.top, 16)
                     }
@@ -245,6 +263,11 @@ struct BlockView: View {
                     .padding(.top, 64)
                 }
             }
+            .padding(.horizontal, 10)
+            // TODO: Use LongPressGesture to connect, tapGesture to open source of block!
+            .highPriorityGesture(TapGesture().onEnded {
+                print("Tap on VStack.")
+            })
             .padding(.bottom, 50)
             .background(Color("background"))
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
@@ -278,7 +301,14 @@ struct BlockView: View {
                 }
                 
                 Button(action: {
-                    isInfoModalPresented = true
+                    // TODO: FIX ASYNC LOADING !!! I want optimistic loading
+                    if let blockId = channelData.contents?[currentIndex].id {
+                        isLoadingBlockConnections = true
+                        connectionsViewModel.fetchBlockConnections(blockId: blockId) { success in
+                            isLoadingBlockConnections = false
+                            isInfoModalPresented = true
+                        }
+                    }
                 }) {
                     Image(systemName: "info.circle")
                         .frame(width: 36, height: 36)
@@ -292,6 +322,40 @@ struct BlockView: View {
             .padding(.trailing, 20)
             .foregroundStyle(Color("surface-text-secondary"))
         }
+        
+        NavigationLink("", destination: ChannelView(channelSlug: selectedConnectionSlug ?? ""), isActive: $shouldNavigateToChannelView)
+                .opacity(0) // Hide the link
     }
 }
 
+class BlockConnectionsData: ObservableObject {
+    @Published var connections: [BlockConnection] = []
+    @State private var isLoading: Bool = false
+    
+    func fetchBlockConnections(blockId: Int, completion: @escaping (Bool) -> Void) {
+        isLoading = true
+        
+        // Perform the API request and update the connections property
+        let apiURL = URL(string: "http://api.are.na/v2/blocks/\(blockId)")!
+        URLSession.shared.dataTask(with: apiURL) { data, _, error in
+            if let data = data {
+                do {
+                    let blockConnections = try JSONDecoder().decode(BlockConnections.self, from: data)
+                    DispatchQueue.main.async {
+                        self.connections = blockConnections.connections
+                        completion(true)
+                        self.isLoading = false
+                    }
+                } catch {
+                    print("Error decoding connections data: \(error)")
+                    completion(false)
+                    self.isLoading = false
+                }
+            } else if let error = error {
+                print("Error fetching connections: \(error)")
+                completion(false)
+                self.isLoading = false
+            }
+        }.resume()
+    }
+}

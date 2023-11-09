@@ -28,21 +28,21 @@ struct ArenaView: View {
                     TabItem(iconName: "safari.fill", tabIndex: 2, item: $item)
                 }
             
-            DataView()
-                .tabItem(3) {
-                    TabItem(iconName: "clock.fill", tabIndex: 3, item: $item)
-                }
+//            DataView()
+//                .tabItem(3) {
+//                    TabItem(iconName: "clock.fill", tabIndex: 3, item: $item)
+//                }
             
             ProfileView()
-                .tabItem(4) {
-                    TabItem(iconName: "person.fill", tabIndex: 4, item: $item)
+                .tabItem(3) {
+                    TabItem(iconName: "person.fill", tabIndex: 3, item: $item)
                 }
         }
-        .tabBarFill(.regularMaterial)
+        .tabBarFill(Color("background"))
         .tabBarMargins(.bottom, 8)
         .tabBarMargins(.top, 16)
         .tabBarMargins(.horizontal, 20)
-        .tabBarShadow(color: Color("surface-text-secondary"), radius: 1, y: 0)
+//        .tabBarShadow(color: Color("surface-text-secondary"), radius: 1, y: 0)
     }
 }
 

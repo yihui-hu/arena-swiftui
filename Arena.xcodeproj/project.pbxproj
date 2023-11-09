@@ -33,7 +33,6 @@
 		8FD047FF2AF7324700AFB7BD /* ModalTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD047FE2AF7324700AFB7BD /* ModalTest.swift */; };
 		8FD7E3F02ADADF9000A15E16 /* BlockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD7E3EF2ADADF9000A15E16 /* BlockData.swift */; };
 		8FD7E3F32ADB6EEC00A15E16 /* BlockPreviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD7E3F22ADB6EEC00A15E16 /* BlockPreviews.swift */; };
-		8FD811092AF6D6F4001E847F /* ScrollKit in Frameworks */ = {isa = PBXBuildFile; productRef = 8FD811082AF6D6F4001E847F /* ScrollKit */; };
 		8FF0C5A22AD89C3B007D5959 /* ArenaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF0C5A12AD89C3B007D5959 /* ArenaApp.swift */; };
 		8FF0C5A42AD89C3B007D5959 /* ArenaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF0C5A32AD89C3B007D5959 /* ArenaView.swift */; };
 		8FF0C5A62AD89C3D007D5959 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8FF0C5A52AD89C3D007D5959 /* Assets.xcassets */; };
@@ -44,10 +43,11 @@
 		8FF0C5CC2AD8C09F007D5959 /* ChannelsData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF0C5CB2AD8C09F007D5959 /* ChannelsData.swift */; };
 		8FF0C5CE2AD8C40E007D5959 /* ArenaModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF0C5CD2AD8C40E007D5959 /* ArenaModels.swift */; };
 		8FF0C5D12AD8CA7D007D5959 /* ChannelsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF0C5D02AD8CA7D007D5959 /* ChannelsView.swift */; };
-		8FF1E9242ADBA94D002D4B26 /* NavigationTransitions in Frameworks */ = {isa = PBXBuildFile; productRef = 8FF1E9232ADBA94D002D4B26 /* NavigationTransitions */; };
 		8FF1E9272ADCA491002D4B26 /* TabBarModule in Frameworks */ = {isa = PBXBuildFile; productRef = 8FF1E9262ADCA491002D4B26 /* TabBarModule */; };
 		8FF1E9292ADD740A002D4B26 /* ChannelPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF1E9282ADD740A002D4B26 /* ChannelPreview.swift */; };
 		8FF510D22AE6CD8100E2EC03 /* ExploreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF510D12AE6CD8100E2EC03 /* ExploreView.swift */; };
+		8FF6EFC02AF8921300A58631 /* TimeUtils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF6EFBF2AF8921200A58631 /* TimeUtils.swift */; };
+		8FF6EFC32AF8953E00A58631 /* BetterSafariView in Frameworks */ = {isa = PBXBuildFile; productRef = 8FF6EFC22AF8953E00A58631 /* BetterSafariView */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -106,6 +106,7 @@
 		8FF0C5D22AD8CBBF007D5959 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8FF1E9282ADD740A002D4B26 /* ChannelPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelPreview.swift; sourceTree = "<group>"; };
 		8FF510D12AE6CD8100E2EC03 /* ExploreView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExploreView.swift; sourceTree = "<group>"; };
+		8FF6EFBF2AF8921200A58631 /* TimeUtils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeUtils.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,14 +114,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8FD811092AF6D6F4001E847F /* ScrollKit in Frameworks */,
 				8FF1E9272ADCA491002D4B26 /* TabBarModule in Frameworks */,
 				8F2844192AE1FC4C001EE26D /* DebouncedOnChange in Frameworks */,
 				8F6B06232AE4A9EF00EEDE9C /* Giffy in Frameworks */,
 				8F2844102AE1CF10001EE26D /* Modals in Frameworks */,
 				8F6B062B2AE5A33C00EEDE9C /* CachedAsyncImage in Frameworks */,
+				8FF6EFC32AF8953E00A58631 /* BetterSafariView in Frameworks */,
 				8F6B06282AE566DE00EEDE9C /* VTabView in Frameworks */,
-				8FF1E9242ADBA94D002D4B26 /* NavigationTransitions in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -224,6 +224,7 @@
 				8F6B06322AE5AE5000EEDE9C /* Modifiers */,
 				8FD7E3F42ADB6F0A00A15E16 /* Models */,
 				8FD7E3F52ADB6FC300A15E16 /* Data */,
+				8FF6EFBE2AF891FE00A58631 /* Utils */,
 				8FF0C5A12AD89C3B007D5959 /* ArenaApp.swift */,
 				8FF0C5A32AD89C3B007D5959 /* ArenaView.swift */,
 				8FF0C5A52AD89C3D007D5959 /* Assets.xcassets */,
@@ -273,6 +274,14 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		8FF6EFBE2AF891FE00A58631 /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				8FF6EFBF2AF8921200A58631 /* TimeUtils.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -290,14 +299,13 @@
 			);
 			name = Arena;
 			packageProductDependencies = (
-				8FF1E9232ADBA94D002D4B26 /* NavigationTransitions */,
 				8FF1E9262ADCA491002D4B26 /* TabBarModule */,
 				8F28440F2AE1CF10001EE26D /* Modals */,
 				8F2844182AE1FC4C001EE26D /* DebouncedOnChange */,
 				8F6B06222AE4A9EF00EEDE9C /* Giffy */,
 				8F6B06272AE566DE00EEDE9C /* VTabView */,
 				8F6B062A2AE5A33C00EEDE9C /* CachedAsyncImage */,
-				8FD811082AF6D6F4001E847F /* ScrollKit */,
+				8FF6EFC22AF8953E00A58631 /* BetterSafariView */,
 			);
 			productName = Arena;
 			productReference = 8FF0C59E2AD89C3B007D5959 /* Arena.app */;
@@ -372,14 +380,13 @@
 			);
 			mainGroup = 8FF0C5952AD89C3B007D5959;
 			packageReferences = (
-				8FF1E9222ADBA94D002D4B26 /* XCRemoteSwiftPackageReference "swiftui-navigation-transitions" */,
 				8FF1E9252ADCA490002D4B26 /* XCRemoteSwiftPackageReference "swiftui-tab-bar" */,
 				8F28440E2AE1CF10001EE26D /* XCRemoteSwiftPackageReference "Modals" */,
 				8F2844172AE1FC4C001EE26D /* XCRemoteSwiftPackageReference "DebouncedOnChange" */,
 				8F6B06212AE4A9EF00EEDE9C /* XCRemoteSwiftPackageReference "giffy" */,
 				8F6B06262AE566DE00EEDE9C /* XCRemoteSwiftPackageReference "swiftui-vertical-tab-view" */,
 				8F6B06292AE5A33C00EEDE9C /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */,
-				8FD811072AF6D6F4001E847F /* XCRemoteSwiftPackageReference "ScrollKit" */,
+				8FF6EFC12AF8953E00A58631 /* XCRemoteSwiftPackageReference "BetterSafariView" */,
 			);
 			productRefGroup = 8FF0C59F2AD89C3B007D5959 /* Products */;
 			projectDirPath = "";
@@ -430,6 +437,7 @@
 				8F6B061C2AE41C4000EEDE9C /* SingleBlockView.swift in Sources */,
 				8F2844162AE1D502001EE26D /* SearchData.swift in Sources */,
 				8F6B06252AE4B0A100EEDE9C /* ImagePreview.swift in Sources */,
+				8FF6EFC02AF8921300A58631 /* TimeUtils.swift in Sources */,
 				8F6B06342AE5B87400EEDE9C /* ChannelCard.swift in Sources */,
 				8F6B062F2AE5ABE800EEDE9C /* LoadingSpinner.swift in Sources */,
 				8F7A03E72AE5EC9F005C4096 /* ProfileView.swift in Sources */,
@@ -820,28 +828,20 @@
 				minimumVersion = 2.1.1;
 			};
 		};
-		8FD811072AF6D6F4001E847F /* XCRemoteSwiftPackageReference "ScrollKit" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/danielsaidi/ScrollKit";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.3.0;
-			};
-		};
-		8FF1E9222ADBA94D002D4B26 /* XCRemoteSwiftPackageReference "swiftui-navigation-transitions" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/davdroman/swiftui-navigation-transitions";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.13.1;
-			};
-		};
 		8FF1E9252ADCA490002D4B26 /* XCRemoteSwiftPackageReference "swiftui-tab-bar" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/zijievv/swiftui-tab-bar#visibility-with-animation-and-transition";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 1.0.0;
+			};
+		};
+		8FF6EFC12AF8953E00A58631 /* XCRemoteSwiftPackageReference "BetterSafariView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/stleamist/BetterSafariView";
+			requirement = {
+				branch = main;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -872,20 +872,15 @@
 			package = 8F6B06292AE5A33C00EEDE9C /* XCRemoteSwiftPackageReference "swiftui-cached-async-image" */;
 			productName = CachedAsyncImage;
 		};
-		8FD811082AF6D6F4001E847F /* ScrollKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8FD811072AF6D6F4001E847F /* XCRemoteSwiftPackageReference "ScrollKit" */;
-			productName = ScrollKit;
-		};
-		8FF1E9232ADBA94D002D4B26 /* NavigationTransitions */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8FF1E9222ADBA94D002D4B26 /* XCRemoteSwiftPackageReference "swiftui-navigation-transitions" */;
-			productName = NavigationTransitions;
-		};
 		8FF1E9262ADCA491002D4B26 /* TabBarModule */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 8FF1E9252ADCA490002D4B26 /* XCRemoteSwiftPackageReference "swiftui-tab-bar" */;
 			productName = TabBarModule;
+		};
+		8FF6EFC22AF8953E00A58631 /* BetterSafariView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8FF6EFC12AF8953E00A58631 /* XCRemoteSwiftPackageReference "BetterSafariView" */;
+			productName = BetterSafariView;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

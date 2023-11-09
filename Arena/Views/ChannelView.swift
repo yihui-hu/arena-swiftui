@@ -8,10 +8,16 @@
 import SwiftUI
 import Modals
 
-enum SortOption: String {
+enum SortOption: String, CaseIterable {
     case position = "Position"
     case newest = "Newest First"
     case oldest = "Oldest First"
+}
+
+enum DisplayOption: String, CaseIterable {
+    case grid = "Grid"
+    case feed = "Feed"
+    case table = "Table"
 }
 
 struct ChannelView: View {
@@ -20,7 +26,10 @@ struct ChannelView: View {
     let channelSlug: String
     
     @State private var selection = SortOption.position
-    let sortOptions = [SortOption.position, SortOption.newest, SortOption.oldest]
+    let sortOptions = SortOption.allCases
+    
+    @State private var display = DisplayOption.grid
+    let displayOptions = DisplayOption.allCases
     
     init(channelSlug: String) {
         self.channelSlug = channelSlug
@@ -36,28 +45,64 @@ struct ChannelView: View {
         }
     }
     
+    var displayLabel: Image {
+        switch display {
+        case .grid:
+            return Image(systemName: "square.grid.2x2")
+        case .table:
+            return Image(systemName: "rectangle.grid.1x2")
+        case .feed:
+            return Image(systemName: "square")
+        }
+    }
+    
     var body: some View {
+        // Channel slug is empty, show error state
+//        if channelSlug == "" {
+//
+//        }
+        
         // Setting up grid
         let gridGap: CGFloat = 8
-        let columns: [GridItem] = Array(repeating: .init(.flexible(), spacing: gridGap), count: 2)
-        let gridItemSize = (UIScreen.main.bounds.width - (gridGap * 3)) / 2
+        let columns: [GridItem] = Array(repeating: .init(.flexible(), spacing: gridGap), count: display.rawValue == "Grid" ? 2 : 1)
+        let gridItemSize = display.rawValue == "Grid" ? (UIScreen.main.bounds.width - (gridGap * 3)) / 2 : (UIScreen.main.bounds.width - (gridGap * 3))
         
         ScrollViewReader { proxy in
             ScrollView {
-                ZStack {}.id(0) // Hacky implementation of scroll to top when switching sorting option
+                // Hacky implementation of scroll to top when switching sorting option
+                ZStack {}.id(0)
                 
                 ChannelViewHeader(channelData: channelData)
                 
-                LazyVGrid(columns: columns, spacing: gridGap) {
-                    ForEach(channelData.contents ?? [], id: \.self.id) { block in
-                        NavigationLink(destination: destinationView(for: block, channelData: channelData, channelSlug: channelSlug)) {
-                            ChannelContentPreview(block: block, gridItemSize: gridItemSize)
+                if display.rawValue == "Table" {
+                    LazyVStack(spacing: 8) {
+                        ForEach(channelData.contents ?? [], id: \.self.id) { block in
+                            NavigationLink(destination: destinationView(for: block, channelData: channelData, channelSlug: channelSlug)) {
+                                ChannelContentPreview(block: block, gridItemSize: gridItemSize, display: display.rawValue)
+                            }
+                            .onAppear {
+                                if let channelContent = channelData.contents, channelContent.count >= 8 {
+                                    if channelContent[channelContent.count - 8].id == block.id {
+                                        if !channelData.isContentsLoading {
+                                            channelData.loadMore(channelSlug: self.channelSlug)
+                                        }
+                                    }
+                                }
+                            }
                         }
-                        .onAppear {
-                            if let channelContent = channelData.contents, channelContent.count >= 8 {
-                                if channelContent[channelContent.count - 8].id == block.id {
-                                    if !channelData.isContentsLoading {
-                                        channelData.loadMore(channelSlug: self.channelSlug)
+                    }
+                } else {
+                    LazyVGrid(columns: columns, spacing: gridGap + 16) {
+                        ForEach(channelData.contents ?? [], id: \.self.id) { block in
+                            NavigationLink(destination: destinationView(for: block, channelData: channelData, channelSlug: channelSlug)) {
+                                ChannelContentPreview(block: block, gridItemSize: gridItemSize, display: display.rawValue)
+                            }
+                            .onAppear {
+                                if let channelContent = channelData.contents, channelContent.count >= 8 {
+                                    if channelContent[channelContent.count - 8].id == block.id {
+                                        if !channelData.isContentsLoading {
+                                            channelData.loadMore(channelSlug: self.channelSlug)
+                                        }
                                     }
                                 }
                             }
@@ -71,12 +116,13 @@ struct ChannelView: View {
                     }
                 }
                 
-                // TODO: Make a channelData.finishedLoading state
                 if channelData.currentPage > channelData.totalPages {
                     Text("End of channel")
+                        .padding(.top, 24)
                         .foregroundStyle(Color("surface-text-secondary"))
                 }
             }
+            .contentMargins(.bottom, 88)
             .background(Color("background"))
             .contentMargins(gridGap)
             .contentMargins(.leading, 0, for: .scrollIndicators)
@@ -89,7 +135,6 @@ struct ChannelView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button(action: {
-                        print("Dismissing")
                         dismiss()
                     }) {
                         Image(systemName: "chevron.backward")
@@ -98,16 +143,23 @@ struct ChannelView: View {
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack(spacing: 4) {
-                        Button(action: {
-                            print("Changing display mode")
-                        }) {
-                            Image(systemName: "square.grid.2x2")
+                        Menu {
+                            Picker("Select a display mode", selection: $display) {
+                                ForEach(displayOptions, id: \.self) {
+                                    Text($0.rawValue)
+                                }
+                            }
+                        } label: {
+                            displayLabel
                         }
                         
-                        
-                        Button(action: {
-                            print("Sorting order")
-                        }) {
+                        Menu {
+                            Picker("Select a sort order", selection: $selection) {
+                                ForEach(sortOptions, id: \.self) {
+                                    Text($0.rawValue)
+                                }
+                            }
+                        } label: {
                             Image(systemName: "arrow.up.arrow.down")
                         }
                     }
@@ -123,6 +175,13 @@ struct ChannelView: View {
                     }
                     channelData.selection = newSelection
                     channelData.refresh(channelSlug: self.channelSlug, selection: newSelection)
+                }
+            }
+            .onChange(of: display, initial: true) { oldDisplay, newDisplay in
+                if oldDisplay != newDisplay {
+                    withAnimation {
+                        proxy.scrollTo(0)
+                    }
                 }
             }
         }
@@ -264,8 +323,8 @@ struct ChannelViewHeader: View {
 #Preview {
     ModalStackView {
         NavigationView {
-            // ChannelView(channelSlug: "hi-christina-will-you-go-out-with-me")
-            ChannelView(channelSlug: "posterikas")
+            ChannelView(channelSlug: "hi-christina-will-you-go-out-with-me")
+            // ChannelView(channelSlug: "posterikas")
             // ChannelView(channelSlug: "competitive-design-website-repo")
             // ChannelView(channelSlug: "christina-bgfz4hkltss")
             // ChannelView(channelSlug: "arena-swift-models-test")

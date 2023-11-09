@@ -298,7 +298,7 @@ final class Block: Codable, ObservableObject, Equatable {
     let attachment: ArenaAttachment?
     let metadata: Metadata?
     let baseClass: String
-    let contentClass: String
+    let contentClass: String // describes type of block
     let user: User // original user who added block to Are.na
     let slug: String? // block itself might be a channel, so this is here for that
     let selected: Bool?
@@ -363,8 +363,13 @@ final class Block: Codable, ObservableObject, Equatable {
     }
 }
 
+// MARK: - BlockConnections
+final class BlockConnections: Codable {
+    let connections: [BlockConnection]
+}
+
 // MARK: - BlockConnection
-final class BlockConnection: Codable {
+final class BlockConnection: Identifiable, Codable {
     let id: Int
     let title: String
     let updatedAt, createdAt: String // describes when block was updated and created

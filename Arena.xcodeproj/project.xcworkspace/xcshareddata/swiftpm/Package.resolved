@@ -1,6 +1,15 @@
 {
   "pins" : [
     {
+      "identity" : "bettersafariview",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/stleamist/BetterSafariView",
+      "state" : {
+        "branch" : "main",
+        "revision" : "884533749e55949b2566030948c6fdbe2873ed0c"
+      }
+    },
+    {
       "identity" : "debouncedonchange",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/Tunous/DebouncedOnChange.git",
@@ -37,15 +46,6 @@
       }
     },
     {
-      "identity" : "scrollkit",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/danielsaidi/ScrollKit",
-      "state" : {
-        "revision" : "cbb941a2009f92f221c310156fd8be65845be79d",
-        "version" : "0.3.0"
-      }
-    },
-    {
       "identity" : "swift-collections",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-collections",
@@ -70,24 +70,6 @@
       "state" : {
         "revision" : "467a3d17479887943ab917a379e62bbaff60ac8a",
         "version" : "2.1.1"
-      }
-    },
-    {
-      "identity" : "swiftui-introspect",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/siteline/swiftui-introspect",
-      "state" : {
-        "revision" : "3ced72fccb284235c266c1e8a32f1bf93129fc74",
-        "version" : "1.1.0"
-      }
-    },
-    {
-      "identity" : "swiftui-navigation-transitions",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/davdroman/swiftui-navigation-transitions",
-      "state" : {
-        "revision" : "4a1397f6402ec0f14173ff51855ff307e5e08ac4",
-        "version" : "0.13.1"
       }
     },
     {

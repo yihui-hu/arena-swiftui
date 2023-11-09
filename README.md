@@ -75,3 +75,4 @@ Most of the data fetching logic can be found in the Data folder, with "data fetc
 - [Dismiss keyboard on scroll](https://www.hackingwithswift.com/quick-start/swiftui/how-to-dismiss-the-keyboard-when-the-user-scrolls)
 - [Supporting different view size (iPad, iPhone, split screen, etc.)](https://stackoverflow.com/questions/57652242/how-to-detect-whether-targetenvironment-is-ipados-in-swiftui)
 - [Perform action when view is within viewport, not naively using `.onAppear`](https://stackoverflow.com/questions/60595900/how-to-check-if-a-view-is-displayed-on-the-screen-swift-5-and-swiftui)
+- [Vertically center content in ScrollView](https://stackoverflow.com/questions/58122998/swiftui-vertical-centering-content-inside-scrollview)

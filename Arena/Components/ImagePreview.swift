@@ -11,6 +11,7 @@ import CachedAsyncImage
 
 struct ImagePreview: View {
     let imageURL: String
+    let isChannelCard: Bool?
     
     var body: some View {
         let url = URL(string: imageURL)
@@ -24,7 +25,12 @@ struct ImagePreview: View {
                 case .error:
                     ImageError()
                 case .success(let image):
-                    image
+                    if isChannelCard != nil, isChannelCard == true {
+                        image
+                            .aspectRatio(contentMode: .fit)
+                    } else {
+                        image
+                    }
                 }
             }
             .frame(alignment: .center)
@@ -48,6 +54,7 @@ struct ImagePreview: View {
     }
 }
 
+// TODO: Change to shimmer
 struct ImageLoading: View {
     var body: some View {
         ProgressView()

@@ -15,18 +15,22 @@ struct ChannelsView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                LazyVStack(spacing: 12) {
+                VStack(spacing: 12) {
                     ForEach(channelsData.channels?.channels ?? [], id: \.self.id) { channel in
                         ChannelCard(channel: channel)
-                        .onAppear {
-                            if let channels = channelsData.channels?.channels, channels.count >= 3 {
-                                if channels[channels.count - 3].id == channel.id {
-                                    if !channelsData.isLoading {
-                                        channelsData.loadMore()
+                            .onBecomingVisible {
+                                if let channels = channelsData.channels?.channels, channels.count >= 8 {
+                                    if channels[channels.count - 8].id == channel.id {
+                                        Task {
+                                            do {
+                                                try await channelsData.loadMore()
+                                            } catch {
+                                                print(error)
+                                            }
+                                        }
                                     }
                                 }
                             }
-                        }
                     }
                     
                     if channelsData.isLoading {
@@ -35,10 +39,12 @@ struct ChannelsView: View {
                     
                     if channelsData.currentPage > channelsData.totalPages {
                         Text("Finished loading all channels")
+                            .padding(.top, 24)
                             .foregroundStyle(Color("surface-text-secondary"))
                     }
                 }
             }
+            .contentMargins(.bottom, 88)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -56,7 +62,7 @@ struct ChannelsView: View {
         .contentMargins(16)
         .refreshable {
             do { try await Task.sleep(nanoseconds: 500_000_000) } catch {}
-            channelsData.refresh()
+            do { try await channelsData.refresh() } catch { print(error) }
         }
     }
 }
