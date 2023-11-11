@@ -1,5 +1,5 @@
 //
-//  ChannelFetcher.swift
+//  ChannelData.swift
 //  Arena
 //
 //  Created by Yihui Hu on 14/10/23.

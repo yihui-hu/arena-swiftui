@@ -44,10 +44,10 @@ final class ArenaChannelPreview: Codable {
     let metadata: Metadata?
     var contents: [Block]?
     let followerCount: Int
-    let ownerId: Int
-    let ownerSlug: String
+    let ownerId: Int?
+    let ownerSlug: String?
     let nsfw: Bool
-    let state: String
+    let state: String?
     let user: User
     
     enum CodingKeys: String, CodingKey {
@@ -69,7 +69,7 @@ final class ArenaChannelPreview: Codable {
         case state, user, id
     }
     
-    init(title: String, createdAt: String, updatedAt: String, addedToAt: String, published: Bool, channelOpen: Bool, collaboration: Bool, collaboratorCount: Int, slug: String, length: Int, status: String, userId: Int, metadata: Metadata?, contents: [Block]?, followerCount: Int, ownerId: Int, ownerSlug: String, nsfw: Bool, state: String, user: User, id: Int) {
+    init(title: String, createdAt: String, updatedAt: String, addedToAt: String, published: Bool, channelOpen: Bool, collaboration: Bool, collaboratorCount: Int, slug: String, length: Int, status: String, userId: Int, metadata: Metadata?, contents: [Block]?, followerCount: Int, ownerId: Int?, ownerSlug: String?, nsfw: Bool, state: String?, user: User, id: Int) {
         self.title = title
         self.createdAt = createdAt
         self.updatedAt = updatedAt
@@ -484,7 +484,11 @@ final class ArenaSource: Codable {
 }
 
 // MARK: - User
-final class User: Codable {
+final class User: Codable, Equatable {
+    static func == (lhs: User, rhs: User) -> Bool {
+        return lhs.id == rhs.id // Compare using a unique identifier, such as the 'id' property
+    }
+    
     let createdAt, slug, username, firstName: String
     let lastName, fullName: String
     let avatarImage: AvatarImage

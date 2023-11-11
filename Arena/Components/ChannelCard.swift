@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import Defaults
 
 struct ChannelCard: View {
     let channel: ArenaChannelPreview
-    @State private var isFaded = false
+    
+    @Default(.pinnedChannels) var pinnedChannels
     
     struct HorizontalImageScroll: View {
         let contents: [Block]
@@ -42,10 +44,18 @@ struct ChannelCard: View {
                     
                     Spacer()
                     
-                    Text("\(channel.length) items")
-                        .font(.system(size: 15))
-                        .foregroundColor(Color("surface-text-secondary"))
-                        .fontWeight(.medium)
+                    HStack(spacing: 8) {
+                        Text("\(channel.length) items")
+                            .font(.system(size: 15))
+                            .foregroundColor(Color("surface-text-secondary"))
+                            .fontWeight(.medium)
+                        
+                        if (pinnedChannels.contains(channel.id)) {
+                            Image(systemName: "pin.fill")
+                                .foregroundStyle(Color("surface-text-secondary"))
+                                .imageScale(.small)
+                        }
+                    }
                 }
                 .lineLimit(1)
                 
@@ -58,18 +68,6 @@ struct ChannelCard: View {
             .padding(16)
             .background(Color("surface"))
             .cornerRadius(32)
-            // TODO: Fix animation when switching between navigation views
-//            .opacity(isFaded ? 1 : 0)
-//            .onAppear {
-//                withAnimation(.easeIn(duration: 0.1)) {
-//                    isFaded = true
-//                }
-//            }
-//            .onDisappear {
-//                withAnimation(.easeOut(duration: 0.1)) {
-//                    isFaded = false
-//                }
-//            }
         }
     }
 }

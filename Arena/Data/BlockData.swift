@@ -1,5 +1,5 @@
 //
-//  BlockFetcher.swift
+//  BlockData.swift
 //  Arena
 //
 //  Created by Yihui Hu on 14/10/23.
@@ -13,10 +13,6 @@ final class BlockData: ObservableObject {
     @Published var errorMessage: String? = nil
     
     init(blockId: Int) {
-        fetchBlock(blockId)
-    }
-    
-    final func loadMore(blockId: Int) {
         fetchBlock(blockId)
     }
     

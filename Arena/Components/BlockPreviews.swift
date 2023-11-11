@@ -24,7 +24,7 @@ struct BlockPreview: View {
             if previewImgURL != nil {
                 ImagePreview(imageURL: previewImgURL!, isChannelCard: false)
             } else if previewText != "" {
-                GeometryReader { geometry in                    // Get the geometry
+                GeometryReader { geometry in
                     ScrollView {
                         Text(previewText)
                             .foregroundStyle(Color("text-primary"))
@@ -68,8 +68,12 @@ struct ChannelViewBlockPreview: View {
                     .font(.system(size: fontSize ?? 16))
             } else if previewAttachment != nil {
                 Text(previewAttachment?.fileExtension ?? "")
-                    .padding(16)
+                    .padding(12)
                     .foregroundStyle(Color("text-primary"))
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color("surface"))
+                    )
                     .font(.system(size: fontSize ?? 16))
             } else {
                 Text("No preview available.")
@@ -101,7 +105,11 @@ struct ChannelCardBlockPreview: View {
                     .font(.system(size: fontSize ?? 16))
             } else if previewAttachment != nil {
                 Text(previewAttachment?.fileExtension ?? "")
-                    .padding(16)
+                    .padding(12)
+                    .background(
+                        RoundedRectangle(cornerRadius: 16)
+                            .fill(Color("surface-tertiary"))
+                    )
                     .frame(width: 132, height: 132)
                     .foregroundStyle(Color("text-primary"))
                     .font(.system(size: fontSize ?? 16))

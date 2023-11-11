@@ -1,41 +1,26 @@
 //
-//  ChannelsData.swift
+//  UserData.swift
 //  Arena
 //
-//  Created by Yihui Hu on 12/10/23.
+//  Created by Yihui Hu on 10/11/23.
 //
 
 import Foundation
 
-final class ChannelsData: ObservableObject {
-    @Published var channels: ArenaChannels?
+final class UserData: ObservableObject {
+    @Published var user: User?
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
     
-    var currentPage: Int = 1
-    var totalPages: Int = 1
-    
     init(userId: Int) {
-        fetchChannels(userId: userId, refresh: false)
-    }
-    
-    final func loadMore(userId: Int) {
-        print("Fetching channels: page \(self.currentPage) of \(self.totalPages)")
-        fetchChannels(userId: userId, refresh: false)
+        fetchUser(userId)
     }
     
     final func refresh(userId: Int) {
-        currentPage = 1
-        totalPages = 1
-        fetchChannels(userId: userId, refresh: true)
+        fetchUser(userId)
     }
     
-    final func fetchChannels(userId: Int, refresh: Bool) {
-        // Check if we've finished fetching all pages
-        guard currentPage <= totalPages else {
-            return
-        }
-        
+    final func fetchUser(_ userId: Int) {
         guard !isLoading else {
             return
         }
@@ -43,7 +28,7 @@ final class ChannelsData: ObservableObject {
         self.isLoading = true
         errorMessage = nil
 
-        guard let url = URL(string: "https://api.are.na/v2/users/\(userId)/channels?page=\(currentPage)&per=10") else {
+        guard let url = URL(string: "https://api.are.na/v2/users/\(userId)") else {
             self.isLoading = false
             errorMessage = "Invalid URL"
             return
@@ -63,18 +48,11 @@ final class ChannelsData: ObservableObject {
                 let decoder = JSONDecoder()
                 do {
                     // Attempt to decode the data
-                    let newChannels = try decoder.decode(ArenaChannels.self, from: data)
+                    let userData = try decoder.decode(User.self, from: data)
                     DispatchQueue.main.async {
-                        if self.channels != nil, !refresh {
-                            self.channels?.channels.append(contentsOf: newChannels.channels)
-                        } else {
-                            self.channels = newChannels
-                        }
-                        self.totalPages = newChannels.totalPages
-                        self.currentPage += 1
+                        self.user = userData
                     }
                 } catch let decodingError {
-                    // Print the decoding error for debugging
                     print("Decoding Error: \(decodingError)")
                     errorMessage = "Error decoding data: \(decodingError.localizedDescription)"
                     return

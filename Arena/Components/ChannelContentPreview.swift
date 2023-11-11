@@ -19,7 +19,7 @@ struct ChannelContentPreview: View {
                 HStack {
                     HStack(spacing: 8) {
                         ChannelViewBlockPreview(blockData: block, fontSize: 16, display: display)
-                            .frame(width: 40, height: 40)
+                            .frame(width: 64, height: 64)
                             .border(Color("surface-secondary"))
                         ChannelContentBlockPreviewMetadata(block: block)
                     }
@@ -31,22 +31,59 @@ struct ChannelContentPreview: View {
                         .lineLimit(1)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Color("background"))
+                .contentShape(ContentShapeKinds.contextMenuPreview, Rectangle())
+                .contextMenu {
+                    Button {
+                        // Do something
+                    } label: {
+                        Label("Connect", systemImage: "arrow.right")
+                    }
+                    
+                    Button {
+                        // Do something
+                    } label: {
+                        Label("View", systemImage: "eye")
+                    }
+                } preview: {
+                    ChannelViewBlockPreview(blockData: block, fontSize: 16, display: "Feed")
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
             } else {
                 VStack(spacing: 8) {
                     ChannelViewBlockPreview(blockData: block, fontSize: 16, display: display)
                         .frame(width: gridItemSize, height: gridItemSize)
+                        .background(Color("background"))
                         .border(Color("surface-secondary"))
-                    ChannelContentBlockPreviewMetadata(block: block)
+                        .contentShape(ContentShapeKinds.contextMenuPreview, Rectangle())
+                        .contextMenu {
+                            Button {
+                                // Do something
+                            } label: {
+                                Label("Connect", systemImage: "arrow.right")
+                            }
+                            
+                            Button {
+                                // Do something
+                            } label: {
+                                Label("View", systemImage: "eye")
+                            }
+                        } preview: {
+                            ChannelViewBlockPreview(blockData: block, fontSize: 16, display: "Feed")
+                                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        }
+                    if display != "Large Grid" {
+                        ChannelContentBlockPreviewMetadata(block: block)
+                    }
                 }
             }
         } else {
             // Unnecessary empty text to make it same height... find better solution, .top alignment?
-            
             if display == "Table" {
                 HStack {
                     HStack(spacing: 8) {
-                        ChannelPreview(blockData: block, fontSize: 2)
-                            .frame(width: 40, height: 40)
+                        ChannelPreview(blockData: block, fontSize: 4)
+                            .frame(width: 64, height: 64) // TODO: Find better preview for ChannelPreview in Table mode
                             .border(Color("arena-orange"))
                         Text("\(block.title)")
                             .font(.system(size: 12))
@@ -66,10 +103,12 @@ struct ChannelContentPreview: View {
                     ChannelPreview(blockData: block, fontSize: 16)
                         .frame(width: gridItemSize, height: gridItemSize)
                         .border(Color("arena-orange"))
-                    Text("")
-                        .font(.system(size: 12))
-                        .foregroundStyle(Color("surface-text-secondary"))
-                        .lineLimit(1)
+                    if display != "Large Grid" {
+                        Text("")
+                            .font(.system(size: 12))
+                            .foregroundStyle(Color("surface-text-secondary"))
+                            .lineLimit(1)
+                    }
                 }
             }
         }

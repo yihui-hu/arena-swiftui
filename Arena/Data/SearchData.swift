@@ -1,5 +1,5 @@
 //
-//  SearchChannelsData.swift
+//  SearchData.swift
 //  Arena
 //
 //  Created by Yihui Hu on 19/10/23.

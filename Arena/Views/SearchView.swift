@@ -67,9 +67,10 @@ struct SearchView: View {
                     .padding(.top, 16)
                     .padding(.bottom, 8)
                     
+                    // TODO: Simplify searchTerm != "" logic
                     ScrollView {
                         LazyVStack(alignment: .leading) {
-                            if let searchResults = searchData.searchResults {
+                            if let searchResults = searchData.searchResults, searchTerm != "" {
                                 if selection == "Channels" {
                                     ForEach(searchResults.channels, id: \.id) { channel in
                                         NavigationLink(destination: ChannelView(channelSlug: channel.slug)) {
@@ -98,7 +99,7 @@ struct SearchView: View {
                                     }
                                 } else if selection == "Users" {
                                     ForEach(searchResults.users, id: \.id) { user in
-                                        NavigationLink(destination: SingleBlockView(blockId: 9)) {
+                                        NavigationLink(destination: ProfileView(userId: user.id)) {
                                             SearchUserPreview(searchUser: user)
                                         }
                                         .onAppear {
@@ -113,12 +114,12 @@ struct SearchView: View {
                             }
                         }
                         
-                        if searchData.isLoading {
+                        if searchData.isLoading, searchTerm != "" {
                             LoadingSpinner()
                         }
                         
                         // Make a searchData.finishedLoading state
-                        if searchData.currentPage > searchData.totalPages {
+                        if searchData.currentPage > searchData.totalPages, searchTerm != "" {
                             Text("End of search")
                                 .foregroundStyle(Color("surface-text-secondary"))
                         }

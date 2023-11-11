@@ -38,236 +38,242 @@ struct BlockView: View {
                     let screenHeight = UIScreen.main.bounds.size.height
                     let maxPreviewHeight = screenHeight * 0.6
                     
-                    // Display the block content
-                    HStack {
-                        BlockPreview(blockData: block, fontSize: 16)
-                            .padding(.horizontal, 6)
-                            .frame(maxHeight: maxPreviewHeight)
-                    }
-                    .foregroundColor(Color("text-primary"))
-                    .tag(channelData.contents?.firstIndex(of: block) ?? 0)
-                    .onAppear {
-                        if channelData.contents?.last?.id ?? -1 == block.id {
-                            if !channelData.isContentsLoading {
-                                // Load more content when the last block is reached
-                                channelData.loadMore(channelSlug: self.channelSlug)
-                                print(channelData.contents?.count ?? "")
+                    // Display only block content in this TabView
+                    if block.baseClass == "Block" {
+                        HStack {
+                            BlockPreview(blockData: block, fontSize: 16)
+                                .padding(.horizontal, 4)
+                                .frame(maxHeight: maxPreviewHeight)
+                        }
+                        .foregroundColor(Color("text-primary"))
+                        .tag(channelData.contents?.firstIndex(of: block) ?? 0)
+                        .onAppear {
+                            if channelData.contents?.last?.id ?? -1 == block.id {
+                                if !channelData.isContentsLoading {
+                                    channelData.loadMore(channelSlug: self.channelSlug)
+                                }
                             }
                         }
                     }
                 }
             }
             .modal(isPresented: $isInfoModalPresented, size: .small, options: [.prefersDragHandle, .disableContentDragging]) {
-                ScrollView {
-                    VStack(spacing: 20) {
-                        // TODO: Handle channels (!)
-                        let currentBlock = channelData.contents?[currentIndex]
-                        let title = currentBlock?.title ?? ""
-                        let description = currentBlock?.description ?? ""
-                        let createdAt = currentBlock?.createdAt ?? ""
-                        let updatedAt = currentBlock?.updatedAt ?? ""
-                        let connectedBy = currentBlock?.connectedByUsername ?? ""
-                        let source = currentBlock?.source?.title ?? currentBlock?.source?.url ?? ""
-                        let sourceURL = currentBlock?.source?.url ?? "https://are.na/block/\(currentBlock?.id ?? 435)" // TODO: Have an error block, lol
-                        
-                        VStack(spacing: 4) {
-                            Text("\(title != "" ? title : "No title")")
-                                .fontDesign(.rounded)
-                                .fontWeight(.semibold)
-                                .font(.system(size: 18))
-                                .lineLimit(2) // TODO: Add ability to expand title
-                                .frame(maxWidth: .infinity, alignment: .topLeading)
-                            Text("\(description != "" ? description : "No description")")
-                                .font(.system(size: 16))
-                                .lineLimit(3) // TODO: Add ability to expand description
-                                .foregroundStyle(Color("surface-text-secondary"))
-                                .frame(maxWidth: .infinity, alignment: .topLeading)
-                        }
-                        
-                        VStack(spacing: 4) {
-                            HStack(spacing: 20) {
-                                Text("Added")
+                ZStack {
+                    GeometryReader { geometry in
+                        LinearGradient(gradient: Gradient(colors: [Color("modal"), Color("modal").opacity(0.8), Color("modal").opacity(0.4), .clear, .clear]), startPoint: .top, endPoint: .bottom)
+                            .frame(height: 88)
+                            .position(x: geometry.size.width / 2, y: 44)
+                    }
+                    .zIndex(2)
+                    
+                    ScrollView {
+                        VStack(spacing: 20) {
+                            // TODO: Handle channels (!)
+                            let currentBlock = channelData.contents?[currentIndex]
+                            let title = currentBlock?.title ?? ""
+                            let description = currentBlock?.description ?? ""
+                            let createdAt = currentBlock?.createdAt ?? ""
+                            let updatedAt = currentBlock?.updatedAt ?? ""
+                            let connectedBy = currentBlock?.connectedByUsername ?? ""
+                            let source = currentBlock?.source?.title ?? currentBlock?.source?.url ?? ""
+                            let sourceURL = currentBlock?.source?.url ?? "https://are.na/block/\(currentBlock?.id ?? 435)" // TODO: Have an error block, lol
+                            
+                            VStack(spacing: 4) {
+                                Text("\(title != "" ? title : "No title")")
                                     .fontDesign(.rounded)
                                     .fontWeight(.semibold)
-                                Spacer()
-                                Text("\(createdAt != "" ? relativeTime(createdAt) : "unknown")")
+                                    .font(.system(size: 18))
+                                    .lineLimit(2) // TODO: Add ability to expand title
+                                    .frame(maxWidth: .infinity, alignment: .topLeading)
+                                Text("\(description != "" ? description : "No description")")
+                                    .font(.system(size: 16))
+                                    .lineLimit(3) // TODO: Add ability to expand description
                                     .foregroundStyle(Color("surface-text-secondary"))
+                                    .frame(maxWidth: .infinity, alignment: .topLeading)
                             }
-                            Divider()
                             
-                            HStack(spacing: 20) {
-                                Text("Updated")
-                                    .fontDesign(.rounded)
-                                    .fontWeight(.semibold)
-                                Spacer()
-                                Text("\(updatedAt != "" ? relativeTime(updatedAt) : "unknown")")
-                                    .foregroundStyle(Color("surface-text-secondary"))
-                            }
-                            Divider()
-                            
-                            HStack(spacing: 20) {
-                                Text("Connected by")
-                                    .fontDesign(.rounded)
-                                    .fontWeight(.semibold)
-                                Spacer()
-                                Text("\(connectedBy != "" ? connectedBy : "unknown")")
-                                    .fontWeight(.medium)
-                            }
-                            Divider()
-                            
-                            if source != "" {
+                            VStack(spacing: 4) {
                                 HStack(spacing: 20) {
-                                    Text("Source")
+                                    Text("Added")
                                         .fontDesign(.rounded)
                                         .fontWeight(.semibold)
                                     Spacer()
-                                    
-                                    Button(action: {
-                                        self.presentingSafariView = true
-                                    }) {
-                                        Text("\(source)")
-                                            .lineLimit(1)
-                                            .fontWeight(.medium)
-                                    }
-                                    .safariView(isPresented: $presentingSafariView) {
-                                        SafariView(
-                                            url: URL(string: sourceURL)!,
-                                            configuration: SafariView.Configuration(
-                                                entersReaderIfAvailable: false,
-                                                barCollapsingEnabled: true
-                                            )
-                                        )
-                                        .preferredBarAccentColor(.clear)
-                                        .preferredControlAccentColor(.accentColor)
-                                        .dismissButtonStyle(.done)
-                                    }
-                                }
-                                Divider()
-                            }
-                            
-                            // TODO: Handle different block types (dimensions for images, fileSize for attachments, etc.)
-                            //                        HStack(spacing: 20) {
-                            //                            Text("Dimensions")
-                            //                                .fontDesign(.rounded)
-                            //                                .fontWeight(.semibold)
-                            //                            Spacer()
-                            //                            Text("656 x 454")
-                            //                                .foregroundStyle(Color("surface-text-secondary"))
-                            //                        }
-                            //                        Divider()
-                        }
-                        .font(.system(size: 16))
-                        
-                        HStack {
-                            Button(action: {
-                                print("Connect")
-                            }) {
-                                Text("Connect")
-                                    .fontDesign(.rounded)
-                                    .fontWeight(.semibold)
-                                    .foregroundColor(Color("surface"))
-                            }
-                            .padding(.vertical, 12)
-                            .frame(maxWidth: .infinity)
-                            .background(Color("backdrop-inverse"))
-                            .cornerRadius(16)
-                            
-                            Spacer().frame(width: 16)
-                            
-                            Button(action: {
-                                print("Actions")
-                            }) {
-                                Text("Actions")
-                                    .fontDesign(.rounded)
-                                    .fontWeight(.semibold)
-                                    .foregroundColor(Color("text-primary"))
-                            }
-                            .padding(.vertical, 12)
-                            .frame(maxWidth: .infinity)
-                            .cornerRadius(16)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 16)
-                                    .stroke(Color("backdrop-inverse"), lineWidth: 2)
-                            )
-                            .cornerRadius(16)
-                        }
-                        
-                        VStack {
-                            HStack {
-                                Spacer()
-                                Button(action: { print("Comments") }) {
-                                    Text("Connections (\(connectionsViewModel.connections.count))")
-                                        .frame(maxWidth: .infinity)
-                                }
-                                Spacer()
-                                Button(action: { print("Comments") }) {
-                                    Text("Comments (200)")
-                                        .frame(maxWidth: .infinity)
+                                    Text("\(createdAt != "" ? relativeTime(createdAt) : "unknown")")
                                         .foregroundStyle(Color("surface-text-secondary"))
                                 }
-                                Spacer()
-                            }
-                            .frame(maxWidth: .infinity)
-                            .font(.system(size: 14))
-                            
-                            HStack(spacing: 0) {
-                                Rectangle()
-                                    .fill(Color("text-primary"))
-                                    .frame(maxWidth: .infinity, maxHeight: 1)
-                                Rectangle()
-                                    .fill(Color("surface"))
-                                    .frame(maxWidth: .infinity, maxHeight: 1)
-                            }
-                            
-                            if isLoadingBlockConnections {
-                                ProgressView("Loading...")
-                                .frame(maxWidth: .infinity, maxHeight: .infinity) }
-                            else {
-                                VStack(spacing: 12) {
-                                    ForEach(connectionsViewModel.connections, id: \.id) { connection in
+                                Divider()
+                                
+                                HStack(spacing: 20) {
+                                    Text("Updated")
+                                        .fontDesign(.rounded)
+                                        .fontWeight(.semibold)
+                                    Spacer()
+                                    Text("\(updatedAt != "" ? relativeTime(updatedAt) : "unknown")")
+                                        .foregroundStyle(Color("surface-text-secondary"))
+                                }
+                                Divider()
+                                
+                                HStack(spacing: 20) {
+                                    Text("Connected by")
+                                        .fontDesign(.rounded)
+                                        .fontWeight(.semibold)
+                                    Spacer()
+                                    Text("\(connectedBy != "" ? connectedBy : "unknown")")
+                                        .fontWeight(.medium)
+                                }
+                                Divider()
+                                
+                                if source != "" {
+                                    HStack(spacing: 20) {
+                                        Text("Source")
+                                            .fontDesign(.rounded)
+                                            .fontWeight(.semibold)
+                                        Spacer()
+                                        
                                         Button(action: {
-                                            isInfoModalPresented = false // TODO: Figure out why this isn't working
-                                            selectedConnectionSlug = connection.slug
-                                            shouldNavigateToChannelView = true
+                                            self.presentingSafariView = true
                                         }) {
-                                            VStack(spacing: 4) {
-                                                Text("\(connection.title)")
-                                                    .font(.system(size: 16))
-                                                    .lineLimit(1)
-                                                    .fontDesign(.rounded)
-                                                    .fontWeight(.medium)
-                                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                                Text("\(connection.userId) • \(connection.length) items") // TODO: Get user data, replace userId lol
-                                                    .font(.system(size: 14))
-                                                    .lineLimit(1)
-                                                    .foregroundStyle(Color("surface-text-secondary"))
-                                                    .frame(maxWidth: .infinity, alignment: .leading)
-                                            }
-                                            .padding(12)
-                                            .frame(maxWidth: .infinity)
-                                            .cornerRadius(12)
-                                            .overlay(
-                                                RoundedRectangle(cornerRadius: 12)
-                                                    .stroke(Color("surface"), lineWidth: 2)
+                                            Text("\(source)")
+                                                .lineLimit(1)
+                                                .fontWeight(.medium)
+                                        }
+                                        .safariView(isPresented: $presentingSafariView) {
+                                            SafariView(
+                                                url: URL(string: sourceURL)!,
+                                                configuration: SafariView.Configuration(
+                                                    entersReaderIfAvailable: false,
+                                                    barCollapsingEnabled: true
+                                                )
                                             )
+                                            .preferredBarAccentColor(.clear)
+                                            .preferredControlAccentColor(.accentColor)
+                                            .dismissButtonStyle(.done)
                                         }
                                     }
+                                    Divider()
                                 }
-                                .padding(.top, 12)
+                                
+                                // TODO: Handle different block types (dimensions for images, fileSize for attachments, etc.)
+                                //                        HStack(spacing: 20) {
+                                //                            Text("Dimensions")
+                                //                                .fontDesign(.rounded)
+                                //                                .fontWeight(.semibold)
+                                //                            Spacer()
+                                //                            Text("656 x 454")
+                                //                                .foregroundStyle(Color("surface-text-secondary"))
+                                //                        }
+                                //                        Divider()
                             }
+                            .font(.system(size: 16))
+                            
+                            HStack {
+                                Button(action: {
+                                    print("Connect")
+                                }) {
+                                    Text("Connect")
+                                        .fontDesign(.rounded)
+                                        .fontWeight(.semibold)
+                                        .foregroundColor(Color("surface"))
+                                }
+                                .padding(.vertical, 12)
+                                .frame(maxWidth: .infinity)
+                                .background(Color("backdrop-inverse"))
+                                .cornerRadius(16)
+                                
+                                Spacer().frame(width: 16)
+                                
+                                Button(action: {
+                                    print("Actions")
+                                }) {
+                                    Text("Actions")
+                                        .fontDesign(.rounded)
+                                        .fontWeight(.semibold)
+                                        .foregroundColor(Color("text-primary"))
+                                }
+                                .padding(.vertical, 12)
+                                .frame(maxWidth: .infinity)
+                                .cornerRadius(16)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .stroke(Color("backdrop-inverse"), lineWidth: 2)
+                                )
+                                .cornerRadius(16)
+                            }
+                            
+                            VStack {
+                                HStack {
+                                    Spacer()
+                                    Button(action: { print("Comments") }) {
+                                        Text("Connections (\(connectionsViewModel.connections.count))")
+                                            .frame(maxWidth: .infinity)
+                                    }
+                                    Spacer()
+                                    Button(action: { print("Comments") }) {
+                                        Text("Comments (200)")
+                                            .frame(maxWidth: .infinity)
+                                            .foregroundStyle(Color("surface-text-secondary"))
+                                    }
+                                    Spacer()
+                                }
+                                .frame(maxWidth: .infinity)
+                                .font(.system(size: 14))
+                                
+                                HStack(spacing: 0) {
+                                    Rectangle()
+                                        .fill(Color("text-primary"))
+                                        .frame(maxWidth: .infinity, maxHeight: 1)
+                                    Rectangle()
+                                        .fill(Color("surface"))
+                                        .frame(maxWidth: .infinity, maxHeight: 1)
+                                }
+                                
+                                if isLoadingBlockConnections {
+                                    ProgressView("Loading...")
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity) }
+                                else {
+                                    LazyVStack(spacing: 12) {
+                                        ForEach(connectionsViewModel.connections, id: \.id) { connection in
+                                            Button(action: {
+                                                print("Should close wtf")
+                                                isInfoModalPresented = false // TODO: Figure out why this isn't working
+                                                selectedConnectionSlug = connection.slug
+                                                shouldNavigateToChannelView = true
+                                            }) {
+                                                VStack(spacing: 4) {
+                                                    Text("\(connection.title)")
+                                                        .font(.system(size: 16))
+                                                        .lineLimit(1)
+                                                        .fontDesign(.rounded)
+                                                        .fontWeight(.medium)
+                                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                                    Text("\(connection.userId) • \(connection.length) items") // TODO: Get user data, replace userId lol
+                                                        .font(.system(size: 14))
+                                                        .lineLimit(1)
+                                                        .foregroundStyle(Color("surface-text-secondary"))
+                                                        .frame(maxWidth: .infinity, alignment: .leading)
+                                                }
+                                                .padding(12)
+                                                .frame(maxWidth: .infinity)
+                                                .cornerRadius(12)
+                                                .overlay(
+                                                    RoundedRectangle(cornerRadius: 12)
+                                                        .stroke(Color("surface"), lineWidth: 2)
+                                                )
+                                            }
+                                        }
+                                    }
+                                    .padding(.top, 12)
+                                }
+                            }
+                            .padding(.top, 16)
                         }
-                        .padding(.top, 16)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                        .padding(.horizontal, 20)
+                        .padding(.top, 64)
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                    .padding(.horizontal, 20)
-                    .padding(.top, 64)
                 }
             }
-            .padding(.horizontal, 10)
-            // TODO: Use LongPressGesture to connect, tapGesture to open source of block!
-            .highPriorityGesture(TapGesture().onEnded {
-                print("Tap on VStack.")
-            })
+            .padding(.horizontal, 12)
             .padding(.bottom, 50)
             .background(Color("background"))
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
