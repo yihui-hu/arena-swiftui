@@ -9,6 +9,7 @@ import SwiftUI
 import VTabView
 import Modals
 import BetterSafariView
+import SmoothGradient
 
 struct BlockView: View {
     let blockData: Block
@@ -36,14 +37,14 @@ struct BlockView: View {
             TabView(selection: $currentIndex) {
                 ForEach(channelData.contents ?? [], id: \.self.id) { block in
                     let screenHeight = UIScreen.main.bounds.size.height
-                    let maxPreviewHeight = screenHeight * 0.6
                     
                     // Display only block content in this TabView
                     if block.baseClass == "Block" {
-                        HStack {
+                        HStack(alignment: .top) {
                             BlockPreview(blockData: block, fontSize: 16)
                                 .padding(.horizontal, 4)
-                                .frame(maxHeight: maxPreviewHeight)
+                                .padding(.bottom, 24)
+                                .frame(maxHeight: screenHeight * 0.64)
                         }
                         .foregroundColor(Color("text-primary"))
                         .tag(channelData.contents?.firstIndex(of: block) ?? 0)
@@ -60,9 +61,13 @@ struct BlockView: View {
             .modal(isPresented: $isInfoModalPresented, size: .small, options: [.prefersDragHandle, .disableContentDragging]) {
                 ZStack {
                     GeometryReader { geometry in
-                        LinearGradient(gradient: Gradient(colors: [Color("modal"), Color("modal").opacity(0.8), Color("modal").opacity(0.4), .clear, .clear]), startPoint: .top, endPoint: .bottom)
-                            .frame(height: 88)
-                            .position(x: geometry.size.width / 2, y: 44)
+                        LinearGradient(
+                            gradient: .smooth(from: Color("modal"), to: Color("modal").opacity(0), curve: .easeInOut),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                        .frame(height: 88)
+                        .position(x: geometry.size.width / 2, y: 44)
                     }
                     .zIndex(2)
                     
@@ -234,19 +239,26 @@ struct BlockView: View {
                                     LazyVStack(spacing: 12) {
                                         ForEach(connectionsViewModel.connections, id: \.id) { connection in
                                             Button(action: {
-                                                print("Should close wtf")
                                                 isInfoModalPresented = false // TODO: Figure out why this isn't working
                                                 selectedConnectionSlug = connection.slug
                                                 shouldNavigateToChannelView = true
                                             }) {
                                                 VStack(spacing: 4) {
-                                                    Text("\(connection.title)")
-                                                        .font(.system(size: 16))
-                                                        .lineLimit(1)
-                                                        .fontDesign(.rounded)
-                                                        .fontWeight(.medium)
-                                                        .frame(maxWidth: .infinity, alignment: .leading)
-                                                    Text("\(connection.userId) • \(connection.length) items") // TODO: Get user data, replace userId lol
+                                                    HStack(spacing: 4) {
+                                                        if connection.status != "closed" {
+                                                            Image(systemName: "circle.fill")
+                                                                .scaleEffect(0.5)
+                                                                .foregroundColor(connection.status == "public" ? Color.green : Color.red)
+                                                        }
+                                                        Text("\(connection.title)")
+                                                            .font(.system(size: 16))
+                                                            .lineLimit(1)
+                                                            .fontDesign(.rounded)
+                                                            .fontWeight(.medium)
+                                                            .frame(maxWidth: .infinity, alignment: .leading)
+                                                    }
+                                                    
+                                                    Text("\(connection.length) items") // TODO: Get user data, replace userId lol
                                                         .font(.system(size: 14))
                                                         .lineLimit(1)
                                                         .foregroundStyle(Color("surface-text-secondary"))
@@ -274,7 +286,6 @@ struct BlockView: View {
                 }
             }
             .padding(.horizontal, 12)
-            .padding(.bottom, 50)
             .background(Color("background"))
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
             .navigationBarBackButtonHidden()
@@ -289,20 +300,14 @@ struct BlockView: View {
             }
             .toolbarBackground(Color("background"), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
-            .overlay(alignment: .top) {
-                Color.clear
-                    .background(Color("background"))
-                    .ignoresSafeArea(edges: .top)
-                    .frame(height: 0)
-            }
             
-            HStack(spacing: 8) {
+            HStack(spacing: 12) {
                 Button(action: {
                     print("Connect")
                 }) {
                     Image(systemName: "arrow.right.square")
-                        .frame(width: 36, height: 36)
-                        .background(Color("surface"))
+                        .frame(width: 40, height: 40)
+                        .background(.thinMaterial)
                         .clipShape(Circle())
                 }
                 
@@ -317,20 +322,19 @@ struct BlockView: View {
                     }
                 }) {
                     Image(systemName: "info.circle")
-                        .frame(width: 36, height: 36)
-                        .background(Color("surface"))
+                        .frame(width: 40, height: 40)
+                        .background(.thinMaterial)
                         .clipShape(Circle())
                 }
             }
             .frame(maxWidth: .infinity, alignment: .bottomTrailing)
-            .padding(.top, UIScreen.main.bounds.size.height * 0.64)
-            .padding(.bottom, 16)
+            .padding(.top, UIScreen.main.bounds.size.height * 0.68)
             .padding(.trailing, 20)
             .foregroundStyle(Color("surface-text-secondary"))
         }
         
         NavigationLink("", destination: ChannelView(channelSlug: selectedConnectionSlug ?? ""), isActive: $shouldNavigateToChannelView)
-                .opacity(0) // Hide the link
+            .opacity(0) // Hide the link
     }
 }
 

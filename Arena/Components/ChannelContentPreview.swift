@@ -32,7 +32,6 @@ struct ChannelContentPreview: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .background(Color("background"))
-                .contentShape(ContentShapeKinds.contextMenuPreview, Rectangle())
                 .contextMenu {
                     Button {
                         // Do something
@@ -51,11 +50,10 @@ struct ChannelContentPreview: View {
                 }
             } else {
                 VStack(spacing: 8) {
-                    ChannelViewBlockPreview(blockData: block, fontSize: 16, display: display)
+                    ChannelViewBlockPreview(blockData: block, fontSize: display != "Large Grid" ? 16 : 12, display: display)
                         .frame(width: gridItemSize, height: gridItemSize)
                         .background(Color("background"))
                         .border(Color("surface-secondary"))
-                        .contentShape(ContentShapeKinds.contextMenuPreview, Rectangle())
                         .contextMenu {
                             Button {
                                 // Do something
@@ -100,7 +98,7 @@ struct ChannelContentPreview: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
             } else {
                 VStack(spacing: 8) {
-                    ChannelPreview(blockData: block, fontSize: 16)
+                    ChannelPreview(blockData: block, fontSize: display != "Large Grid" ? 16 : 12)
                         .frame(width: gridItemSize, height: gridItemSize)
                         .border(Color("arena-orange"))
                     if display != "Large Grid" {

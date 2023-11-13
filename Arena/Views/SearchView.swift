@@ -7,6 +7,8 @@
 
 import SwiftUI
 import DebouncedOnChange
+import Kingfisher
+import SmoothGradient
 
 struct SearchView: View {
     @State private var searchTerm: String = ""
@@ -14,6 +16,8 @@ struct SearchView: View {
     @State private var changedSelection: Bool = false
     @State private var isButtonFaded = false
     @StateObject private var searchData: SearchData
+    @State private var scrollOffset: CGFloat = 0
+    @State private var showGradient = false
     
     init() {
         self._searchData = StateObject(wrappedValue: SearchData())
@@ -23,194 +27,174 @@ struct SearchView: View {
     
     var body: some View {
         NavigationStack {
-            ZStack {
-                Color("background").ignoresSafeArea()
-                
-                VStack {
-                    VStack(spacing: 12) {
-                        TextField("Search...", text: $searchTerm)
-                            .onChange(of: searchTerm, debounceTime: .seconds(0.5)) { newValue in
-                                searchData.searchTerm = newValue
-                                searchData.refresh()
-                            }
-                            .textFieldStyle(WhiteBorder())
-                            .autocorrectionDisabled()
-                            .onAppear {
-                                UITextField.appearance().clearButtonMode = .whileEditing
-                            }
-                        
-                        if searchTerm != "" {
-                            HStack {
-                                ForEach(options, id: \.self) { option in
-                                    Button("\(option)") {
-                                        selection = option
-                                    }
-                                    .fontDesign(.rounded)
-                                    .fontWeight(.medium)
-                                    .padding(.horizontal, 16)
-                                    .padding(.vertical, 8)
-                                    .background(Color("surface"))
-                                    .cornerRadius(20)
-                                    .foregroundStyle(Color(selection == option ? "text-primary" : "surface-text-secondary"))
-                                }
-                                .opacity(isButtonFaded ? 1 : 0)
-                                .onAppear {
-                                    withAnimation(.easeIn(duration: 0.1)) {
-                                        isButtonFaded = true
-                                    }
-                                }
-                                Spacer()
-                            }
+            VStack {
+                VStack(spacing: 16) {
+                    TextField("Search...", text: $searchTerm)
+                        .onChange(of: searchTerm, debounceTime: .seconds(0.5)) { newValue in
+                            searchData.searchTerm = newValue
+                            searchData.refresh()
                         }
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.top, 16)
-                    .padding(.bottom, 8)
+                        .textFieldStyle(SearchBarStyle())
+                        .autocorrectionDisabled()
+                        .onAppear {
+                            UITextField.appearance().clearButtonMode = .always
+                        }
                     
-                    // TODO: Simplify searchTerm != "" logic
+                    if searchTerm != "" {
+                        HStack(spacing: 8) {
+                            ForEach(options, id: \.self) { option in
+                                Button(action: {
+                                    selection = option
+                                }) {
+                                    Text("\(option)")
+                                        .foregroundStyle(selection == option ? Color("text-primary") : Color("surface-text-secondary"))
+                                }
+                                .padding(.horizontal, 16)
+                                .padding(.vertical, 8)
+                                .background(Color(selection == option ? "surface-tertiary" : "surface"))
+                                .cornerRadius(16)
+                            }
+                            .opacity(isButtonFaded ? 1 : 0)
+                            .onAppear {
+                                withAnimation(.easeIn(duration: 0.1)) {
+                                    isButtonFaded = true
+                                }
+                            }
+                        }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .fontDesign(.rounded)
+                        .fontWeight(.semibold)
+                        .font(.system(size: 15))
+                    }
+                }
+                .padding(.top, 16)
+                .padding(.horizontal, 16)
+                
+                ZStack {
+                    GeometryReader { geometry in
+                        LinearGradient(
+                            gradient: .smooth(from: Color("background"), to: Color("modal").opacity(0), curve: .easeInOut),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                        .frame(height: 88)
+                        .position(x: geometry.size.width / 2, y: 44)
+                        .opacity(showGradient ? 1 : 0)
+                        .animation(.easeInOut(duration: 0.3))
+                    }
+                    .zIndex(2)
+                    
                     ScrollView {
-                        LazyVStack(alignment: .leading) {
-                            if let searchResults = searchData.searchResults, searchTerm != "" {
-                                if selection == "Channels" {
-                                    ForEach(searchResults.channels, id: \.id) { channel in
-                                        NavigationLink(destination: ChannelView(channelSlug: channel.slug)) {
-                                            SearchChannelPreview(searchChannel: channel)
-                                        }
-                                        .onAppear {
-                                            if searchResults.channels.last?.id ?? -1 == channel.id {
-                                                if !searchData.isLoading {
-                                                    searchData.loadMore()
+                        ScrollViewReader { proxy in
+                            LazyVStack(alignment: .leading, spacing: 8) {
+                                if let searchResults = searchData.searchResults, searchTerm != "" {
+                                    if selection == "Channels" {
+                                        ForEach(searchResults.channels, id: \.id) { channel in
+                                            NavigationLink(destination: ChannelView(channelSlug: channel.slug)) {
+                                                SearchChannelPreview(channel: channel)
+                                            }
+                                            .onAppear {
+                                                if searchResults.channels.last?.id ?? -1 == channel.id {
+                                                    if !searchData.isLoading {
+                                                        searchData.loadMore()
+                                                    }
                                                 }
                                             }
                                         }
-                                    }
-                                } else if selection == "Blocks" {
-                                    ForEach(searchResults.blocks, id: \.id) { block in
-                                        NavigationLink(destination: SingleBlockView(blockId: block.id)) {
-                                            SearchBlockPreview(searchBlock: block)
-                                        }
-                                        .onAppear {
-                                            if searchResults.blocks.last?.id ?? -1 == block.id {
-                                                if !searchData.isLoading {
-                                                    searchData.loadMore()
+                                    } else if selection == "Blocks" {
+                                        ForEach(searchResults.blocks, id: \.id) { block in
+                                            NavigationLink(destination: SingleBlockView(blockId: block.id)) {
+                                                SearchBlockPreview(searchBlock: block)
+                                            }
+                                            .onAppear {
+                                                if searchResults.blocks.last?.id ?? -1 == block.id {
+                                                    if !searchData.isLoading {
+                                                        searchData.loadMore()
+                                                    }
                                                 }
                                             }
                                         }
-                                    }
-                                } else if selection == "Users" {
-                                    ForEach(searchResults.users, id: \.id) { user in
-                                        NavigationLink(destination: ProfileView(userId: user.id)) {
-                                            SearchUserPreview(searchUser: user)
-                                        }
-                                        .onAppear {
-                                            if searchResults.users.last?.id ?? -1 == user.id {
-                                                if !searchData.isLoading {
-                                                    searchData.loadMore()
+                                    } else if selection == "Users" {
+                                        ForEach(searchResults.users, id: \.id) { user in
+                                            NavigationLink(destination: UserView(userId: user.id)) {
+                                                SearchUserPreview(searchUser: user)
+                                            }
+                                            .onAppear {
+                                                if searchResults.users.last?.id ?? -1 == user.id {
+                                                    if !searchData.isLoading {
+                                                        searchData.loadMore()
+                                                    }
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }
+                            .onChange(of: scrollOffset) { offset in
+                                withAnimation {
+                                    showGradient = offset > -8
+                                }
+                            }
+                            .background(GeometryReader { proxy -> Color in
+                                DispatchQueue.main.async {
+                                    scrollOffset = -proxy.frame(in: .named("scroll")).origin.y
+                                }
+                                return Color.clear
+                            })
                         }
                         
-                        if searchData.isLoading, searchTerm != "" {
-                            LoadingSpinner()
-                        }
-                        
-                        // Make a searchData.finishedLoading state
-                        if searchData.currentPage > searchData.totalPages, searchTerm != "" {
-                            Text("End of search")
-                                .foregroundStyle(Color("surface-text-secondary"))
-                        }
                     }
-                    .scrollDismissesKeyboard(.interactively)
-                    .frame(maxHeight: .infinity)
-                    .contentMargins(.horizontal, 16)
-                    .contentMargins(.bottom, 20)
+                    .scrollDismissesKeyboard(.immediately)
+                    .coordinateSpace(name: "scroll")
                 }
-                .foregroundStyle(Color("text-primary"))
-                .background(Color("background"))
-                .scrollIndicators(.hidden)
-                .refreshable {
+            }
+            .padding(.bottom, 8)
+            .onChange(of: selection, initial: true) { oldSelection, newSelection in
+                if oldSelection != newSelection {
+                    searchData.selection = newSelection
                     searchData.refresh()
                 }
-                .onChange(of: selection, initial: true) { oldSelection, newSelection in
-                    if oldSelection != newSelection {
-                        searchData.selection = newSelection
-                        searchData.refresh()
-                    }
-                }
             }
         }
+        .contentMargins(.leading, 0, for: .scrollIndicators)
+        .contentMargins(16)
     }
 }
-
 struct SearchChannelPreview: View {
-    let searchChannel: ArenaSearchedChannel
-    @State private var isFaded = false
-
+    let channel: ArenaSearchedChannel
+    
     var body: some View {
-        HStack(spacing: 12) {
-            Image(systemName: "photo")
-                .foregroundColor(Color("surface-text-secondary"))
-                .frame(width: 40, height: 40)
-                .background(Color("surface"))
-                .clipShape(RoundedRectangle(cornerRadius: 8))
-            //            AsyncImage(url: URL(string: searchUser.avatarImage.thumb)) { phase in
-            //                if let image = phase.image {
-            //                    ZStack {
-            //                        Color("surface")
-            //
-            //                        Text(searchUser.initials)
-            //                            .font(.system(size: 12))
-            //                            .foregroundColor(Color("surface-text-secondary"))
-            //
-            //                        image
-            //                            .resizable()
-            //                            .aspectRatio(contentMode: .fit)
-            //                    }
-            //                    .frame(width: 40, height: 40)
-            //                    .clipShape(RoundedRectangle(cornerRadius: 8))
-            //                } else {
-            //                    Image(systemName: "photo")
-            //                        .foregroundColor(Color("surface-text-secondary"))
-            //                        .frame(width: 40, height: 40)
-            //                        .background(Color("surface"))
-            //                        .clipShape(RoundedRectangle(cornerRadius: 8))
-            //                }
-            //            }
+        VStack(spacing: 8) {
+            HStack(spacing: 4) {
+                if channel.status != "closed" {
+                    Image(systemName: "circle.fill")
+                        .scaleEffect(0.5)
+                        .foregroundColor(channel.status == "public" ? Color.green : Color.red)
+                }
+                
+                Text("\(channel.title)")
+                    .font(.system(size: 16))
+                    .lineLimit(1)
+                    .fontDesign(.rounded)
+                    .fontWeight(.medium)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
             
-            HStack(spacing: 8) {
-                Text("\(searchChannel.title)")
-                
-                Text("/")
-                    .foregroundStyle(Color("surface-text-secondary"))
-                
-                Text("\(searchChannel.user.username)")
-                    .foregroundStyle(Color("surface-text-secondary"))
-            }
-            .lineLimit(1)
-            .fontWeight(.medium)
-            .fontDesign(.rounded)
+            Text("\(channel.user.username) • \(channel.length) items")
+                .font(.system(size: 14))
+                .lineLimit(1)
+                .foregroundStyle(Color("surface-text-secondary"))
+                .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .opacity(isFaded ? 1 : 0)
-        .onAppear {
-            withAnimation(.easeIn(duration: 0.1)) {
-                isFaded = true
-            }
-        }
-        .onDisappear {
-            withAnimation(.easeOut(duration: 0.1)) {
-                isFaded = false
-            }
-        }
+        .padding(12)
+        .frame(maxWidth: .infinity)
+        .background(Color("surface"))
+        .cornerRadius(16)
     }
 }
 
 struct SearchUserPreview: View {
     let searchUser: ArenaSearchedUser
-    @State private var isFaded = false
     
     var body: some View {
         HStack(spacing: 12) {
@@ -221,62 +205,38 @@ struct SearchUserPreview: View {
                 .fontWeight(.medium)
                 .fontDesign(.rounded)
         }
-        .opacity(isFaded ? 1 : 0)
-        .onAppear {
-            withAnimation(.easeIn(duration: 0.1)) {
-                isFaded = true
-            }
-        }
-        .onDisappear {
-            withAnimation(.easeOut(duration: 0.1)) {
-                isFaded = false
-            }
-        }
     }
 }
 
 struct SearchBlockPreview: View {
     let searchBlock: ArenaSearchedBlock
-    @State private var isFaded = false
-
+    
     var body: some View {
         HStack(spacing: 12) {
-            AsyncImage(url: URL(string: searchBlock.image?.thumb.url ?? "")) { phase in
-                if let image = phase.image {
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 40, height: 40)
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                } else {
+            KFImage(URL(string: searchBlock.image?.thumb.url ?? ""))
+                .placeholder {
                     Image(systemName: "photo")
                         .foregroundColor(Color("surface-text-secondary"))
                         .frame(width: 40, height: 40)
                         .background(Color("surface"))
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                 }
-            }
+                .retry(maxCount: 3, interval: .seconds(5))
+                .resizable()
+                .animation(nil) // TODO: Fix unpredictable KFImage animation
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 40, height: 40)
+                .clipShape(RoundedRectangle(cornerRadius: 8))
             
             Text("\(searchBlock.title)")
                 .lineLimit(1)
                 .fontWeight(.medium)
                 .fontDesign(.rounded)
         }
-        .opacity(isFaded ? 1 : 0)
-        .onAppear {
-            withAnimation(.easeIn(duration: 0.1)) {
-                isFaded = true
-            }
-        }
-        .onDisappear {
-            withAnimation(.easeOut(duration: 0.1)) {
-                isFaded = false
-            }
-        }
     }
 }
 
-struct WhiteBorder: TextFieldStyle {
+struct SearchBarStyle: TextFieldStyle {
     func _body(configuration: TextField<Self._Label>) -> some View {
         configuration
             .padding(.leading, 20)

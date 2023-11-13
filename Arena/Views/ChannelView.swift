@@ -32,7 +32,6 @@ enum ContentOption: String, CaseIterable {
 
 struct ChannelView: View {
     @StateObject private var channelData: ChannelData
-    @Environment(\.dismiss) private var dismiss
     let channelSlug: String
     
     @State private var selection = SortOption.position
@@ -44,8 +43,9 @@ struct ChannelView: View {
     @State private var content = ContentOption.all
     let contentOptions = ContentOption.allCases
     
-//    @Default(.pinnedChannels) var pinnedChannels
-//    let pinImage = pinnedChannels.contains(channelData.channel.id) ? "pin.slash.fill" : "pin.fill"
+    //    @Default(.pinnedChannels) var pinnedChannels
+    //    let pinImage = pinnedChannels.contains(channelData.channel.id) ? "pin.slash.fill" : "pin.fill"
+    @Environment(\.dismiss) private var dismiss
     
     init(channelSlug: String) {
         self.channelSlug = channelSlug
@@ -74,6 +74,17 @@ struct ChannelView: View {
         }
     }
     
+    private func ChannelViewContents(gridItemSize: CGFloat) -> some View {
+        ForEach(channelData.contents ?? [], id: \.self.id) { block in
+            NavigationLink(destination: destinationView(for: block, channelData: channelData, channelSlug: channelSlug)) {
+                ChannelContentPreview(block: block, gridItemSize: gridItemSize, display: display.rawValue)
+            }
+            .onAppear {
+                loadMoreChannelData(channelData: channelData, channelSlug: self.channelSlug, block: block)
+            }
+        }
+    }
+    
     var body: some View {
         // Channel slug is empty, show error state
         //        if channelSlug == "" { errorState() }
@@ -92,32 +103,16 @@ struct ChannelView: View {
                 
                 if display.rawValue == "Table" {
                     LazyVStack(spacing: 8) {
-                        ForEach(channelData.contents ?? [], id: \.self.id) { block in
-                            NavigationLink(destination: destinationView(for: block, channelData: channelData, channelSlug: channelSlug)) {
-                                ChannelContentPreview(block: block, gridItemSize: gridItemSize, display: display.rawValue)
-                            }
-                            .onAppear {
-                                loadMoreChannelData(channelData: channelData, channelSlug: self.channelSlug, block: block)
-                            }
-                        }
+                        ChannelViewContents(gridItemSize: gridItemSize)
                     }
                 } else {
                     LazyVGrid(columns: gridColumns, spacing: gridSpacing) {
-                        ForEach(channelData.contents ?? [], id: \.self.id) { block in
-                            NavigationLink(destination: destinationView(for: block, channelData: channelData, channelSlug: channelSlug)) {
-                                ChannelContentPreview(block: block, gridItemSize: gridItemSize, display: display.rawValue)
-                            }
-                            .onAppear {
-                                loadMoreChannelData(channelData: channelData, channelSlug: self.channelSlug, block: block)
-                            }
-                        }
+                        ChannelViewContents(gridItemSize: gridItemSize)
                     }
                 }
                 
-                ZStack {
-                    if (channelData.isLoading || channelData.isContentsLoading) {
-                        LoadingSpinner()
-                    }
+                if (channelData.isLoading || channelData.isContentsLoading) {
+                    LoadingSpinner()
                 }
                 
                 if channelData.currentPage > channelData.totalPages {
@@ -126,7 +121,7 @@ struct ChannelView: View {
                         .foregroundStyle(Color("surface-text-secondary"))
                 }
             }
-            .contentMargins(.bottom, 88)
+            .padding(.bottom, 12)
             .background(Color("background"))
             .contentMargins(gridGap)
             .contentMargins(.leading, 0, for: .scrollIndicators)
@@ -147,11 +142,11 @@ struct ChannelView: View {
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack(spacing: 4) {
-                        Button(action: {
-                            dismiss()
-                        }) {
-                            Image(systemName: "pin.fill")
-                        }
+                        //                        Button(action: {
+                        //                            dismiss()
+                        //                        }) {
+                        //                            Image(systemName: "pin.fill")
+                        //                        }
                         
                         Menu {
                             Picker("Select a display mode", selection: $display) {
@@ -193,22 +188,22 @@ struct ChannelView: View {
         }
     }
     
-//    private func togglePin(_ channelId: Int) {
-//        if pinnedChannels.contains(channelId) {
-//            pinnedChannels.removeAll { $0 == channelId }
-//        } else {
-//            pinnedChannels.append(channelId)
-//        }
-//    }
-}
-
-func loadMoreChannelData(channelData: ChannelData, channelSlug: String, block: Block) {
-    if let contents = channelData.contents,
-       contents.count >= 8,
-       contents[contents.count - 8].id == block.id,
-       !channelData.isContentsLoading {
-        channelData.loadMore(channelSlug: channelSlug)
+    private func loadMoreChannelData(channelData: ChannelData, channelSlug: String, block: Block) {
+        if let contents = channelData.contents,
+           contents.count >= 8,
+           contents[contents.count - 8].id == block.id,
+           !channelData.isContentsLoading {
+            channelData.loadMore(channelSlug: channelSlug)
+        }
     }
+    
+    //    private func togglePin(_ channelId: Int) {
+    //        if pinnedChannels.contains(channelId) {
+    //            pinnedChannels.removeAll { $0 == channelId }
+    //        } else {
+    //            pinnedChannels.append(channelId)
+    //        }
+    //    }
 }
 
 struct ChannelViewHeader: View {
@@ -218,6 +213,7 @@ struct ChannelViewHeader: View {
     
     var body: some View {
         VStack(spacing: 16) {
+            // MARK: Channel Title
             HStack {
                 if let channelTitle = channelData.channel?.title, !channelTitle.isEmpty {
                     HStack(spacing: 4) {
@@ -231,9 +227,7 @@ struct ChannelViewHeader: View {
                             .fontWeight(.semibold)
                     }
                 } else {
-                    Text("----")
-                        .shimmering()
-                        .redacted(reason: .placeholder)
+                    Text("-")
                 }
             }
             .fontDesign(.rounded)
@@ -244,7 +238,7 @@ struct ChannelViewHeader: View {
             .multilineTextAlignment(.center)
             
             VStack(spacing: 8) {
-                // channelDescription
+                // MARK: Channel Description
                 HStack {
                     if let channelDescription = channelData.channel?.metadata?.description, !channelDescription.isEmpty {
                         Text("\(channelDescription)")
@@ -257,11 +251,13 @@ struct ChannelViewHeader: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .lineLimit(3)
                 
-                // by ChannelOwner + Collaborators text
+                // MARK: Channel Attribution
                 if let channelOwner = channelData.channel?.user.fullName {
                     let ownerText = Text("by ")
                         .foregroundColor(Color("text-secondary")) +
                     Text("\(channelOwner)")
+                        .fontDesign(.rounded)
+                        .fontWeight(.medium)
                         .foregroundColor(Color("text-primary"))
                     
                     if let collaborators = channelData.channel?.collaborators, !collaborators.isEmpty {
@@ -269,6 +265,8 @@ struct ChannelViewHeader: View {
                         let collaboratorText = Text(" with ")
                             .foregroundColor(Color("text-secondary")) +
                         Text("\(collaboratorList)")
+                            .fontDesign(.rounded)
+                            .fontWeight(.medium)
                             .foregroundColor(Color("text-primary"))
                         
                         VStack {
@@ -291,38 +289,39 @@ struct ChannelViewHeader: View {
                     }
                 }
             }
-            
-            ScrollView(.horizontal) {
-                HStack(spacing: 8) {
-                    ForEach(contentOptions, id: \.self) { option in
-                        Button(action: {
-                            content = option
-                        }) {
-                            HStack(spacing: 8) {
-                                Text("\(option.rawValue)")
-                                    .foregroundStyle(content == option ? Color("text-primary") : Color("surface-text-secondary"))
-                                
-                                if option.rawValue == "All", let channelLength = channelData.channel?.length {
-                                    Text("\(channelLength)")
-                                        .foregroundStyle(Color("surface-text-secondary"))
-                                }
+        }
+        .padding(12)
+        
+        // MARK: Channel Content Options
+        ScrollView(.horizontal) {
+            HStack(spacing: 8) {
+                ForEach(contentOptions, id: \.self) { option in
+                    Button(action: {
+                        content = option
+                    }) {
+                        HStack(spacing: 8) {
+                            Text("\(option.rawValue)")
+                                .foregroundStyle(Color(content == option ? "text-primary" : "surface-text-secondary"))
+                            
+                            if option.rawValue == "All", let channelLength = channelData.channel?.length {
+                                Text("\(channelLength)")
+                                    .foregroundStyle(Color(content == option ? "surface-text-secondary" : "surface-tertiary"))
                             }
                         }
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 8)
-                        .background(Color("surface"))
-                        .cornerRadius(40)
                     }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(Color(content == option ? "surface-tertiary" : "surface"))
+                    .cornerRadius(16)
                 }
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .fontDesign(.rounded)
-                .fontWeight(.semibold)
-                .font(.system(size: 15))
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .fontDesign(.rounded)
+            .fontWeight(.semibold)
+            .font(.system(size: 15))
         }
         .scrollIndicators(.hidden)
-        .padding(.horizontal, 12)
-        .padding(.vertical, 16)
+        .padding(.bottom, 4)
     }
 }
 

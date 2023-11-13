@@ -27,7 +27,7 @@ struct ProfileView: View {
             ScrollView {
                 VStack(spacing: 16) {
                     HStack(spacing: 16) {
-                        ProfilePic(imageURL: userData.user?.avatarImage.display ?? "", initials: userData.user?.initials ?? "", fontSize: 20, dimension: 52, cornerRadius: 64) // TODO: Profile pics are zoomed in, need to fix
+                        ProfilePic(imageURL: userData.user?.avatarImage.display ?? "", initials: userData.user?.initials ?? "", fontSize: 12, dimension: 52, cornerRadius: 64) // TODO: Profile pics are zoomed in, need to fix
                         
                         VStack(alignment: .leading, spacing: 4) {
                             Text("\(userData.user?.fullName ?? "")")
@@ -50,6 +50,7 @@ struct ProfileView: View {
                                         }
                                     }
                                 }
+                                .contentShape(ContentShapeKinds.contextMenuPreview, RoundedRectangle(cornerRadius: 32))
                                 .contextMenu {
                                     Button {
                                         togglePin(channel.id)
@@ -71,7 +72,7 @@ struct ProfileView: View {
                     }
                 }
             }
-            .contentMargins(.bottom, 88)
+            .padding(.bottom, 8)
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden()
 //            .toolbar {
@@ -91,14 +92,14 @@ struct ProfileView: View {
             .toolbarBackground(Color("background"), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .background(Color("background"))
+            .refreshable {
+                do { try await Task.sleep(nanoseconds: 500_000_000) } catch {}
+                channelsData.refresh(userId: userId)
+                userData.refresh(userId: userId)
+            }
         }
         .contentMargins(.leading, 0, for: .scrollIndicators)
         .contentMargins(16)
-        .refreshable {
-            do { try await Task.sleep(nanoseconds: 500_000_000) } catch {}
-            channelsData.refresh(userId: userId)
-            userData.refresh(userId: userId)
-        }
     }
     
     private func togglePin(_ channelId: Int) {

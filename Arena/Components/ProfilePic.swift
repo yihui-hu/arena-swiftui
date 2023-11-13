@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Giffy
+import CachedAsyncImage
 
 struct ProfilePic: View {
     let imageURL: String
@@ -51,7 +52,7 @@ struct ProfilePic: View {
                 }
             }
         } else {
-            AsyncImage(url: url) { phase in
+            CachedAsyncImage(url: url) { phase in
                 switch phase {
                 case .success(let image):
                     ZStack {
@@ -62,6 +63,7 @@ struct ProfilePic: View {
                             .foregroundColor(Color("surface-text-secondary"))
                         
                         image
+                            .resizable()
                     }
                     .frame(width: dimension ?? 40, height: dimension ?? 40)
                     .clipShape(RoundedRectangle(cornerRadius: cornerRadius ?? 8))
@@ -85,5 +87,6 @@ struct ProfilePic: View {
 }
 
 #Preview {
-    ProfilePic(imageURL: "https://arena-avatars.s3.amazonaws.com/49570/small_810241674b087520dc397471c60c66dc.gif?1684382532", initials: "YH")
+    // ProfilePic(imageURL: "https://arena-avatars.s3.amazonaws.com/49570/small_810241674b087520dc397471c60c66dc.gif?1684382532", initials: "YH")
+    ProfilePic(imageURL: "https://arena-avatars.s3.amazonaws.com/353398/large_862ea9f73d62dd54ea6f8830580ddae1.png?1687531008", initials: "AP", fontSize: 12, dimension: 52, cornerRadius: 64)
 }

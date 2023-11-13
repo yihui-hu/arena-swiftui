@@ -7,29 +7,30 @@
 
 import SwiftUI
 
-// This is separate from actually displaying PDFs or playing MP3s -- do that in separate BlockContentScreen or something
+// TODO: For displaying PDFs or playing MP3s, do that in separate BlockContentScreen or something
 
-// For use in BlockView, since it has the highest quality images
+// MARK: BlockPreview for BlockView, since it has highest quality image
 struct BlockPreview: View {
     let blockData: Block?
     let fontSize: CGFloat?
     
     var body: some View {
-        let previewImgURL = blockData?.image?.display.url ?? nil
+        let previewImgURL = blockData?.image?.large.url ?? nil
         let previewText = blockData?.content ?? ""
         let previewAttachment = blockData?.attachment ?? nil
         // TODO: embeds
         
         VStack {
             if previewImgURL != nil {
-                ImagePreview(imageURL: previewImgURL!, isChannelCard: false)
+                ImagePreview(imageURL: previewImgURL!)
+                    .pinchToZoom()
             } else if previewText != "" {
                 GeometryReader { geometry in
                     ScrollView {
                         Text(previewText)
                             .foregroundStyle(Color("text-primary"))
                             .font(.system(size: fontSize ?? 16))
-                            .frame(minHeight: geometry.size.height) // Set the content’s min height to the parent
+                            .frame(minHeight: geometry.size.height)
                     }
                     .scrollIndicators(.hidden)
                     // Prevents parent refreshable from activating. Pray for this colleague's health: https://www.reddit.com/r/SwiftUI/comments/ynxzkd/prevent_refreshable_on_nested_scrollviews/
@@ -46,7 +47,7 @@ struct BlockPreview: View {
     }
 }
 
-// Preview for ChannelView blocks
+// MARK: ChannelViewBlockPreview for ChannelView
 struct ChannelViewBlockPreview: View {
     let blockData: Block?
     let fontSize: CGFloat?
@@ -60,7 +61,7 @@ struct ChannelViewBlockPreview: View {
         
         VStack {
             if previewImgURL != nil {
-                ImagePreview(imageURL: previewImgURL!, isChannelCard: false)
+                ImagePreview(imageURL: previewImgURL!)
             } else if previewText != "" {
                 Text(previewText)
                     .padding(16)
@@ -82,7 +83,7 @@ struct ChannelViewBlockPreview: View {
     }
 }
 
-// Preview for ChannelsView blocks in ChannelCard
+// MARK: ChannelCardBlockPreview for ChannelCard
 struct ChannelCardBlockPreview: View {
     let blockData: Block?
     let fontSize: CGFloat?

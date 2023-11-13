@@ -11,66 +11,60 @@ import Defaults
 struct PinnedChannelsView: View {
     @ObservedObject private var pinnedChannelsData = PinnedChannelsData()
     @Default(.pinnedChannels) var pinnedChannels
-
+    
     var body: some View {
         NavigationStack {
-            if pinnedChannelsData.pinnedChannels.isEmpty {
-                VStack(alignment: .center) {
-                    VStack(spacing: 16) {
-                        Image(systemName: "questionmark.folder.fill")
-                        Text("No pinned channels")
-                    }
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                .contentMargins(.bottom, 88)
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Text("Pinned")
-                            .font(.system(size: 20))
-                            .fontDesign(.rounded)
-                            .fontWeight(.semibold)
-                    }
-                }
-                .toolbarBackground(Color("background"), for: .navigationBar)
-                .toolbarBackground(.visible, for: .navigationBar)
-                .background(Color("background"))
-            } else {
-                ScrollView {
-                    LazyVStack(spacing: 12) {
-                        ForEach(pinnedChannelsData.channels ?? [], id: \.id) { channel in
-                            ChannelCard(channel: channel)
-                                .onAppear {
-                                    if let channels = pinnedChannelsData.channels, channels.count >= 2 {
-                                        if channels[channels.count - 2].id == channel.id {
-                                            pinnedChannelsData.loadMore()
-                                        }
-                                    }
-                                }
-                                .contextMenu {
-                                    Button {
-                                        togglePin(channel.id)
-                                    } label: {
-                                        Label(pinnedChannels.contains(channel.id) ? "Unpin" : "Pin", systemImage: pinnedChannels.contains(channel.id) ? "pin.slash.fill" : "pin.fill")
-                                    }
-                                }
+            VStack {
+                if pinnedChannelsData.pinnedChannels.isEmpty {
+                    VStack(alignment: .center) {
+                        VStack(spacing: 16) {
+                            Image(systemName: "questionmark.folder.fill")
+                            Text("No pinned channels")
                         }
                     }
-                }
-                .contentMargins(.bottom, 88)
-                .navigationBarTitleDisplayMode(.inline)
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Text("Pinned")
-                            .font(.system(size: 20))
-                            .fontDesign(.rounded)
-                            .fontWeight(.semibold)
+                } else {
+                    ScrollView {
+                        LazyVStack(spacing: 12) {
+                            ForEach(pinnedChannelsData.channels ?? [], id: \.id) { channel in
+                                ChannelCard(channel: channel)
+                                    .onAppear {
+                                        if let channels = pinnedChannelsData.channels, channels.count >= 2 {
+                                            if channels[channels.count - 2].id == channel.id {
+                                                pinnedChannelsData.loadMore()
+                                            }
+                                        }
+                                    }
+                                    .contentShape(ContentShapeKinds.contextMenuPreview, RoundedRectangle(cornerRadius: 32))
+                                    .contextMenu {
+                                        Button {
+                                            togglePin(channel.id)
+                                        } label: {
+                                            Label(pinnedChannels.contains(channel.id) ? "Unpin" : "Pin", systemImage: pinnedChannels.contains(channel.id) ? "pin.slash.fill" : "pin.fill")
+                                        }
+                                    }
+                            }
+                        }
+                    }
+                    .padding(.bottom, 8)
+                    .refreshable {
+                        do { try await Task.sleep(nanoseconds: 500_000_000) } catch {}
+                        pinnedChannelsData.refresh()
                     }
                 }
-                .toolbarBackground(Color("background"), for: .navigationBar)
-                .toolbarBackground(.visible, for: .navigationBar)
-                .background(Color("background"))
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Text("Pinned")
+                        .font(.system(size: 20))
+                        .fontDesign(.rounded)
+                        .fontWeight(.semibold)
+                }
+            }
+            .toolbarBackground(Color("background"), for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .background(Color("background"))
         }
         .contentMargins(.leading, 0, for: .scrollIndicators)
         .contentMargins(16)

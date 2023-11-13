@@ -1,122 +1,142 @@
 {
-  "pins" : [
-    {
-      "identity" : "bettersafariview",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/stleamist/BetterSafariView",
-      "state" : {
-        "branch" : "main",
-        "revision" : "884533749e55949b2566030948c6fdbe2873ed0c"
+  "object": {
+    "pins": [
+      {
+        "package": "BetterSafariView",
+        "repositoryURL": "https://github.com/stleamist/BetterSafariView",
+        "state": {
+          "branch": "main",
+          "revision": "884533749e55949b2566030948c6fdbe2873ed0c",
+          "version": null
+        }
+      },
+      {
+        "package": "DebouncedOnChange",
+        "repositoryURL": "https://github.com/Tunous/DebouncedOnChange.git",
+        "state": {
+          "branch": null,
+          "revision": "b699017e13966e35c9388c8cc97151c8883dda1e",
+          "version": "1.1.0"
+        }
+      },
+      {
+        "package": "Defaults",
+        "repositoryURL": "https://github.com/sindresorhus/Defaults",
+        "state": {
+          "branch": "main",
+          "revision": "d8a9f5105607c85b544558e7f5b51d6c360ba88b",
+          "version": null
+        }
+      },
+      {
+        "package": "FLAnimatedImage",
+        "repositoryURL": "https://github.com/Flipboard/FLAnimatedImage.git",
+        "state": {
+          "branch": null,
+          "revision": "d4f07b6f164d53c1212c3e54d6460738b1981e9f",
+          "version": "1.0.17"
+        }
+      },
+      {
+        "package": "Giffy",
+        "repositoryURL": "https://github.com/tfmart/giffy",
+        "state": {
+          "branch": "main",
+          "revision": "7300767fc9509ce7f86d9c6a2750ceb18f93a464",
+          "version": null
+        }
+      },
+      {
+        "package": "Kingfisher",
+        "repositoryURL": "https://github.com/onevcat/Kingfisher",
+        "state": {
+          "branch": null,
+          "revision": "277f1ab2c6664b19b4a412e32b094b201e2d5757",
+          "version": "7.10.0"
+        }
+      },
+      {
+        "package": "Modals",
+        "repositoryURL": "http://github.com/fieldday-ai/Modals.git",
+        "state": {
+          "branch": "main",
+          "revision": "b39c66a473dd6ba5309b4263027ccce514b08186",
+          "version": null
+        }
+      },
+      {
+        "package": "Pow",
+        "repositoryURL": "https://github.com/movingparts-io/Pow",
+        "state": {
+          "branch": "main",
+          "revision": "d5dc8370f8da53aa54cee9fa909cbe8d6d122ccc",
+          "version": null
+        }
+      },
+      {
+        "package": "SmoothGradient",
+        "repositoryURL": "https://github.com/raymondjavaxx/SmoothGradient.git",
+        "state": {
+          "branch": null,
+          "revision": "61bf248fad31c7921c9985b418e6e9297cd7b861",
+          "version": "1.0.0"
+        }
+      },
+      {
+        "package": "swift-collections",
+        "repositoryURL": "https://github.com/apple/swift-collections",
+        "state": {
+          "branch": null,
+          "revision": "a902f1823a7ff3c9ab2fba0f992396b948eda307",
+          "version": "1.0.5"
+        }
+      },
+      {
+        "package": "swift-identified-collections",
+        "repositoryURL": "https://github.com/pointfreeco/swift-identified-collections",
+        "state": {
+          "branch": null,
+          "revision": "d1e45f3e1eee2c9193f5369fa9d70a6ddad635e8",
+          "version": "1.0.0"
+        }
+      },
+      {
+        "package": "swiftui-cached-async-image",
+        "repositoryURL": "https://github.com/lorenzofiamingo/swiftui-cached-async-image",
+        "state": {
+          "branch": null,
+          "revision": "467a3d17479887943ab917a379e62bbaff60ac8a",
+          "version": "2.1.1"
+        }
+      },
+      {
+        "package": "SwiftUI-Shimmer",
+        "repositoryURL": "https://github.com/markiv/SwiftUI-Shimmer",
+        "state": {
+          "branch": null,
+          "revision": "1f3a620e4abe890d00008cb2af7023d810b433a7",
+          "version": "1.4.0"
+        }
+      },
+      {
+        "package": "swiftui-tab-bar",
+        "repositoryURL": "https://github.com/zijievv/swiftui-tab-bar#visibility-with-animation-and-transition",
+        "state": {
+          "branch": null,
+          "revision": "ea2d605173e0fb2d101509f413a96953ac40e979",
+          "version": "1.0.0"
+        }
+      },
+      {
+        "package": "swiftui-vertical-tab-view",
+        "repositoryURL": "https://github.com/lorenzofiamingo/swiftui-vertical-tab-view",
+        "state": {
+          "branch": null,
+          "revision": "e029f75f9c43e52e351528a78e293a997200b9f8",
+          "version": "2.0.0"
+        }
       }
-    },
-    {
-      "identity" : "debouncedonchange",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Tunous/DebouncedOnChange.git",
-      "state" : {
-        "revision" : "b699017e13966e35c9388c8cc97151c8883dda1e",
-        "version" : "1.1.0"
-      }
-    },
-    {
-      "identity" : "defaults",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/sindresorhus/Defaults",
-      "state" : {
-        "branch" : "main",
-        "revision" : "d8a9f5105607c85b544558e7f5b51d6c360ba88b"
-      }
-    },
-    {
-      "identity" : "flanimatedimage",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Flipboard/FLAnimatedImage.git",
-      "state" : {
-        "revision" : "d4f07b6f164d53c1212c3e54d6460738b1981e9f",
-        "version" : "1.0.17"
-      }
-    },
-    {
-      "identity" : "giffy",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/tfmart/giffy",
-      "state" : {
-        "branch" : "main",
-        "revision" : "7300767fc9509ce7f86d9c6a2750ceb18f93a464"
-      }
-    },
-    {
-      "identity" : "modals",
-      "kind" : "remoteSourceControl",
-      "location" : "http://github.com/fieldday-ai/Modals.git",
-      "state" : {
-        "branch" : "main",
-        "revision" : "b39c66a473dd6ba5309b4263027ccce514b08186"
-      }
-    },
-    {
-      "identity" : "pow",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/movingparts-io/Pow",
-      "state" : {
-        "branch" : "main",
-        "revision" : "d5dc8370f8da53aa54cee9fa909cbe8d6d122ccc"
-      }
-    },
-    {
-      "identity" : "swift-collections",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/apple/swift-collections",
-      "state" : {
-        "revision" : "a902f1823a7ff3c9ab2fba0f992396b948eda307",
-        "version" : "1.0.5"
-      }
-    },
-    {
-      "identity" : "swift-identified-collections",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/pointfreeco/swift-identified-collections",
-      "state" : {
-        "revision" : "d1e45f3e1eee2c9193f5369fa9d70a6ddad635e8",
-        "version" : "1.0.0"
-      }
-    },
-    {
-      "identity" : "swiftui-cached-async-image",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/lorenzofiamingo/swiftui-cached-async-image",
-      "state" : {
-        "revision" : "467a3d17479887943ab917a379e62bbaff60ac8a",
-        "version" : "2.1.1"
-      }
-    },
-    {
-      "identity" : "swiftui-shimmer",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/markiv/SwiftUI-Shimmer",
-      "state" : {
-        "revision" : "1f3a620e4abe890d00008cb2af7023d810b433a7",
-        "version" : "1.4.0"
-      }
-    },
-    {
-      "identity" : "swiftui-tab-bar#visibility-with-animation-and-transition",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/zijievv/swiftui-tab-bar#visibility-with-animation-and-transition",
-      "state" : {
-        "revision" : "ea2d605173e0fb2d101509f413a96953ac40e979",
-        "version" : "1.0.0"
-      }
-    },
-    {
-      "identity" : "swiftui-vertical-tab-view",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/lorenzofiamingo/swiftui-vertical-tab-view",
-      "state" : {
-        "revision" : "e029f75f9c43e52e351528a78e293a997200b9f8",
-        "version" : "2.0.0"
-      }
-    }
-  ],
-  "version" : 2
+    ]
+  },
+  "version": 1
 }
