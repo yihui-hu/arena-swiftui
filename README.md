@@ -76,3 +76,4 @@ Most of the data fetching logic can be found in the Data folder, with "data fetc
 - [Supporting different view size (iPad, iPhone, split screen, etc.)](https://stackoverflow.com/questions/57652242/how-to-detect-whether-targetenvironment-is-ipados-in-swiftui)
 - [Perform action when view is within viewport, not naively using `.onAppear`](https://stackoverflow.com/questions/60595900/how-to-check-if-a-view-is-displayed-on-the-screen-swift-5-and-swiftui)
 - [Vertically center content in ScrollView](https://stackoverflow.com/questions/58122998/swiftui-vertical-centering-content-inside-scrollview)
+- [Show duplicate items in ForEach, needed because Are.na API block search could return duplicates](https://stackoverflow.com/questions/59295206/how-do-you-use-enumerated-with-foreach-in-swiftui)

@@ -67,21 +67,23 @@ struct SearchView: View {
                         .font(.system(size: 15))
                     }
                 }
-                .padding(.top, 16)
                 .padding(.horizontal, 16)
+                .padding(.top, 16)
+                .padding(.bottom, 4)
                 
                 ZStack {
                     GeometryReader { geometry in
                         LinearGradient(
-                            gradient: .smooth(from: Color("background"), to: Color("modal").opacity(0), curve: .easeInOut),
+                            gradient: .smooth(from: Color("background"), to: Color("background").opacity(0), curve: .easeInOut),
                             startPoint: .top,
                             endPoint: .bottom
                         )
                         .frame(height: 88)
                         .position(x: geometry.size.width / 2, y: 44)
                         .opacity(showGradient ? 1 : 0)
-                        .animation(.easeInOut(duration: 0.3))
+                        .animation(.easeInOut(duration: 0.2), value: UUID())
                     }
+                    .allowsHitTesting(false) // Allows items underneath to be tapped
                     .zIndex(2)
                     
                     ScrollView {
@@ -102,7 +104,8 @@ struct SearchView: View {
                                             }
                                         }
                                     } else if selection == "Blocks" {
-                                        ForEach(searchResults.blocks, id: \.id) { block in
+                                        // Zipping required because searchResults.blocks might contain duplicate ids
+                                        ForEach(Array(zip(searchResults.blocks.indices, searchResults.blocks)), id: \.0) { _, block in
                                             NavigationLink(destination: SingleBlockView(blockId: block.id)) {
                                                 SearchBlockPreview(searchBlock: block)
                                             }
@@ -130,9 +133,9 @@ struct SearchView: View {
                                     }
                                 }
                             }
-                            .onChange(of: scrollOffset) { offset in
+                            .onChange(of: scrollOffset) { _, offset in
                                 withAnimation {
-                                    showGradient = offset > -8
+                                    showGradient = offset > -4
                                 }
                             }
                             .background(GeometryReader { proxy -> Color in
@@ -141,6 +144,16 @@ struct SearchView: View {
                                 }
                                 return Color.clear
                             })
+                            
+                            if searchData.isLoading, searchTerm != "" {
+                                LoadingSpinner()
+                            }
+                            
+                            // Make a searchData.finishedLoading state
+                            if searchData.currentPage > searchData.totalPages, searchTerm != "" {
+                                Text("End of search")
+                                    .foregroundStyle(Color("surface-text-secondary"))
+                            }
                         }
                         
                     }
@@ -157,7 +170,8 @@ struct SearchView: View {
             }
         }
         .contentMargins(.leading, 0, for: .scrollIndicators)
-        .contentMargins(16)
+        .contentMargins(.top, 4)
+        .contentMargins(.horizontal, 16)
     }
 }
 struct SearchChannelPreview: View {
@@ -198,13 +212,14 @@ struct SearchUserPreview: View {
     
     var body: some View {
         HStack(spacing: 12) {
-            ProfilePic(imageURL: searchUser.avatarImage.thumb, initials: searchUser.initials)
+            ProfilePic(imageURL: searchUser.avatarImage.display, initials: searchUser.initials)
             
             Text("\(searchUser.username)")
                 .lineLimit(1)
                 .fontWeight(.medium)
                 .fontDesign(.rounded)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -222,8 +237,9 @@ struct SearchBlockPreview: View {
                         .clipShape(RoundedRectangle(cornerRadius: 8))
                 }
                 .retry(maxCount: 3, interval: .seconds(5))
-                .resizable()
-                .animation(nil) // TODO: Fix unpredictable KFImage animation
+                .fade(duration: 0.2)
+                .backgroundDecode()
+                .cancelOnDisappear(true)
                 .aspectRatio(contentMode: .fit)
                 .frame(width: 40, height: 40)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
@@ -233,6 +249,7 @@ struct SearchBlockPreview: View {
                 .fontWeight(.medium)
                 .fontDesign(.rounded)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 

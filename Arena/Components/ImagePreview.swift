@@ -57,36 +57,13 @@ struct ImagePreview: View {
                     ImageLoading()
                 }
                 .retry(maxCount: 3, interval: .seconds(5))
+                .fade(duration: 0.2)
+                .backgroundDecode()
+                .cancelOnDisappear(true)
 //                .onFailureImage(KFImage(url: )) // TODO: Produce onFailureImage lol
                 .resizable()
-                .animation(nil)
                 .aspectRatio(contentMode: .fit)
-                .opacity(opacity)
-                .onAppear {
-                    withAnimation(.easeIn(duration: 0.2)) {
-                        opacity = 1
-                    }
-                }
-//            CachedAsyncImage(url: url) { phase in
-//                switch phase {
-//                case .success(let image):
-//                    image
-//                        .resizable()
-//                        .aspectRatio(contentMode: .fit)
-//                        .opacity(opacity)
-//                        .onAppear {
-//                            withAnimation(.easeIn(duration: 0.2)) {
-//                                opacity = 1
-//                            }
-//                        }
-//                case .empty:
-//                    ImageLoading()
-//                case .failure(_):
-//                    ImageError()
-//                default:
-//                    ImageLoading()
-//                }
-//            }
+
             .frame(alignment: .center)
         }
     }

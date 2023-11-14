@@ -3,7 +3,7 @@
 //  Arena
 //
 //  Created by Yihui Hu on 11/11/23.
-//  https://copyprogramming.com/howto/isn-t-there-an-easy-way-to-pinch-to-zoom-in-an-image-in-swiftui
+//  Adapted from https://copyprogramming.com/howto/isn-t-there-an-easy-way-to-pinch-to-zoom-in-an-image-in-swiftui
 //
 
 import Foundation
@@ -123,7 +123,7 @@ struct PinchToZoom: ViewModifier {
         content
             .scaleEffect(scale, anchor: anchor)
             .offset(offset)
-            .animation(isPinching ? .none : .spring())
+            .animation(isPinching ? .none : .spring(), value: UUID())
             .overlay(PinchZoom(scale: $scale, anchor: $anchor, offset: $offset, isPinching: $isPinching))
     }
 }
