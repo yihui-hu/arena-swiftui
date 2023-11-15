@@ -7,18 +7,21 @@
 
 import SwiftUI
 import DebouncedOnChange
-import Kingfisher
 import SmoothGradient
+import NukeUI
+import Defaults
 
 struct SearchView: View {
+    @StateObject private var searchData: SearchData
     @State private var searchTerm: String = ""
     @State private var selection: String = "Channels"
     @State private var changedSelection: Bool = false
     @State private var isButtonFaded = false
-    @StateObject private var searchData: SearchData
     @State private var scrollOffset: CGFloat = 0
     @State private var showGradient = false
     
+    @Default(.pinnedChannels) var pinnedChannels
+
     init() {
         self._searchData = StateObject(wrappedValue: SearchData())
     }
@@ -93,7 +96,7 @@ struct SearchView: View {
                                     if selection == "Channels" {
                                         ForEach(searchResults.channels, id: \.id) { channel in
                                             NavigationLink(destination: ChannelView(channelSlug: channel.slug)) {
-                                                SearchChannelPreview(channel: channel)
+                                                SearchChannelPreview(channel: channel, pinnedChannels: $pinnedChannels)
                                             }
                                             .onAppear {
                                                 if searchResults.channels.last?.id ?? -1 == channel.id {
@@ -174,24 +177,36 @@ struct SearchView: View {
         .contentMargins(.horizontal, 16)
     }
 }
+
 struct SearchChannelPreview: View {
     let channel: ArenaSearchedChannel
+    @Binding var pinnedChannels: [Int]
     
     var body: some View {
         VStack(spacing: 8) {
-            HStack(spacing: 4) {
-                if channel.status != "closed" {
-                    Image(systemName: "circle.fill")
-                        .scaleEffect(0.5)
-                        .foregroundColor(channel.status == "public" ? Color.green : Color.red)
+            HStack {
+                HStack(spacing: 4) {
+                    if channel.status != "closed" {
+                        Image(systemName: "circle.fill")
+                            .scaleEffect(0.5)
+                            .foregroundColor(channel.status == "public" ? Color.green : Color.red)
+                    }
+                    
+                    Text("\(channel.title)")
+                        .font(.system(size: 16))
+                        .lineLimit(1)
+                        .fontDesign(.rounded)
+                        .fontWeight(.medium)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 
-                Text("\(channel.title)")
-                    .font(.system(size: 16))
-                    .lineLimit(1)
-                    .fontDesign(.rounded)
-                    .fontWeight(.medium)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                Spacer()
+                
+                if (pinnedChannels.contains(channel.id)) {
+                    Image(systemName: "pin.fill")
+                        .foregroundStyle(Color("surface-text-secondary"))
+                        .imageScale(.small)
+                }
             }
             
             Text("\(channel.user.username) • \(channel.length) items")
@@ -204,6 +219,22 @@ struct SearchChannelPreview: View {
         .frame(maxWidth: .infinity)
         .background(Color("surface"))
         .cornerRadius(16)
+        .contentShape(ContentShapeKinds.contextMenuPreview, RoundedRectangle(cornerRadius: 16))
+        .contextMenu {
+            Button {
+                togglePin(channel.id)
+            } label: {
+                Label(pinnedChannels.contains(channel.id) ? "Unpin" : "Pin", systemImage: pinnedChannels.contains(channel.id) ? "pin.slash.fill" : "pin.fill")
+            }
+        }
+    }
+    
+    private func togglePin(_ channelId: Int) {
+        if pinnedChannels.contains(channelId) {
+            pinnedChannels.removeAll { $0 == channelId }
+        } else {
+            pinnedChannels.append(channelId)
+        }
     }
 }
 
@@ -225,22 +256,11 @@ struct SearchUserPreview: View {
 
 struct SearchBlockPreview: View {
     let searchBlock: ArenaSearchedBlock
-    
+    @State private var opacity: Double = 0
+
     var body: some View {
         HStack(spacing: 12) {
-            KFImage(URL(string: searchBlock.image?.thumb.url ?? ""))
-                .placeholder {
-                    Image(systemName: "photo")
-                        .foregroundColor(Color("surface-text-secondary"))
-                        .frame(width: 40, height: 40)
-                        .background(Color("surface"))
-                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                }
-                .retry(maxCount: 3, interval: .seconds(5))
-                .fade(duration: 0.2)
-                .backgroundDecode()
-                .cancelOnDisappear(true)
-                .aspectRatio(contentMode: .fit)
+            ImagePreview(imageURL: searchBlock.image?.thumb.url ?? "")
                 .frame(width: 40, height: 40)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
             

@@ -17,7 +17,7 @@ struct ChannelCardContentPreview: View {
                 ChannelCardBlockPreview(blockData: block, fontSize: 14)
                     .background(Color("surface-secondary"))
             } else {
-                ChannelPreview(blockData: block, fontSize: 14)
+                ChannelPreview(blockData: block, fontSize: 14, display: "Default")
                     .frame(width: 132, height: 132)
                     .background(Color("surface-secondary"))
             }

@@ -7,9 +7,9 @@
 
 import SwiftUI
 import Giffy
-import CachedAsyncImage
 import Shimmer
-import Kingfisher
+import Nuke
+import NukeUI
 
 struct ImagePreview: View {
     let imageURL: String
@@ -34,7 +34,7 @@ struct ImagePreview: View {
                                 .aspectRatio(contentMode: .fit)
                                 .opacity(opacity)
                                 .onAppear {
-                                    withAnimation(.easeIn(duration: 0.2)) {
+                                    withAnimation(.easeIn(duration: 0.1)) {
                                         opacity = 1
                                     }
                                 }
@@ -44,7 +44,7 @@ struct ImagePreview: View {
                     }
                     .opacity(opacity)
                     .onAppear {
-                        withAnimation(.easeIn(duration: 0.2)) {
+                        withAnimation(.easeIn(duration: 0.1)) {
                             opacity = 1
                         }
                     }
@@ -52,19 +52,24 @@ struct ImagePreview: View {
             }
             .frame(alignment: .center)
         } else {
-            KFImage(url)
-                .placeholder {
+            LazyImage(url: url) { state in
+                if let image = state.image {
+                    image
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(alignment: .center)
+                        .opacity(opacity)
+                        .onAppear {
+                            withAnimation(.easeIn(duration: 0.1)) {
+                                opacity = 1
+                            }
+                        }
+                } else if state.error != nil {
+                    ImageError()
+                } else {
                     ImageLoading()
                 }
-                .retry(maxCount: 3, interval: .seconds(5))
-                .fade(duration: 0.2)
-                .backgroundDecode()
-                .cancelOnDisappear(true)
-//                .onFailureImage(KFImage(url: )) // TODO: Produce onFailureImage lol
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-
-            .frame(alignment: .center)
+            }
         }
     }
 }

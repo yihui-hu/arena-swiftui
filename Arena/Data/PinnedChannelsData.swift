@@ -23,6 +23,7 @@ final class PinnedChannelsData: ObservableObject {
     }
     
     final func loadMore() {
+        print("Fetching more pinned channels")
         fetchChannels(refresh: false)
     }
     
@@ -40,6 +41,7 @@ final class PinnedChannelsData: ObservableObject {
 
         let startIndex = lastProcessedIndex
         let endIndex = min(lastProcessedIndex + batchSize, pinnedChannels.count)
+        print(startIndex, endIndex)
 
         guard startIndex < endIndex else {
             // All channels have been processed
@@ -76,7 +78,6 @@ final class PinnedChannelsData: ObservableObject {
                     do {
                         let channelContent = try decoder.decode(ArenaChannelPreview.self, from: data)
                         DispatchQueue.main.async {
-                            // Ensure the update to channels happens on the main thread
                             var updatedChannels = self.channels ?? []
                             if !refresh {
                                 updatedChannels.append(channelContent)

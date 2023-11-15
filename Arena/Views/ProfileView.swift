@@ -27,15 +27,16 @@ struct ProfileView: View {
             ScrollView {
                 VStack(spacing: 16) {
                     HStack(spacing: 16) {
-                        ProfilePic(imageURL: userData.user?.avatarImage.display ?? "", initials: userData.user?.initials ?? "", fontSize: 12, dimension: 52, cornerRadius: 64) // TODO: Profile pics are zoomed in, need to fix
+                        ProfilePic(imageURL: userData.user?.avatarImage.display ?? "", initials: userData.user?.initials ?? "", fontSize: 12, dimension: 52, cornerRadius: 64)
                         
                         VStack(alignment: .leading, spacing: 4) {
                             Text("\(userData.user?.fullName ?? "")")
+                                .foregroundStyle(Color("text-primary"))
                                 .fontDesign(.rounded)
                                 .fontWeight(.semibold)
                             Text("\(userData.user?.createdAt ?? "")") // TODO: Figure out timestamp thing
-                                .font(.system(size: 14))
                                 .foregroundStyle(Color("surface-text-secondary"))
+                                .font(.system(size: 14))
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)

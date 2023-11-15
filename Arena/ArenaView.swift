@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import TabBarModule
 import StatefulTabView
 import Pow
 import Defaults

@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import VTabView
 import Modals
 import BetterSafariView
 import SmoothGradient
@@ -294,7 +293,7 @@ struct BlockView: View {
                     Button(action: {
                         dismiss()
                     }) {
-                        Image(systemName: "chevron.backward")
+                        BackButton()
                     }
                 }
             }

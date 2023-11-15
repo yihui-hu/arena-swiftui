@@ -47,21 +47,21 @@
         }
       },
       {
-        "package": "Kingfisher",
-        "repositoryURL": "https://github.com/onevcat/Kingfisher",
-        "state": {
-          "branch": null,
-          "revision": "277f1ab2c6664b19b4a412e32b094b201e2d5757",
-          "version": "7.10.0"
-        }
-      },
-      {
         "package": "Modals",
         "repositoryURL": "http://github.com/fieldday-ai/Modals.git",
         "state": {
           "branch": "main",
           "revision": "b39c66a473dd6ba5309b4263027ccce514b08186",
           "version": null
+        }
+      },
+      {
+        "package": "Nuke",
+        "repositoryURL": "https://github.com/kean/Nuke",
+        "state": {
+          "branch": null,
+          "revision": "3f666f120b63ea7de57d42e9a7c9b47f8e7a290b",
+          "version": "12.1.6"
         }
       },
       {
@@ -101,39 +101,12 @@
         }
       },
       {
-        "package": "swiftui-cached-async-image",
-        "repositoryURL": "https://github.com/lorenzofiamingo/swiftui-cached-async-image",
-        "state": {
-          "branch": null,
-          "revision": "467a3d17479887943ab917a379e62bbaff60ac8a",
-          "version": "2.1.1"
-        }
-      },
-      {
         "package": "SwiftUI-Shimmer",
         "repositoryURL": "https://github.com/markiv/SwiftUI-Shimmer",
         "state": {
           "branch": null,
           "revision": "1f3a620e4abe890d00008cb2af7023d810b433a7",
           "version": "1.4.0"
-        }
-      },
-      {
-        "package": "swiftui-tab-bar",
-        "repositoryURL": "https://github.com/zijievv/swiftui-tab-bar#visibility-with-animation-and-transition",
-        "state": {
-          "branch": null,
-          "revision": "ea2d605173e0fb2d101509f413a96953ac40e979",
-          "version": "1.0.0"
-        }
-      },
-      {
-        "package": "swiftui-vertical-tab-view",
-        "repositoryURL": "https://github.com/lorenzofiamingo/swiftui-vertical-tab-view",
-        "state": {
-          "branch": null,
-          "revision": "e029f75f9c43e52e351528a78e293a997200b9f8",
-          "version": "2.0.0"
         }
       }
     ]

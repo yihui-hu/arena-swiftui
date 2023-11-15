@@ -28,7 +28,7 @@ struct SingleBlockView: View {
                 Button(action: {
                     dismiss()
                 }) {
-                    Image(systemName: "chevron.backward")
+                    BackButton()
                 }
             }
         }

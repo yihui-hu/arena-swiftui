@@ -36,10 +36,8 @@ struct ChannelView: View {
     
     @State private var selection = SortOption.position
     let sortOptions = SortOption.allCases
-    
     @State private var display = DisplayOption.grid
     let displayOptions = DisplayOption.allCases
-    
     @State private var content = ContentOption.all
     let contentOptions = ContentOption.allCases
     
@@ -52,6 +50,31 @@ struct ChannelView: View {
         self._channelData = StateObject(wrappedValue: ChannelData(channelSlug: channelSlug, selection: SortOption.position))
     }
     
+    var displayLabel: some View {
+        switch display {
+        case .grid:
+            return Image(systemName: "square.grid.2x2")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 18, height: 18)
+        case .largeGrid:
+            return Image(systemName: "square.grid.3x3")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 18, height: 18)
+        case .table:
+            return Image(systemName: "rectangle.grid.1x2")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 18, height: 18)
+        case .feed:
+            return Image(systemName: "square")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 18, height: 18)
+        }
+    }
+    
     @ViewBuilder
     private func destinationView(for block: Block, channelData: ChannelData, channelSlug: String) -> some View {
         if block.baseClass == "Block" {
@@ -61,19 +84,7 @@ struct ChannelView: View {
         }
     }
     
-    var displayLabel: Image {
-        switch display {
-        case .grid:
-            return Image(systemName: "square.grid.2x2")
-        case .largeGrid:
-            return Image(systemName: "square.grid.3x3")
-        case .table:
-            return Image(systemName: "rectangle.grid.1x2")
-        case .feed:
-            return Image(systemName: "square")
-        }
-    }
-    
+    @ViewBuilder
     private func ChannelViewContents(gridItemSize: CGFloat) -> some View {
         ForEach(channelData.contents ?? [], id: \.self.id) { block in
             NavigationLink(destination: destinationView(for: block, channelData: channelData, channelSlug: channelSlug)) {
@@ -91,7 +102,7 @@ struct ChannelView: View {
         
         // Setting up grid
         let gridGap: CGFloat = 8
-        let gridSpacing = display.rawValue != "Large Grid" ? gridGap + 16 : gridGap
+        let gridSpacing = display.rawValue != "Large Grid" ? gridGap + 8 : gridGap
         let gridColumns: [GridItem] = Array(repeating: .init(.flexible(), spacing: gridGap), count: display.rawValue == "Grid" ? 2 : display.rawValue == "Large Grid" ? 3 : 1)
         let gridItemSize = display.rawValue == "Grid" ? (UIScreen.main.bounds.width - (gridGap * 3)) / 2 : display.rawValue == "Large Grid" ? (UIScreen.main.bounds.width - (gridGap * 4)) / 3 : (UIScreen.main.bounds.width - (gridGap * 2))
         
@@ -136,12 +147,12 @@ struct ChannelView: View {
                     Button(action: {
                         dismiss()
                     }) {
-                        Image(systemName: "chevron.backward")
+                        BackButton()
                     }
                 }
                 
                 ToolbarItem(placement: .topBarTrailing) {
-                    HStack(spacing: 4) {
+                    HStack(spacing: 8) {
                         //                        Button(action: {
                         //                            dismiss()
                         //                        }) {
@@ -166,6 +177,9 @@ struct ChannelView: View {
                             }
                         } label: {
                             Image(systemName: "arrow.up.arrow.down")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 20, height: 20)
                         }
                     }
                     .foregroundStyle(Color("surface-text-secondary"))
@@ -292,36 +306,36 @@ struct ChannelViewHeader: View {
         }
         .padding(12)
         
-        // MARK: Channel Content Options
-        ScrollView(.horizontal) {
-            HStack(spacing: 8) {
-                ForEach(contentOptions, id: \.self) { option in
-                    Button(action: {
-                        content = option
-                    }) {
-                        HStack(spacing: 8) {
-                            Text("\(option.rawValue)")
-                                .foregroundStyle(Color(content == option ? "text-primary" : "surface-text-secondary"))
-                            
-                            if option.rawValue == "All", let channelLength = channelData.channel?.length {
-                                Text("\(channelLength)")
-                                    .foregroundStyle(Color(content == option ? "surface-text-secondary" : "surface-tertiary"))
-                            }
-                        }
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
-                    .background(Color(content == option ? "surface-tertiary" : "surface"))
-                    .cornerRadius(16)
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .fontDesign(.rounded)
-            .fontWeight(.semibold)
-            .font(.system(size: 15))
-        }
-        .scrollIndicators(.hidden)
-        .padding(.bottom, 4)
+        //        // MARK: Channel Content Options
+        //        ScrollView(.horizontal) {
+        //            HStack(spacing: 8) {
+        //                ForEach(contentOptions, id: \.self) { option in
+        //                    Button(action: {
+        //                        content = option
+        //                    }) {
+        //                        HStack(spacing: 8) {
+        //                            Text("\(option.rawValue)")
+        //                                .foregroundStyle(Color(content == option ? "text-primary" : "surface-text-secondary"))
+        //
+        //                            if option.rawValue == "All", let channelLength = channelData.channel?.length {
+        //                                Text("\(channelLength)")
+        //                                    .foregroundStyle(Color(content == option ? "surface-text-secondary" : "surface-tertiary"))
+        //                            }
+        //                        }
+        //                    }
+        //                    .padding(.horizontal, 16)
+        //                    .padding(.vertical, 8)
+        //                    .background(Color(content == option ? "surface-tertiary" : "surface"))
+        //                    .cornerRadius(16)
+        //                }
+        //            }
+        //            .frame(maxWidth: .infinity, alignment: .leading)
+        //            .fontDesign(.rounded)
+        //            .fontWeight(.semibold)
+        //            .font(.system(size: 15))
+        //        }
+        //        .scrollIndicators(.hidden)
+        //        .padding(.bottom, 4)
     }
 }
 

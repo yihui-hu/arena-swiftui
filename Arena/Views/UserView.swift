@@ -22,7 +22,7 @@ struct UserView: View {
                 Button(action: {
                     dismiss()
                 }) {
-                    Image(systemName: "chevron.backward")
+                    BackButton()
                 }
             }
         }

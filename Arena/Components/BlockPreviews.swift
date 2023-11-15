@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import BetterSafariView
 
 // TODO: For displaying PDFs or playing MP3s, do that in separate BlockContentScreen or something
 
@@ -13,17 +14,58 @@ import SwiftUI
 struct BlockPreview: View {
     let blockData: Block?
     let fontSize: CGFloat?
+    @State private var presentingSafariView = false
     
     var body: some View {
+        let previewContentClass = blockData?.contentClass ?? ""
+        let previewTitle = blockData?.title ?? ""
         let previewImgURL = blockData?.image?.large.url ?? nil
         let previewText = blockData?.content ?? ""
         let previewAttachment = blockData?.attachment ?? nil
+        let previewURL = previewContentClass == "Link" ? blockData?.source?.url : previewImgURL
         // TODO: embeds
         
         VStack {
             if previewImgURL != nil {
-                ImagePreview(imageURL: previewImgURL!)
-                    .pinchToZoom()
+                VStack(alignment: .leading) {
+                    if previewContentClass == "Link" {
+                        HStack(spacing: 4) {
+                            Text("\(previewTitle)")
+                                .foregroundStyle(Color("text-primary"))
+                                .lineLimit(1)
+                            
+                            Image(systemName: "link")
+                                .foregroundStyle(Color("surface-text-secondary"))
+                                .imageScale(.small)
+                            
+                            Text("\(previewURL ?? "")")
+                                .lineLimit(1)
+                        }
+                        .font(.system(size: 13))
+                        .padding(.vertical, 4)
+                        .padding(.horizontal, 8)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .border(Color("surface-secondary"))
+                    }
+                    
+                    ImagePreview(imageURL: previewImgURL!)
+                        .pinchToZoom()
+                }
+                .onTapGesture {
+                    self.presentingSafariView = true
+                }
+                .safariView(isPresented: $presentingSafariView) {
+                    SafariView(
+                        url: URL(string: previewURL!)!,
+                        configuration: SafariView.Configuration(
+                            entersReaderIfAvailable: false,
+                            barCollapsingEnabled: true
+                        )
+                    )
+                    .preferredBarAccentColor(.clear)
+                    .preferredControlAccentColor(.accentColor)
+                    .dismissButtonStyle(.done)
+                }
             } else if previewText != "" {
                 GeometryReader { geometry in
                     ScrollView {
@@ -64,9 +106,10 @@ struct ChannelViewBlockPreview: View {
                 ImagePreview(imageURL: previewImgURL!)
             } else if previewText != "" {
                 Text(previewText)
-                    .padding(16)
+                    .padding(display == "Table" ? 8 : display == "Large Grid" ? 12 : 16)
                     .foregroundStyle(Color("text-primary"))
                     .font(.system(size: fontSize ?? 16))
+                    .multilineTextAlignment(.leading)
             } else if previewAttachment != nil {
                 Text(previewAttachment?.fileExtension ?? "")
                     .padding(12)
@@ -75,7 +118,7 @@ struct ChannelViewBlockPreview: View {
                         RoundedRectangle(cornerRadius: 16)
                             .fill(Color("surface"))
                     )
-                    .font(.system(size: fontSize ?? 16))
+                    .font(.system(size: display == "Table" ? 12 : fontSize ?? 16))
             } else {
                 Text("No preview available.")
             }
@@ -104,6 +147,7 @@ struct ChannelCardBlockPreview: View {
                     .frame(width: 132, height: 132)
                     .foregroundStyle(Color("text-primary"))
                     .font(.system(size: fontSize ?? 16))
+                    .multilineTextAlignment(.leading)
             } else if previewAttachment != nil {
                 Text(previewAttachment?.fileExtension ?? "")
                     .padding(12)

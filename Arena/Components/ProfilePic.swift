@@ -7,7 +7,7 @@
 
 import SwiftUI
 import Giffy
-import CachedAsyncImage
+import NukeUI
 
 struct ProfilePic: View {
     let imageURL: String
@@ -15,6 +15,7 @@ struct ProfilePic: View {
     let fontSize: CGFloat?
     let dimension: CGFloat?
     let cornerRadius: CGFloat?
+    @State private var opacity: Double = 0
     
     init(imageURL: String, initials: String, fontSize: CGFloat? = 12, dimension: CGFloat? = 40, cornerRadius: CGFloat? = 8) {
         self.imageURL = imageURL
@@ -52,9 +53,8 @@ struct ProfilePic: View {
                 }
             }
         } else {
-            CachedAsyncImage(url: url) { phase in
-                switch phase {
-                case .success(let image):
+            LazyImage(url: url) { state in
+                if let image = state.image {
                     ZStack {
                         Color("surface")
                         
@@ -67,13 +67,19 @@ struct ProfilePic: View {
                     }
                     .frame(width: dimension ?? 40, height: dimension ?? 40)
                     .clipShape(RoundedRectangle(cornerRadius: cornerRadius ?? 8))
-                case .empty, .failure(_):
-                    Image(systemName: "photo")
+                        .opacity(opacity)
+                        .onAppear {
+                            withAnimation(.easeIn(duration: 0.1)) {
+                                opacity = 1
+                            }
+                        }
+                } else if state.error != nil {
+                    Image(systemName: "questionmark.folder.fill")
                         .foregroundColor(Color("surface-text-secondary"))
                         .frame(width: dimension ?? 40, height: dimension ?? 40)
                         .background(Color("surface"))
                         .clipShape(RoundedRectangle(cornerRadius: cornerRadius ?? 8))
-                default:
+                } else {
                     Image(systemName: "photo")
                         .foregroundColor(Color("surface-text-secondary"))
                         .frame(width: dimension ?? 40, height: dimension ?? 40)
@@ -87,6 +93,6 @@ struct ProfilePic: View {
 }
 
 #Preview {
-    // ProfilePic(imageURL: "https://arena-avatars.s3.amazonaws.com/49570/small_810241674b087520dc397471c60c66dc.gif?1684382532", initials: "YH")
-    ProfilePic(imageURL: "https://arena-avatars.s3.amazonaws.com/353398/large_862ea9f73d62dd54ea6f8830580ddae1.png?1687531008", initials: "AP", fontSize: 12, dimension: 52, cornerRadius: 64)
+    ProfilePic(imageURL: "https://arena-avatars.s3.amazonaws.com/49570/small_810241674b087520dc397471c60c66dc.gif?1684382532", initials: "YH")
+    // ProfilePic(imageURL: "https://arena-avatars.s3.amazonaws.com/353398/large_862ea9f73d62dd54ea6f8830580ddae1.png?1687531008", initials: "AP", fontSize: 12, dimension: 52, cornerRadius: 64)
 }
