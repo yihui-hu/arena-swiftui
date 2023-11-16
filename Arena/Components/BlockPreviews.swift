@@ -84,6 +84,8 @@ struct BlockPreview: View {
                     .font(.system(size: fontSize ?? 16))
             } else {
                 Text("No preview available.")
+                    .foregroundStyle(Color("text-primary"))
+                    .font(.system(size: fontSize ?? 16))
             }
         }
     }
@@ -105,11 +107,18 @@ struct ChannelViewBlockPreview: View {
             if previewImgURL != nil {
                 ImagePreview(imageURL: previewImgURL!)
             } else if previewText != "" {
-                Text(previewText)
-                    .padding(display == "Table" ? 8 : display == "Large Grid" ? 12 : 16)
-                    .foregroundStyle(Color("text-primary"))
-                    .font(.system(size: fontSize ?? 16))
-                    .multilineTextAlignment(.leading)
+                if (display == "Table") {
+                    Image(systemName: "text.alignleft")
+                        .padding(8)
+                        .imageScale(.medium)
+                        .foregroundStyle(Color("surface-text-secondary"))
+                } else {
+                    Text(previewText)
+                        .padding(display == "Large Grid" ? 12 : 16)
+                        .foregroundStyle(Color("text-primary"))
+                        .font(.system(size: fontSize ?? 16))
+                        .multilineTextAlignment(.leading)
+                }
             } else if previewAttachment != nil {
                 Text(previewAttachment?.fileExtension ?? "")
                     .padding(12)
@@ -121,6 +130,9 @@ struct ChannelViewBlockPreview: View {
                     .font(.system(size: display == "Table" ? 12 : fontSize ?? 16))
             } else {
                 Text("No preview available.")
+                    .padding(display == "Large Grid" ? 12 : 16)
+                    .foregroundStyle(Color("text-primary"))
+                    .font(.system(size: fontSize ?? 16))
             }
         }
     }
@@ -160,7 +172,10 @@ struct ChannelCardBlockPreview: View {
                     .font(.system(size: fontSize ?? 16))
             } else {
                 Text("No preview available.")
+                    .padding(16)
                     .frame(width: 132, height: 132)
+                    .foregroundStyle(Color("text-primary"))
+                    .font(.system(size: fontSize ?? 16))
             }
         }
     }

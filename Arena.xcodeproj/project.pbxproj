@@ -29,6 +29,7 @@
 		8F6B06362AE5C32A00EEDE9C /* DelayAppearanceModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6B06352AE5C32A00EEDE9C /* DelayAppearanceModifier.swift */; };
 		8F7A03E72AE5EC9F005C4096 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F7A03E62AE5EC9F005C4096 /* ProfileView.swift */; };
 		8F7A03E92AE6C5A0005C4096 /* OnBecomingVisible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F7A03E82AE6C5A0005C4096 /* OnBecomingVisible.swift */; };
+		8F840B8A2B066D2800B17F31 /* ChangeAppIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F840B892B066D2800B17F31 /* ChangeAppIconView.swift */; };
 		8F8542732AFEF77F0078E82C /* UserData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8542722AFEF77F0078E82C /* UserData.swift */; };
 		8F8542762AFF14340078E82C /* Defaults in Frameworks */ = {isa = PBXBuildFile; productRef = 8F8542752AFF14340078E82C /* Defaults */; };
 		8F8542782AFF15C20078E82C /* PinnedChannelsData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8542772AFF15C20078E82C /* PinnedChannelsData.swift */; };
@@ -92,6 +93,7 @@
 		8F7A03E62AE5EC9F005C4096 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		8F7A03E82AE6C5A0005C4096 /* OnBecomingVisible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnBecomingVisible.swift; sourceTree = "<group>"; };
 		8F8117472B01B22000B2280C /* StatefulTabView */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = StatefulTabView; path = ../StatefulTabView; sourceTree = "<group>"; };
+		8F840B892B066D2800B17F31 /* ChangeAppIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeAppIconView.swift; sourceTree = "<group>"; };
 		8F8542722AFEF77F0078E82C /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
 		8F8542772AFF15C20078E82C /* PinnedChannelsData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinnedChannelsData.swift; sourceTree = "<group>"; };
 		8FB168AE2AD9BCE200426906 /* FullArenaModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FullArenaModel.swift; sourceTree = "<group>"; };
@@ -290,6 +292,7 @@
 				8F7A03E62AE5EC9F005C4096 /* ProfileView.swift */,
 				8FF510D12AE6CD8100E2EC03 /* ExploreView.swift */,
 				8F60D5D02B0057CE00DB3D78 /* UserView.swift */,
+				8F840B892B066D2800B17F31 /* ChangeAppIconView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -477,6 +480,7 @@
 				8F6B062F2AE5ABE800EEDE9C /* LoadingSpinner.swift in Sources */,
 				8F7A03E72AE5EC9F005C4096 /* ProfileView.swift in Sources */,
 				8FB168B52ADA53DF00426906 /* ChannelData.swift in Sources */,
+				8F840B8A2B066D2800B17F31 /* ChangeAppIconView.swift in Sources */,
 				8F8542782AFF15C20078E82C /* PinnedChannelsData.swift in Sources */,
 				8F7A03E92AE6C5A0005C4096 /* OnBecomingVisible.swift in Sources */,
 				8FD7E3F32ADB6EEC00A15E16 /* BlockPreviews.swift in Sources */,
@@ -537,7 +541,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIcon2 AppIcon3";
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -600,7 +606,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_ALTERNATE_APPICON_NAMES = "AppIcon2 AppIcon3";
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";

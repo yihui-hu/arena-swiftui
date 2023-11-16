@@ -45,7 +45,7 @@ struct PinnedChannelsView: View {
                             }
                         }
                     }
-                    .padding(.bottom, 8)
+                    .padding(.bottom, 4)
                     .refreshable {
                         do { try await Task.sleep(nanoseconds: 500_000_000) } catch {}
                         pinnedChannelsData.refresh()

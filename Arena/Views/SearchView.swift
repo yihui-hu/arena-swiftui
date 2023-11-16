@@ -164,7 +164,7 @@ struct SearchView: View {
                     .coordinateSpace(name: "scroll")
                 }
             }
-            .padding(.bottom, 8)
+            .padding(.bottom, 4)
             .onChange(of: selection, initial: true) { oldSelection, newSelection in
                 if oldSelection != newSelection {
                     searchData.selection = newSelection

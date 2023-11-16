@@ -77,9 +77,9 @@ struct ImagePreview: View {
 struct ImageLoading: View {
     var body: some View {
         ProgressView()
-            .frame(minWidth: 132, minHeight: 132)
-            .progressViewStyle(CircularProgressViewStyle(tint: Color("surface-text-secondary")))
+            .frame(minWidth: 132, maxWidth: .infinity, minHeight: 132, maxHeight: .infinity, alignment: .center)
             .aspectRatio(contentMode: .fit)
+            .progressViewStyle(CircularProgressViewStyle(tint: Color("surface-text-secondary")))
             .opacity(0.64)
     }
 }
@@ -88,7 +88,7 @@ struct ImageError: View {
     var body: some View {
         Image(systemName: "questionmark.folder")
             .imageScale(.small)
-            .frame(minWidth: 132, minHeight: 132)
+            .frame(minWidth: 132, maxWidth: .infinity, minHeight: 132, maxHeight: .infinity)
             .foregroundStyle(Color("surface-text-secondary"))
             .aspectRatio(contentMode: .fit)
     }

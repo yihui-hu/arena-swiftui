@@ -33,6 +33,9 @@ struct BlockView: View {
     
     var body: some View {
         ZStack {
+            NavigationLink("", destination: ChannelView(channelSlug: selectedConnectionSlug ?? ""), isActive: $shouldNavigateToChannelView)
+                .opacity(0) // Hide the link
+            
             TabView(selection: $currentIndex) {
                 ForEach(channelData.contents ?? [], id: \.self.id) { block in
                     let screenHeight = UIScreen.main.bounds.size.height
@@ -42,8 +45,8 @@ struct BlockView: View {
                         HStack(alignment: .top) {
                             BlockPreview(blockData: block, fontSize: 16)
                                 .padding(.horizontal, 4)
-                                .padding(.bottom, 24)
-                                .frame(maxHeight: screenHeight * 0.64)
+                                .padding(.bottom, 48)
+                                .frame(maxHeight: screenHeight * 0.72)
                         }
                         .foregroundColor(Color("text-primary"))
                         .tag(channelData.contents?.firstIndex(of: block) ?? 0)
@@ -284,7 +287,7 @@ struct BlockView: View {
                     }
                 }
             }
-            .padding(.horizontal, 12)
+            .padding(.horizontal, 8)
             .background(Color("background"))
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
             .navigationBarBackButtonHidden()
@@ -327,13 +330,10 @@ struct BlockView: View {
                 }
             }
             .frame(maxWidth: .infinity, alignment: .bottomTrailing)
-            .padding(.top, UIScreen.main.bounds.size.height * 0.68)
-            .padding(.trailing, 20)
+            .padding(.top, UIScreen.main.bounds.size.height * 0.7)
+            .padding(.trailing, 28)
             .foregroundStyle(Color("surface-text-secondary"))
         }
-        
-        NavigationLink("", destination: ChannelView(channelSlug: selectedConnectionSlug ?? ""), isActive: $shouldNavigateToChannelView)
-            .opacity(0) // Hide the link
     }
 }
 

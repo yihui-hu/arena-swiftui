@@ -73,17 +73,28 @@ struct ProfileView: View {
                     }
                 }
             }
-            .padding(.bottom, 8)
+            .padding(.bottom, 4)
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden()
-//            .toolbar {
-//                ToolbarItem(placement: .topBarLeading) {
-//                    Text("Profile")
-//                        .font(.system(size: 20))
-//                        .fontDesign(.rounded)
-//                        .fontWeight(.semibold)
-//                }
-//            }
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Text("Profile")
+                        .foregroundStyle(Color("text-primary"))
+                        .font(.system(size: 20))
+                        .fontDesign(.rounded)
+                        .fontWeight(.semibold)
+                }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    NavigationLink(destination: ChangeAppIconView()) {
+                        Image(systemName: "gearshape.fill")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 20, height: 20)
+                    }
+                    .foregroundStyle(Color("surface-text-secondary"))
+                }
+            }
             .overlay(alignment: .top) {
                 Color.clear
                     .background(Color("background"))

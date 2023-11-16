@@ -67,7 +67,15 @@ struct BlockTablePreview: View {
                 Label("View", systemImage: "eye")
             }
         } preview: {
-            ChannelViewBlockPreview(blockData: block, fontSize: 16, display: "Feed") // TODO: FIX!!!
+            let img = block.image
+            if img != nil {
+                ChannelViewBlockPreview(blockData: block, fontSize: 16, display: "Feed")
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else {
+                ChannelViewBlockPreview(blockData: block, fontSize: 18, display: "Feed")
+                    .padding(32)
+                    .frame(width: 400, height: 400)
+            }
         }
     }
 }
@@ -104,10 +112,10 @@ struct BlockGridPreview: View {
     let block: Block
     let gridItemSize: CGFloat
     let display: String
-    
+
     var body: some View {
         VStack(spacing: 8) {
-            ChannelViewBlockPreview(blockData: block, fontSize: display != "Large Grid" ? 12 : 10, display: display)
+            ChannelViewBlockPreview(blockData: block, fontSize: display == "Grid" ? 12 : display == "Feed" ? 16 : 10, display: display)
                 .frame(width: gridItemSize, height: gridItemSize)
                 .background(Color("background"))
                 .border(Color("surface"))
@@ -124,8 +132,15 @@ struct BlockGridPreview: View {
                         Label("View", systemImage: "eye")
                     }
                 } preview: {
-                    ChannelViewBlockPreview(blockData: block, fontSize: 16, display: "Feed")
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    let img = block.image
+                    if img != nil {
+                        ChannelViewBlockPreview(blockData: block, fontSize: 16, display: "Feed")
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    } else {
+                        ChannelViewBlockPreview(blockData: block, fontSize: 18, display: "Feed")
+                            .padding(32)
+                            .frame(width: 400, height: 400)
+                    }
                 }
             
             if display != "Large Grid" {
@@ -159,22 +174,31 @@ struct ContentPreviewMetadata: View {
     let display: String
     
     var body: some View {
-        HStack(alignment: .top, spacing: 4) {
+        HStack(alignment: .center, spacing: 4) {
             // URL case
             if block.contentClass == "Link" {
                 Text("\(block.title != "" ? block.title : block.source?.url ?? "")")
                 Image(systemName: "link")
                     .imageScale(.small)
-            // Default to title
-            } else if block.title != "" {
-                Text("\(block.title != "" ? block.title : "")")
-            // Image block
+                // Attachment case
+            } else if block.attachment != nil {
+                Text("\(block.title != "" ? block.title : block.attachment?.filename ?? "")")
+                Text("\(block.attachment?.fileExtension ?? "file")")
+                    .font(.system(size: 12))
+                    .padding(.horizontal, 4)
+                    .padding(.vertical, 2)
+                    .background(Color("surface"))
+                    .clipShape(RoundedRectangle(cornerRadius: 4))
+                // Image block
             } else if block.image != nil {
-                Text("\(block.image?.filename ?? "")")
-            // Content block
+                Text("\(block.title != "" ? block.title : block.image?.filename ?? "")")
+                // Text block
             } else if block.content != nil {
                 Text("\(display == "Table" ? block.content ?? "" : "")")
-            // NIL case
+                // Default to title
+            } else if block.title != "" {
+                Text("\(block.title != "" ? block.title : "")")
+                // NIL case
             } else {
                 Text("\(display == "Table" ? "–" : "")")
             }

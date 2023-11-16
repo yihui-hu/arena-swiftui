@@ -27,10 +27,6 @@ struct ArenaView: View {
                 SearchView()
             }
             
-            Tab(systemImageName: "safari.fill") {
-                ExploreView()
-            }
-            
             Tab(systemImageName: "person.fill") {
                 ProfileView(userId: 49570)
             }

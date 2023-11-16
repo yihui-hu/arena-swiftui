@@ -127,12 +127,13 @@ struct ChannelView: View {
                 }
                 
                 if channelData.currentPage > channelData.totalPages {
-                    Text("End of channel")
+                    Text("Reached of channel")
+                        .font(.system(size: 12))
                         .padding(.top, 24)
-                        .foregroundStyle(Color("surface-text-secondary"))
+                        .foregroundStyle(Color("surface-tertiary"))
                 }
             }
-            .padding(.bottom, 12)
+            .padding(.bottom, 4)
             .background(Color("background"))
             .contentMargins(gridGap)
             .contentMargins(.leading, 0, for: .scrollIndicators)
@@ -153,11 +154,14 @@ struct ChannelView: View {
                 
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack(spacing: 8) {
-                        //                        Button(action: {
-                        //                            dismiss()
-                        //                        }) {
-                        //                            Image(systemName: "pin.fill")
-                        //                        }
+                        Button(action: {
+                            dismiss()
+                        }) {
+                            Image(systemName: "pin.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 20, height: 20)
+                        }
                         
                         Menu {
                             Picker("Select a display mode", selection: $display) {
@@ -301,6 +305,13 @@ struct ChannelViewHeader: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .lineLimit(2)
                     }
+                } else {
+                    Text("by ...")
+                        .font(.system(size: 15))
+                        .fontDesign(.default)
+                        .fontWeight(.regular)
+                        .foregroundColor(Color("text-secondary"))
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
         }
