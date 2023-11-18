@@ -88,7 +88,7 @@ struct ChannelView: View {
     private func ChannelViewContents(gridItemSize: CGFloat) -> some View {
         ForEach(channelData.contents ?? [], id: \.self.id) { block in
             NavigationLink(destination: destinationView(for: block, channelData: channelData, channelSlug: channelSlug)) {
-                ChannelContentPreview(block: block, gridItemSize: gridItemSize, display: display.rawValue)
+                ChannelContentPreview(block: block, channelData: channelData, channelSlug: channelSlug, gridItemSize: gridItemSize, display: display.rawValue)
             }
             .onAppear {
                 loadMoreChannelData(channelData: channelData, channelSlug: self.channelSlug, block: block)
@@ -103,8 +103,18 @@ struct ChannelView: View {
         // Setting up grid
         let gridGap: CGFloat = 8
         let gridSpacing = display.rawValue != "Large Grid" ? gridGap + 8 : gridGap
-        let gridColumns: [GridItem] = Array(repeating: .init(.flexible(), spacing: gridGap), count: display.rawValue == "Grid" ? 2 : display.rawValue == "Large Grid" ? 3 : 1)
-        let gridItemSize = display.rawValue == "Grid" ? (UIScreen.main.bounds.width - (gridGap * 3)) / 2 : display.rawValue == "Large Grid" ? (UIScreen.main.bounds.width - (gridGap * 4)) / 3 : (UIScreen.main.bounds.width - (gridGap * 2))
+        let gridColumns: [GridItem] =
+        Array(repeating:
+                .init(.flexible(), spacing: gridGap),
+              count:
+                display.rawValue == "Grid" ? 2 :
+                display.rawValue == "Large Grid" ? 3 :
+                1)
+        let displayWidth = UIScreen.main.bounds.width
+        let gridItemSize =
+        display.rawValue == "Grid" ? (displayWidth - (gridGap * 3)) / 2 :
+        display.rawValue == "Large Grid" ? (displayWidth - (gridGap * 4)) / 3 :
+        (displayWidth - (gridGap * 2))
         
         ScrollViewReader { proxy in
             ScrollView {
@@ -126,11 +136,10 @@ struct ChannelView: View {
                     LoadingSpinner()
                 }
                 
-                if channelData.currentPage > channelData.totalPages {
-                    Text("Reached of channel")
-                        .font(.system(size: 12))
-                        .padding(.top, 24)
-                        .foregroundStyle(Color("surface-tertiary"))
+                if let channelContents = channelData.contents, channelContents.isEmpty {
+                    EmptyChannel()
+                } else if channelData.currentPage > channelData.totalPages {
+                    EndOfChannel()
                 }
             }
             .padding(.bottom, 4)
@@ -230,22 +239,30 @@ struct ChannelViewHeader: View {
     var contentOptions: [ContentOption]
     
     var body: some View {
+        let channelTitle = channelData.channel?.title ?? ""
+        let channelStatus = channelData.channel?.status ?? ""
+        let channelDescription = channelData.channel?.metadata?.description ?? ""
+        let channelOwner = channelData.channel?.user.fullName ?? ""
+        let channelCollaborators = channelData.channel?.collaborators ?? []
+        
         VStack(spacing: 16) {
             // MARK: Channel Title
             HStack {
-                if let channelTitle = channelData.channel?.title, !channelTitle.isEmpty {
+                if !channelTitle.isEmpty {
                     HStack(spacing: 4) {
-                        if let status = channelData.channel?.status, status != "closed" {
+                        if channelStatus != "closed" {
                             Image(systemName: "circle.fill")
                                 .scaleEffect(0.5)
-                                .foregroundColor(status == "public" ? Color.green : Color.red)
+                                .foregroundColor(channelStatus == "public" ? Color.green : Color.red)
                         }
                         Text("\(channelTitle)")
                             .foregroundColor(Color("text-primary"))
                             .fontWeight(.semibold)
                     }
                 } else {
-                    Text("-")
+                    Text("----")
+                        .shimmering()
+                        .redacted(reason: .placeholder)
                 }
             }
             .fontDesign(.rounded)
@@ -258,7 +275,7 @@ struct ChannelViewHeader: View {
             VStack(spacing: 8) {
                 // MARK: Channel Description
                 HStack {
-                    if let channelDescription = channelData.channel?.metadata?.description, !channelDescription.isEmpty {
+                    if !channelDescription.isEmpty {
                         Text("\(channelDescription)")
                     }
                 }
@@ -270,7 +287,7 @@ struct ChannelViewHeader: View {
                 .lineLimit(3)
                 
                 // MARK: Channel Attribution
-                if let channelOwner = channelData.channel?.user.fullName {
+                if !channelOwner.isEmpty {
                     let ownerText = Text("by ")
                         .foregroundColor(Color("text-secondary")) +
                     Text("\(channelOwner)")
@@ -278,8 +295,8 @@ struct ChannelViewHeader: View {
                         .fontWeight(.medium)
                         .foregroundColor(Color("text-primary"))
                     
-                    if let collaborators = channelData.channel?.collaborators, !collaborators.isEmpty {
-                        let collaboratorList = collaborators.map { $0.fullName }.joined(separator: ", ")
+                    if !channelCollaborators.isEmpty {
+                        let collaboratorList = channelCollaborators.map { $0.fullName }.joined(separator: ", ")
                         let collaboratorText = Text(" with ")
                             .foregroundColor(Color("text-secondary")) +
                         Text("\(collaboratorList)")
@@ -307,6 +324,8 @@ struct ChannelViewHeader: View {
                     }
                 } else {
                     Text("by ...")
+                        .shimmering()
+                        .redacted(reason: .placeholder)
                         .font(.system(size: 15))
                         .fontDesign(.default)
                         .fontWeight(.regular)

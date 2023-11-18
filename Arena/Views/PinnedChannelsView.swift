@@ -15,13 +15,8 @@ struct PinnedChannelsView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                if pinnedChannelsData.pinnedChannels.isEmpty {
-                    VStack(alignment: .center) {
-                        VStack(spacing: 16) {
-                            Image(systemName: "questionmark.folder.fill")
-                            Text("No pinned channels")
-                        }
-                    }
+                if true {
+                    InitialPinnedChannels()
                 } else {
                     ScrollView {
                         LazyVStack(spacing: 12) {

@@ -13,6 +13,7 @@ import Defaults
 
 struct SearchView: View {
     @StateObject private var searchData: SearchData
+    @FocusState private var searchInputIsFocused: Bool
     @State private var searchTerm: String = ""
     @State private var selection: String = "Channels"
     @State private var changedSelection: Bool = false
@@ -21,7 +22,7 @@ struct SearchView: View {
     @State private var showGradient = false
     
     @Default(.pinnedChannels) var pinnedChannels
-
+    
     init() {
         self._searchData = StateObject(wrappedValue: SearchData())
     }
@@ -42,6 +43,7 @@ struct SearchView: View {
                         .onAppear {
                             UITextField.appearance().clearButtonMode = .always
                         }
+                        .focused($searchInputIsFocused)
                     
                     if searchTerm != "" {
                         HStack(spacing: 8) {
@@ -74,25 +76,26 @@ struct SearchView: View {
                 .padding(.top, 16)
                 .padding(.bottom, 4)
                 
-                ZStack {
-                    GeometryReader { geometry in
-                        LinearGradient(
-                            gradient: .smooth(from: Color("background"), to: Color("background").opacity(0), curve: .easeInOut),
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                        .frame(height: 88)
-                        .position(x: geometry.size.width / 2, y: 44)
-                        .opacity(showGradient ? 1 : 0)
-                        .animation(.easeInOut(duration: 0.2), value: UUID())
-                    }
-                    .allowsHitTesting(false) // Allows items underneath to be tapped
-                    .zIndex(2)
-                    
-                    ScrollView {
-                        ScrollViewReader { proxy in
-                            LazyVStack(alignment: .leading, spacing: 8) {
-                                if let searchResults = searchData.searchResults, searchTerm != "" {
+                if let searchResults = searchData.searchResults, searchTerm != "" {
+                    ZStack {
+                        GeometryReader { geometry in
+                            LinearGradient(
+                                gradient: .smooth(from: Color("background"), to: Color("background").opacity(0), curve: .easeInOut),
+                                startPoint: .top,
+                                endPoint: .bottom
+                            )
+                            .frame(height: 88)
+                            .position(x: geometry.size.width / 2, y: 44)
+                            .opacity(showGradient ? 1 : 0)
+                            .animation(.easeInOut(duration: 0.2), value: UUID())
+                        }
+                        .allowsHitTesting(false) // Allows items underneath to be tapped
+                        .zIndex(2)
+                        
+                        ScrollView {
+                            ScrollViewReader { proxy in
+                                LazyVStack(alignment: .leading, spacing: 8) {
+                                    
                                     if selection == "Channels" {
                                         ForEach(searchResults.channels, id: \.id) { channel in
                                             NavigationLink(destination: ChannelView(channelSlug: channel.slug)) {
@@ -152,16 +155,33 @@ struct SearchView: View {
                                 LoadingSpinner()
                             }
                             
-                            // Make a searchData.finishedLoading state
-                            if searchData.currentPage > searchData.totalPages, searchTerm != "" {
-                                Text("End of search")
-                                    .foregroundStyle(Color("surface-text-secondary"))
+                            if selection == "Channels", searchResults.channels.isEmpty {
+                                EmptySearch(items: "channels", searchTerm: searchTerm)
+                            } else if selection == "Blocks", searchResults.blocks.isEmpty {
+                                EmptySearch(items: "blocks", searchTerm: searchTerm)
+                            } else if selection == "Users", searchResults.users.isEmpty {
+                                EmptySearch(items: "users", searchTerm: searchTerm)
+                            } else if searchData.currentPage > searchData.totalPages, searchTerm != "" {
+                                EndOfSearch()
                             }
                         }
-                        
+                        .scrollDismissesKeyboard(.immediately)
+                        .coordinateSpace(name: "scroll")
                     }
-                    .scrollDismissesKeyboard(.immediately)
-                    .coordinateSpace(name: "scroll")
+                } else if searchData.isLoading, searchTerm != "" {
+                    LoadingSpinner()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                } else {
+                    InitialSearch()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+                        .onTapGesture {
+                            searchInputIsFocused = false
+                        }
+                        .gesture(DragGesture().onEnded { value in
+                            if value.translation.height > 50 {
+                                searchInputIsFocused = false
+                            }
+                        })
                 }
             }
             .padding(.bottom, 4)
@@ -257,7 +277,7 @@ struct SearchUserPreview: View {
 struct SearchBlockPreview: View {
     let searchBlock: ArenaSearchedBlock
     @State private var opacity: Double = 0
-
+    
     var body: some View {
         HStack(spacing: 12) {
             ImagePreview(imageURL: searchBlock.image?.thumb.url ?? "")

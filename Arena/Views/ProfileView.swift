@@ -22,19 +22,26 @@ struct ProfileView: View {
         self._channelsData = StateObject(wrappedValue: ChannelsData(userId: userId))
     }
     
+    
     var body: some View {
+        let userProfilePicURL = userData.user?.avatarImage.display ?? ""
+        let userInitials = userData.user?.initials ?? ""
+        let userFullName = userData.user?.fullName ?? ""
+        let userCreatedAt = userData.user?.createdAt ?? ""
+        let userChannels = channelsData.channels?.channels ?? []
+        
         NavigationStack {
             ScrollView {
                 VStack(spacing: 16) {
                     HStack(spacing: 16) {
-                        ProfilePic(imageURL: userData.user?.avatarImage.display ?? "", initials: userData.user?.initials ?? "", fontSize: 12, dimension: 52, cornerRadius: 64)
+                        ProfilePic(imageURL: userProfilePicURL, initials: userInitials, fontSize: 12, dimension: 52, cornerRadius: 64)
                         
                         VStack(alignment: .leading, spacing: 4) {
-                            Text("\(userData.user?.fullName ?? "")")
+                            Text("\(userFullName)")
                                 .foregroundStyle(Color("text-primary"))
                                 .fontDesign(.rounded)
                                 .fontWeight(.semibold)
-                            Text("\(userData.user?.createdAt ?? "")") // TODO: Figure out timestamp thing
+                            Text("\(userCreatedAt)") // TODO: Figure out timestamp thing
                                 .foregroundStyle(Color("surface-text-secondary"))
                                 .font(.system(size: 14))
                         }
@@ -42,11 +49,11 @@ struct ProfileView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     
                     LazyVStack(spacing: 12) {
-                        ForEach(channelsData.channels?.channels ?? [], id: \.self.id) { channel in
+                        ForEach(userChannels, id: \.self.id) { channel in
                             ChannelCard(channel: channel)
                                 .onAppear {
-                                    if let channels = channelsData.channels?.channels, channels.count >= 2 {
-                                        if channels[channels.count - 2].id == channel.id {
+                                    if userChannels.count >= 2 {
+                                        if userChannels[userChannels.count - 2].id == channel.id {
                                             channelsData.loadMore(userId: userId)
                                         }
                                     }

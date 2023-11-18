@@ -173,6 +173,7 @@ struct BlockView: View {
                             }
                             .font(.system(size: 16))
                             
+                            // Connect and Actions buttons
                             HStack {
                                 Button(action: {
                                     print("Connect")
@@ -207,6 +208,7 @@ struct BlockView: View {
                                 .cornerRadius(16)
                             }
                             
+                            // Connections and Comments
                             VStack {
                                 HStack {
                                     Spacer()
@@ -216,7 +218,7 @@ struct BlockView: View {
                                     }
                                     Spacer()
                                     Button(action: { print("Comments") }) {
-                                        Text("Comments (200)")
+                                        Text("Comments (...)")
                                             .frame(maxWidth: .infinity)
                                             .foregroundStyle(Color("surface-text-secondary"))
                                     }
@@ -287,7 +289,7 @@ struct BlockView: View {
                     }
                 }
             }
-            .padding(.horizontal, 8)
+            .padding(.horizontal, 12)
             .background(Color("background"))
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
             .navigationBarBackButtonHidden()
@@ -303,15 +305,28 @@ struct BlockView: View {
             .toolbarBackground(Color("background"), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             
+            // Floating action buttons
             HStack(spacing: 12) {
+                ShareLink(item: URL(string: "https://are.na/block/\(blockData.id)")!) {
+                    Image(systemName: "square.and.arrow.up")
+                        .padding(.bottom, 4)
+                        .frame(width: 40, height: 40)
+                        .background(.thickMaterial)
+                        .clipShape(Circle())
+                }
+                
                 Button(action: {
                     print("Connect")
                 }) {
-                    Image(systemName: "arrow.right.square")
-                        .frame(width: 40, height: 40)
-                        .background(.thinMaterial)
-                        .clipShape(Circle())
+                    Text("Connect")
+                        .font(.system(size: 16))
+                        .fontDesign(.rounded)
+                        .fontWeight(.medium)
                 }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 11)
+                .background(.thickMaterial)
+                .cornerRadius(16)
                 
                 Button(action: {
                     // TODO: FIX ASYNC LOADING !!! I want optimistic loading
@@ -325,13 +340,12 @@ struct BlockView: View {
                 }) {
                     Image(systemName: "info.circle")
                         .frame(width: 40, height: 40)
-                        .background(.thinMaterial)
+                        .background(.thickMaterial)
                         .clipShape(Circle())
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .bottomTrailing)
+            .frame(maxWidth: .infinity, alignment: .center)
             .padding(.top, UIScreen.main.bounds.size.height * 0.7)
-            .padding(.trailing, 28)
             .foregroundStyle(Color("surface-text-secondary"))
         }
     }

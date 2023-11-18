@@ -12,21 +12,24 @@ import SwiftUI
 
 struct ChannelContentPreview: View {
     let block: Block
+    let channelData: ChannelData
+    let channelSlug: String
     let gridItemSize: CGFloat
     let display: String
     
     var body: some View {
         if block.baseClass == "Block" {
             if display == "Table" {
-                BlockTablePreview(block: block, display: display)
+                BlockTablePreview(block: block, channelData: channelData, channelSlug: channelSlug, display: display)
             } else {
-                BlockGridPreview(block: block, gridItemSize: gridItemSize, display: display)
+                BlockGridPreview(block: block, channelData: channelData, channelSlug: channelSlug, gridItemSize: gridItemSize, display: display)
             }
         } else {
+            // TODO: Added channelSlug here... might want to do something interesting in the future (preview blocks in context menu!). If not, clean up
             if display == "Table" {
-                ChannelTablePreview(block: block, display: display)
+                ChannelTablePreview(block: block, channelSlug: channelSlug, display: display)
             } else {
-                ChannelGridPreview(block: block, gridItemSize: gridItemSize, display: display)
+                ChannelGridPreview(block: block, channelSlug: channelSlug, gridItemSize: gridItemSize, display: display)
             }
         }
     }
@@ -34,13 +37,15 @@ struct ChannelContentPreview: View {
 
 struct BlockTablePreview: View {
     let block: Block
+    let channelData: ChannelData
+    let channelSlug: String
     let display: String
     
     var body: some View {
         HStack {
             ChannelViewBlockPreview(blockData: block, fontSize: 8, display: "Table")
                 .frame(width: 64, height: 64)
-                .border(Color("surface-secondary"))
+//                .border(Color("surface-secondary"))
             ContentPreviewMetadata(block: block, display: display)
             
             Spacer()
@@ -61,9 +66,7 @@ struct BlockTablePreview: View {
                 Label("Connect", systemImage: "arrow.right")
             }
             
-            Button {
-                // Do something
-            } label: {
+            NavigationLink(destination: BlockView(blockData: block, channelData: channelData, channelSlug: channelSlug)) {
                 Label("View", systemImage: "eye")
             }
         } preview: {
@@ -82,6 +85,7 @@ struct BlockTablePreview: View {
 
 struct ChannelTablePreview: View {
     let block: Block
+    let channelSlug: String
     let display: String
     
     var body: some View {
@@ -110,6 +114,8 @@ struct ChannelTablePreview: View {
 
 struct BlockGridPreview: View {
     let block: Block
+    let channelData: ChannelData
+    let channelSlug: String
     let gridItemSize: CGFloat
     let display: String
 
@@ -118,7 +124,7 @@ struct BlockGridPreview: View {
             ChannelViewBlockPreview(blockData: block, fontSize: display == "Grid" ? 12 : display == "Feed" ? 16 : 10, display: display)
                 .frame(width: gridItemSize, height: gridItemSize)
                 .background(Color("background"))
-                .border(Color("surface"))
+//                .border(Color("surface"))
                 .contextMenu {
                     Button {
                         // Do something
@@ -126,9 +132,7 @@ struct BlockGridPreview: View {
                         Label("Connect", systemImage: "arrow.right")
                     }
                     
-                    Button {
-                        // Do something
-                    } label: {
+                    NavigationLink(destination: BlockView(blockData: block, channelData: channelData, channelSlug: channelSlug)) {
                         Label("View", systemImage: "eye")
                     }
                 } preview: {
@@ -153,6 +157,7 @@ struct BlockGridPreview: View {
 
 struct ChannelGridPreview: View {
     let block: Block
+    let channelSlug: String
     let gridItemSize: CGFloat
     let display: String
     

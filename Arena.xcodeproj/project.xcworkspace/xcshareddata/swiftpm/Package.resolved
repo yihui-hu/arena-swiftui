@@ -74,6 +74,15 @@
         }
       },
       {
+        "package": "RiveRuntime",
+        "repositoryURL": "https://github.com/rive-app/rive-ios",
+        "state": {
+          "branch": null,
+          "revision": "9823217df6b583793da523a6a80c3f900991b84b",
+          "version": "5.6.1"
+        }
+      },
+      {
         "package": "SmoothGradient",
         "repositoryURL": "https://github.com/raymondjavaxx/SmoothGradient.git",
         "state": {
