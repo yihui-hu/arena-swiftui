@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Defaults
 
 final class ChannelsData: ObservableObject {
     @Published var channels: ArenaChannels?
@@ -48,10 +49,10 @@ final class ChannelsData: ObservableObject {
             errorMessage = "Invalid URL"
             return
         }
-
+        
         // Create a URLRequest and set the "Authorization" header with your bearer token
         var request = URLRequest(url: url)
-        request.setValue("Bearer cfsNlJe3Ns9Vnj8SAKHLvDCaeh3uMm1sNwsIX6ESdeY", forHTTPHeaderField: "Authorization")
+        request.setValue("Bearer \(Defaults[.accessToken])", forHTTPHeaderField: "Authorization")
 
         let task = URLSession.shared.dataTask(with: request) { [unowned self] (data, response, error) in
             if error != nil {

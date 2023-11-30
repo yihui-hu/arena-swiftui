@@ -41,7 +41,6 @@ final class PinnedChannelsData: ObservableObject {
 
         let startIndex = lastProcessedIndex
         let endIndex = min(lastProcessedIndex + batchSize, pinnedChannels.count)
-        print(startIndex, endIndex)
 
         guard startIndex < endIndex else {
             // All channels have been processed
@@ -62,7 +61,7 @@ final class PinnedChannelsData: ObservableObject {
             }
 
             var request = URLRequest(url: url)
-            request.setValue("Bearer cfsNlJe3Ns9Vnj8SAKHLvDCaeh3uMm1sNwsIX6ESdeY", forHTTPHeaderField: "Authorization")
+            request.setValue("Bearer \(Defaults[.accessToken])", forHTTPHeaderField: "Authorization")
 
             let task = URLSession.shared.dataTask(with: request) { [unowned self] (data, response, error) in
                 defer {

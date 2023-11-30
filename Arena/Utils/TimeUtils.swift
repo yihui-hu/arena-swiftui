@@ -10,7 +10,7 @@ import Foundation
 func relativeTime(_ dateString: String) -> String {
     let dateFormatter = ISO8601DateFormatter()
     dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-
+    
     if let date = dateFormatter.date(from: dateString) {
         let formatter = RelativeDateTimeFormatter()
         formatter.unitsStyle = .full
@@ -35,4 +35,11 @@ func dayMonthYear(_ dateString: String) -> String {
     } else {
         return ""
     }
+}
+
+func dateFromString(string: String) -> Date {
+    let dateFormatter = ISO8601DateFormatter()
+    dateFormatter.formatOptions = [.withFullDate] // Added format options
+    let date = dateFormatter.date(from: string) ?? Date.now
+    return date
 }

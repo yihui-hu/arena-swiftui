@@ -29,6 +29,17 @@ struct EndOfSearch: View {
     }
 }
 
+struct EndOfUser: View {
+    var body: some View {
+        Text("Finished loading all channels")
+            .font(.system(size: 14))
+            .foregroundStyle(Color("surface-tertiary"))
+            .fontDesign(.rounded)
+            .fontWeight(.medium)
+            .padding(.top, 24)
+    }
+}
+
 #Preview {
     EndOfChannel()
 }

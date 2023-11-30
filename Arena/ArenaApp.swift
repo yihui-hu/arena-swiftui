@@ -7,18 +7,31 @@
 
 import SwiftUI
 import Modals
+import Defaults
+
+extension Defaults.Keys {
+    static let pinnedChannels = Key<[Int]>("pinnedChannels", default: [])
+    static let accessToken = Key<String>("accessToken", default: "")
+    static let username = Key<String>("username", default: "")
+    static let userId = Key<Int>("userId", default: 0)
+    static let onboardingDone = Key<Bool>("onboardingDone", default: false)
+}
 
 @main
 struct ArenaApp: App {
+    @Default(.onboardingDone) var onboardingDone
+    
     var body: some Scene {
         WindowGroup {
-            ModalStackView {
-                ArenaView()
+            if onboardingDone {
+                ModalStackView {
+                    ArenaView()
+                }
+                .contentSaturation(false)
+                .contentBackgroundColor(Color("background"))
+            } else {
+                OnboardingView()
             }
-            .contentBackgroundColor(Color("background"))
-            .containerBackgroundColor(Color("backdrop"))
-            .contentSaturation(false)
-            .contentScaling(false)
         }
     }
 }

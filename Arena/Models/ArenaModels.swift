@@ -540,3 +540,53 @@ final class AvatarImage: Codable {
         self.display = display
     }
 }
+
+// MARK: - Block Comments
+final class BlockComments: Codable {
+    let comments: [BlockComment]
+    let length: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case comments, length
+    }
+    
+    init(comments: [BlockComment], length: Int) {
+        self.comments = comments
+        self.length = length
+    }
+}
+
+// MARK: - Singular Block Comment
+final class BlockComment: Codable {
+    let id: Int
+    let createdAt, updatedAt: String
+    let commentableId: Int
+    let commentableType, body: String
+    let userId: Int
+    let baseClass: String
+    let user: User
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case createdAt = "created_at"
+        case updatedAt = "updated_at"
+        case commentableId = "commentable_id"
+        case commentableType = "commentable_type"
+        case body
+        case userId = "user_id"
+        case baseClass = "base_class"
+        case user
+    }
+    
+    init(id: Int, createdAt: String, updatedAt: String, commentableId: Int, commentableType: String, body: String, userId: Int, baseClass: String, user: User) {
+        self.id = id
+        self.createdAt = createdAt
+        self.updatedAt = updatedAt
+        self.commentableId = commentableId
+        self.commentableType = commentableType
+        self.body = body
+        self.userId = userId
+        self.baseClass = baseClass
+        self.user = user
+    }
+}

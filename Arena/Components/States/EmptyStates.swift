@@ -33,6 +33,29 @@ struct EmptySearch: View {
     }
 }
 
+
+struct EmptyUserChannels: View {
+    var body: some View {
+        Text("User has no channels")
+            .font(.system(size: 14))
+            .foregroundStyle(Color("surface-tertiary"))
+            .fontDesign(.rounded)
+            .fontWeight(.medium)
+            .padding(.top, 24)
+    }
+}
+
+struct EmptyBlockComments: View {
+    var body: some View {
+        Text("No comments found")
+            .font(.system(size: 14))
+            .foregroundStyle(Color("surface-tertiary"))
+            .fontDesign(.rounded)
+            .fontWeight(.medium)
+            .padding(.vertical, 12)
+    }
+}
+
 #Preview {
     EmptyChannel()
 }

@@ -27,7 +27,7 @@ struct BlockPreview: View {
         
         VStack {
             if previewImgURL != nil {
-                VStack(alignment: .leading) {
+                VStack(alignment: .center) {
                     if previewContentClass == "Link" {
                         HStack(spacing: 4) {
                             Text("\(previewTitle)")
@@ -77,6 +77,24 @@ struct BlockPreview: View {
                     .scrollIndicators(.hidden)
                     // Prevents parent refreshable from activating. Pray for this colleague's health: https://www.reddit.com/r/SwiftUI/comments/ynxzkd/prevent_refreshable_on_nested_scrollviews/
                     .environment(\EnvironmentValues.refresh as! WritableKeyPath<EnvironmentValues, RefreshAction?>, nil)
+                    .overlay(
+                        LinearGradient(
+                            gradient: .smooth(from: Color("background"), to: Color("background").opacity(0), curve: .easeInOut),
+                            startPoint: .bottom,
+                            endPoint: .top
+                        )
+                        .frame(height: 32)
+                        .position(x: geometry.size.width / 2, y: geometry.size.height - 12)
+                    )
+                    .overlay(
+                        LinearGradient(
+                            gradient: .smooth(from: Color("background"), to: Color("background").opacity(0), curve: .easeInOut),
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                        .frame(height: 32)
+                        .position(x: geometry.size.width / 2, y: 12)
+                    )
                 }
             } else if previewAttachment != nil {
                 Text(previewAttachment?.fileExtension ?? "")

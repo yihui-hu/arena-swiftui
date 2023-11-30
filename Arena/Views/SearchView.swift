@@ -152,7 +152,8 @@ struct SearchView: View {
                             })
                             
                             if searchData.isLoading, searchTerm != "" {
-                                LoadingSpinner()
+                                CircleLoadingSpinner()
+                                    .padding(.vertical, 12)
                             }
                             
                             if selection == "Channels", searchResults.channels.isEmpty {
@@ -169,7 +170,7 @@ struct SearchView: View {
                         .coordinateSpace(name: "scroll")
                     }
                 } else if searchData.isLoading, searchTerm != "" {
-                    LoadingSpinner()
+                    CircleLoadingSpinner()
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 } else {
                     InitialSearch()
@@ -192,9 +193,10 @@ struct SearchView: View {
                 }
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+        .background(Color("background"))
         .contentMargins(.leading, 0, for: .scrollIndicators)
-        .contentMargins(.top, 4)
-        .contentMargins(.horizontal, 16)
+        .contentMargins(16)
     }
 }
 

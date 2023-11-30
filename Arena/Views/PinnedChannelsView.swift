@@ -15,7 +15,7 @@ struct PinnedChannelsView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                if true {
+                if pinnedChannelsData.pinnedChannels.isEmpty {
                     InitialPinnedChannels()
                 } else {
                     ScrollView {
@@ -47,8 +47,6 @@ struct PinnedChannelsView: View {
                     }
                 }
             }
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-            .background(Color("background"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -63,6 +61,8 @@ struct PinnedChannelsView: View {
             .toolbarBackground(.visible, for: .navigationBar)
             .background(Color("background"))
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+        .background(Color("background"))
         .contentMargins(.leading, 0, for: .scrollIndicators)
         .contentMargins(16)
     }
@@ -85,7 +85,7 @@ struct PinnedChannelsView: View {
             }
 
             var request = URLRequest(url: url)
-            request.setValue("Bearer cfsNlJe3Ns9Vnj8SAKHLvDCaeh3uMm1sNwsIX6ESdeY", forHTTPHeaderField: "Authorization")
+            request.setValue("Bearer \(Defaults[.accessToken])", forHTTPHeaderField: "Authorization")
 
             let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
                 if let data = data {
@@ -115,98 +115,3 @@ struct PinnedChannelsView: View {
 #Preview {
     PinnedChannelsView()
 }
-
-
-////
-////  ChannelsView.swift
-////  Arena
-////
-////  Created by Yihui Hu on 12/10/23.
-////
-//
-//import SwiftUI
-//import Defaults
-//
-//struct PinnedChannelsView: View {
-//    @ObservedObject private var pinnedChannelsData = PinnedChannelsData()
-//    @Default(.pinnedChannels) var pinnedChannels
-//    
-//    var PinnedChannelsHeader: some View {
-//        Text("Pinned")
-//            .font(.system(size: 20))
-//            .fontDesign(.rounded)
-//            .fontWeight(.semibold)
-////            .padding(.top, 40)
-////            .padding(.bottom, 8)
-//            .frame(maxWidth: .infinity, maxHeight: 80, alignment: .leading)
-//            .background(Color("background"))
-//    }
-//    
-//    var body: some View {
-//        NavigationStack {
-//            VStack {
-//                if pinnedChannelsData.pinnedChannels.isEmpty {
-//                    VStack(alignment: .center) {
-//                        VStack(spacing: 16) {
-//                            Image(systemName: "questionmark.folder.fill")
-//                            Text("No pinned channels")
-//                        }
-//                    }
-//                } else {
-//                    ScrollView {
-//                        LazyVStack(spacing: 12, pinnedViews: [.sectionHeaders]) {
-//                            Section(header: PinnedChannelsHeader.ignoresSafeArea(edges: .top)) {
-//                                ForEach(pinnedChannelsData.channels ?? [], id: \.id) { channel in
-//                                    ChannelCard(channel: channel)
-//                                        .onAppear {
-//                                            if let channels = pinnedChannelsData.channels, channels.count >= 2 {
-//                                                if channels[channels.count - 2].id == channel.id {
-//                                                    pinnedChannelsData.loadMore()
-//                                                }
-//                                            }
-//                                        }
-//                                        .contentShape(ContentShapeKinds.contextMenuPreview, RoundedRectangle(cornerRadius: 32))
-//                                        .contextMenu {
-//                                            Button {
-//                                                togglePin(channel.id)
-//                                            } label: {
-//                                                Label(pinnedChannels.contains(channel.id) ? "Unpin" : "Pin", systemImage: pinnedChannels.contains(channel.id) ? "pin.slash.fill" : "pin.fill")
-//                                            }
-//                                        }
-//                                }
-//                            }
-//                        }
-//                    }
-//                    .padding(.bottom, 8)
-//                    .refreshable {
-//                        do { try await Task.sleep(nanoseconds: 500_000_000) } catch {}
-//                        pinnedChannelsData.refresh()
-//                    }
-//                }
-//            }
-//            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-//            .background(Color("background"))
-//            .toolbar(.hidden)
-//            .overlay(alignment: .top) {
-//                Color.clear
-//                    .background(Color("background"))
-//                    .ignoresSafeArea(edges: .top)
-//                    .frame(height: 0)
-//            }
-//        }
-//        .contentMargins(.leading, 0, for: .scrollIndicators)
-//        .contentMargins(16)
-//    }
-//    
-//    private func togglePin(_ channelId: Int) {
-//        if pinnedChannels.contains(channelId) {
-//            pinnedChannels.removeAll { $0 == channelId }
-//        } else {
-//            pinnedChannels.append(channelId)
-//        }
-//    }
-//}
-//
-//#Preview {
-//    PinnedChannelsView()
-//}

@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import Shimmer
+import WrappingHStack
 import Defaults
 
 enum SortOption: String, CaseIterable {
@@ -20,7 +20,6 @@ enum DisplayOption: String, CaseIterable {
     case largeGrid = "Large Grid"
     case feed = "Feed"
     case table = "Table"
-    // case book = "Book"
 }
 
 enum ContentOption: String, CaseIterable {
@@ -97,9 +96,6 @@ struct ChannelView: View {
     }
     
     var body: some View {
-        // Channel slug is empty, show error state
-        //        if channelSlug == "" { errorState() }
-        
         // Setting up grid
         let gridGap: CGFloat = 8
         let gridSpacing = display.rawValue != "Large Grid" ? gridGap + 8 : gridGap
@@ -133,7 +129,8 @@ struct ChannelView: View {
                 }
                 
                 if (channelData.isLoading || channelData.isContentsLoading) {
-                    LoadingSpinner()
+                    CircleLoadingSpinner()
+                        .padding(.vertical, 12)
                 }
                 
                 if let channelContents = channelData.contents, channelContents.isEmpty {
@@ -243,6 +240,7 @@ struct ChannelViewHeader: View {
         let channelStatus = channelData.channel?.status ?? ""
         let channelDescription = channelData.channel?.metadata?.description ?? ""
         let channelOwner = channelData.channel?.user.fullName ?? ""
+        let channelOwnerId = channelData.channel?.user.id ?? 0
         let channelCollaborators = channelData.channel?.collaborators ?? []
         
         VStack(spacing: 16) {
@@ -260,9 +258,7 @@ struct ChannelViewHeader: View {
                             .fontWeight(.semibold)
                     }
                 } else {
-                    Text("----")
-                        .shimmering()
-                        .redacted(reason: .placeholder)
+                    Text("Loading...")
                 }
             }
             .fontDesign(.rounded)
@@ -288,44 +284,43 @@ struct ChannelViewHeader: View {
                 
                 // MARK: Channel Attribution
                 if !channelOwner.isEmpty {
-                    let ownerText = Text("by ")
-                        .foregroundColor(Color("text-secondary")) +
-                    Text("\(channelOwner)")
-                        .fontDesign(.rounded)
-                        .fontWeight(.medium)
-                        .foregroundColor(Color("text-primary"))
-                    
-                    if !channelCollaborators.isEmpty {
-                        let collaboratorList = channelCollaborators.map { $0.fullName }.joined(separator: ", ")
-                        let collaboratorText = Text(" with ")
-                            .foregroundColor(Color("text-secondary")) +
-                        Text("\(collaboratorList)")
-                            .fontDesign(.rounded)
-                            .fontWeight(.medium)
+                    let ownerLink = NavigationLink(destination: UserView(userId: channelOwnerId)) {
+                        Text("\(channelOwner)")
                             .foregroundColor(Color("text-primary"))
-                        
-                        VStack {
-                            ownerText + collaboratorText
-                        }
-                        .font(.system(size: 15))
-                        .fontDesign(.default)
-                        .fontWeight(.regular)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .lineLimit(2)
-                    } else {
-                        VStack {
-                            ownerText
-                        }
-                        .font(.system(size: 15))
-                        .fontDesign(.default)
-                        .fontWeight(.regular)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .lineLimit(2)
                     }
+                    
+                    let collaboratorLinks = channelCollaborators.map { collaborator in
+                        NavigationLink(destination: UserView(userId: collaborator.id)) {
+                            Text("\(collaborator.fullName)")
+                                .fontDesign(.rounded)
+                                .fontWeight(.medium)
+                                .foregroundColor(Color("text-primary"))
+                        }
+                    }
+        
+                    WrappingHStack(alignment: .leading, horizontalSpacing: 4) {
+                        Text("by")
+                            .foregroundColor(Color("text-secondary"))
+                        
+                        ownerLink
+                        
+                        if !collaboratorLinks.isEmpty {
+                            Text("with")
+                                .foregroundColor(Color("text-secondary"))
+                            ForEach(collaboratorLinks.indices, id: \.self) { index in
+                                if index > 0 {
+                                    Text("&")
+                                        .foregroundColor(Color("text-secondary"))
+                                }
+                                collaboratorLinks[index]
+                            }
+                        }
+                    }
+                    .font(.system(size: 15))
+                    .fontDesign(.rounded)
+                    .fontWeight(.medium)
                 } else {
                     Text("by ...")
-                        .shimmering()
-                        .redacted(reason: .placeholder)
                         .font(.system(size: 15))
                         .fontDesign(.default)
                         .fontWeight(.regular)
@@ -333,6 +328,7 @@ struct ChannelViewHeader: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
+            
         }
         .padding(12)
         

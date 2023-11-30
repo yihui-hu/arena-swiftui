@@ -57,7 +57,7 @@ struct ImagePreview: View {
                     image
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(alignment: .center)
+                        .frame(maxWidth: .infinity, alignment: .center)
                         .opacity(opacity)
                         .onAppear {
                             withAnimation(.easeIn(duration: 0.1)) {
@@ -76,7 +76,7 @@ struct ImagePreview: View {
 
 struct ImageLoading: View {
     var body: some View {
-        ProgressView()
+        CircleLoadingSpinner()
             .frame(minWidth: 132, maxWidth: .infinity, minHeight: 132, maxHeight: .infinity, alignment: .center)
             .aspectRatio(contentMode: .fit)
             .progressViewStyle(CircularProgressViewStyle(tint: Color("surface-text-secondary")))

@@ -10,10 +10,6 @@ import StatefulTabView
 import Pow
 import Defaults
 
-extension Defaults.Keys {
-    static let pinnedChannels = Key<[Int]>("pinnedChannels", default: [])
-}
-
 struct ArenaView: View {
     @State private var item: Int = 0
     
@@ -28,7 +24,7 @@ struct ArenaView: View {
             }
             
             Tab(systemImageName: "person.fill") {
-                ProfileView(userId: 49570)
+                ProfileView(userId: Defaults[.userId])
             }
         }
     }

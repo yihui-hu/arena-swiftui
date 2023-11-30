@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import Defaults
 
+// Remmeber to add in build settings as well
 final class ChangeAppIconViewModel: ObservableObject {
     enum AppIcon: String, CaseIterable, Identifiable {
         case primary = "AppIcon"
         case secondary = "AppIcon2"
         case tertiary = "AppIcon3"
+        case quartenary = "AppIcon4"
         
         var id: String { rawValue }
         var iconName: String? {
@@ -31,6 +34,8 @@ final class ChangeAppIconViewModel: ObservableObject {
                 return "Pleased"
             case .tertiary:
                 return "Cosmo"
+            case .quartenary:
+                return "Flora"
             }
         }
         
@@ -96,6 +101,14 @@ struct ChangeAppIconView: View {
                             }
                         }
                     }
+                }
+                
+                Button(action: {
+                    Defaults[.accessToken] = ""
+                    Defaults[.username] = ""
+                    Defaults[.onboardingDone] = false
+                }) {
+                    Text("Reset onboarding")
                 }
             }
         }
