@@ -56,6 +56,8 @@
 		8FB168B52ADA53DF00426906 /* ChannelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB168B42ADA53DF00426906 /* ChannelData.swift */; };
 		8FB168B72ADA565D00426906 /* ChannelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB168B62ADA565D00426906 /* ChannelView.swift */; };
 		8FB168B92ADA5C3B00426906 /* BlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB168B82ADA5C3B00426906 /* BlockView.swift */; };
+		8FB8CF2F2B19A3DA0073BBA9 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB8CF2E2B19A3DA0073BBA9 /* SettingsView.swift */; };
+		8FB8CF372B1A437A0073BBA9 /* PrivacyPolicyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB8CF362B1A437A0073BBA9 /* PrivacyPolicyView.swift */; };
 		8FD7E3F02ADADF9000A15E16 /* BlockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD7E3EF2ADADF9000A15E16 /* BlockData.swift */; };
 		8FD7E3F32ADB6EEC00A15E16 /* BlockPreviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD7E3F22ADB6EEC00A15E16 /* BlockPreviews.swift */; };
 		8FE584742AFDCCC600828308 /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 8FE584732AFDCCC600828308 /* Shimmer */; };
@@ -159,6 +161,8 @@
 		8FB168B42ADA53DF00426906 /* ChannelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelData.swift; sourceTree = "<group>"; };
 		8FB168B62ADA565D00426906 /* ChannelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelView.swift; sourceTree = "<group>"; };
 		8FB168B82ADA5C3B00426906 /* BlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockView.swift; sourceTree = "<group>"; };
+		8FB8CF2E2B19A3DA0073BBA9 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		8FB8CF362B1A437A0073BBA9 /* PrivacyPolicyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrivacyPolicyView.swift; sourceTree = "<group>"; };
 		8FD7E3EF2ADADF9000A15E16 /* BlockData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockData.swift; sourceTree = "<group>"; };
 		8FD7E3F22ADB6EEC00A15E16 /* BlockPreviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockPreviews.swift; sourceTree = "<group>"; };
 		8FF0C59E2AD89C3B007D5959 /* Arena.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Arena.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -413,6 +417,8 @@
 				8F60D5D02B0057CE00DB3D78 /* UserView.swift */,
 				8F840B892B066D2800B17F31 /* ChangeAppIconView.swift */,
 				8F2789DD2B17B8DC003A78A7 /* OnboardingView.swift */,
+				8FB8CF2E2B19A3DA0073BBA9 /* SettingsView.swift */,
+				8FB8CF362B1A437A0073BBA9 /* PrivacyPolicyView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -651,6 +657,7 @@
 				8FD7E3F32ADB6EEC00A15E16 /* BlockPreviews.swift in Sources */,
 				8FD7E3F02ADADF9000A15E16 /* BlockData.swift in Sources */,
 				8F6B062D2AE5A80D00EEDE9C /* ChannelContentPreview.swift in Sources */,
+				8FB8CF2F2B19A3DA0073BBA9 /* SettingsView.swift in Sources */,
 				8FF0C5CC2AD8C09F007D5959 /* ChannelsData.swift in Sources */,
 				8FF211692B09D41D009C08B6 /* CircleLoadingSpinner.swift in Sources */,
 				8F3A8B972B0713F800FC5F6D /* InitialStates.swift in Sources */,
@@ -666,6 +673,7 @@
 				8FB168B32ADA192000426906 /* ArenaSampleData.swift in Sources */,
 				8F6B06312AE5ACC500EEDE9C /* ChannelCardContentPreview.swift in Sources */,
 				8F6B061E2AE4281800EEDE9C /* DataView.swift in Sources */,
+				8FB8CF372B1A437A0073BBA9 /* PrivacyPolicyView.swift in Sources */,
 				8F3A8B952B0711A000FC5F6D /* EmptyStates.swift in Sources */,
 				8FF0C5A22AD89C3B007D5959 /* ArenaApp.swift in Sources */,
 				8F3A8B932B06C31200FC5F6D /* EndStates.swift in Sources */,
@@ -826,6 +834,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Are:na";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
@@ -885,6 +894,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "Are:na";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;

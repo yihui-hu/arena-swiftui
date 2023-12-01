@@ -15,11 +15,13 @@ extension Defaults.Keys {
     static let username = Key<String>("username", default: "")
     static let userId = Key<Int>("userId", default: 0)
     static let onboardingDone = Key<Bool>("onboardingDone", default: false)
+    static let colorScheme = Key<String>("colorScheme", default: "")
 }
 
 @main
 struct ArenaApp: App {
     @Default(.onboardingDone) var onboardingDone
+    @AppStorage("selectedAppearance") var selectedAppearance = 0
     
     var body: some Scene {
         WindowGroup {
@@ -29,8 +31,10 @@ struct ArenaApp: App {
                 }
                 .contentSaturation(false)
                 .contentBackgroundColor(Color("background"))
+                .preferredColorScheme(selectedAppearance == 0 ? nil : selectedAppearance == 1 ? .light : .dark)
             } else {
                 OnboardingView()
+                    .preferredColorScheme(selectedAppearance == 0 ? nil : selectedAppearance == 1 ? .light : .dark)
             }
         }
     }

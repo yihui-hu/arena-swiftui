@@ -8,7 +8,6 @@
 import SwiftUI
 import Defaults
 
-// Remmeber to add in build settings as well
 final class ChangeAppIconViewModel: ObservableObject {
     enum AppIcon: String, CaseIterable, Identifiable {
         case primary = "AppIcon"
@@ -73,72 +72,45 @@ final class ChangeAppIconViewModel: ObservableObject {
     }
 }
 
+struct ScaleButtonStyle: ButtonStyle {
+    func makeBody(configuration: Self.Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.9 : 1)
+            .animation(.linear(duration: 0.1), value: configuration.isPressed)
+    }
+}
+
 struct ChangeAppIconView: View {
     @StateObject var viewModel = ChangeAppIconViewModel()
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        VStack {
-            ScrollView {
-                VStack(spacing: 11) {
-                    ForEach(ChangeAppIconViewModel.AppIcon.allCases) { appIcon in
-                        HStack(spacing: 16) {
-                            Image(uiImage: appIcon.preview)
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 60, height: 60)
-                                .cornerRadius(12)
-                            Text(appIcon.description)
-                            Spacer()
-                            CheckboxView(isSelected: viewModel.selectedAppIcon == appIcon)
-                        }
-                        .padding(EdgeInsets(top: 14, leading: 16, bottom: 14, trailing: 16))
-                        .background(Color("surface"))
-                        .cornerRadius(20)
-                        .onTapGesture {
-                            withAnimation {
-                                viewModel.updateAppIcon(to: appIcon)
-                            }
-                        }
+        HStack(spacing: 12) {
+            ForEach(ChangeAppIconViewModel.AppIcon.allCases) { appIcon in
+                Button(action: {
+                    withAnimation {
+                        viewModel.updateAppIcon(to: appIcon)
                     }
-                }
-                
-                Button(action: {
-                    Defaults[.accessToken] = ""
-                    Defaults[.username] = ""
-                    Defaults[.onboardingDone] = false
                 }) {
-                    Text("Reset onboarding")
+                    Image(uiImage: appIcon.preview)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .cornerRadius(12)
+                        .clipShape(RoundedRectangle(cornerRadius: 0)).padding(4)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(Color(viewModel.selectedAppIcon == appIcon ? "text-primary" : "surface"), lineWidth: 2)
+                        )
                 }
+                .buttonStyle(ScaleButtonStyle())
             }
         }
-        .background(Color("background"))
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarBackButtonHidden()
-        .toolbar {
-            ToolbarItem(placement: .topBarLeading) {
-                Button(action: {
-                    dismiss()
-                }) {
-                    BackButton()
-                }
-            }
-        }
-        .toolbarBackground(Color("background"), for: .navigationBar)
-        .toolbarBackground(.visible, for: .navigationBar)
-        .contentMargins(.leading, 0, for: .scrollIndicators)
-        .contentMargins(16)
     }
 }
 
 struct CheckboxView: View {
     let isSelected: Bool
     
-//    private var image: UIImage {
-//        let imageName = isSelected ? "icon-checked" : "icon-unchecked"
-//        return UIImage(imageLiteralResourceName: imageName)
-//    }
-//    
     var body: some View {
         Image(systemName: isSelected ? "checkmark.square.fill" : "square")
             .resizable()

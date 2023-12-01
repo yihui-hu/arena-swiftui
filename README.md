@@ -79,3 +79,4 @@ Most of the data fetching logic can be found in the Data folder, with "data fetc
 - [Show duplicate items in ForEach, needed because Are.na API block search could return duplicates](https://stackoverflow.com/questions/59295206/how-do-you-use-enumerated-with-foreach-in-swiftui)
 - [Custom clip shapes](https://sarunw.com/posts/how-to-draw-custom-paths-and-shapes-in-swiftui/)
 - [Implementing haptics](https://www.hackingwithswift.com/books/ios-swiftui/adding-haptic-effects)
+- [Light / Dark / System mode switcher](https://stackoverflow.com/questions/65798263/swiftui-how-to-let-the-user-set-the-app-appearance-in-real-time-w-options-lig)

@@ -27,8 +27,8 @@ struct OnboardingView: View {
                     Image(uiImage: UIImage(named: "AppIcon-Preview")!)
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 88, height: 88)
-                        .clipShape(RoundedRectangle(cornerRadius: 24))
+                        .frame(width: inputIsFocused ? 44 : 88, height: inputIsFocused ? 44 : 88)
+                        .clipShape(RoundedRectangle(cornerRadius: inputIsFocused ? 12 : 24))
 
                     VStack(spacing: 20) {
                         VStack(spacing: 16) {
@@ -95,13 +95,12 @@ struct OnboardingView: View {
                     .disabled(isLoading)
                 }
             }
-            .padding()
+            .animation(.easeInOut, value: UUID())
+            .padding(32)
         }
-        .contentMargins(16)
     }
 
     func getUserData(username: String, accessToken: String, userId: Binding<Int>, errorMessage: Binding<String>) {
-        errorMessage.wrappedValue = ""
         isLoading = true
         
         guard let url = URL(string: "https://api.are.na/v2/users/\(username.lowercased())/channels") else {
@@ -125,6 +124,7 @@ struct OnboardingView: View {
                     let userData = try decoder.decode(ArenaChannels.self, from: data)
                     DispatchQueue.main.async {
                         userId.wrappedValue = userData.id
+                        errorMessage.wrappedValue = ""
                         isLoading = false
                         apiCheckPassed = true
                     }
@@ -190,7 +190,7 @@ struct VerificationView: View {
                     }
                 }
             }
-            .padding(.horizontal, 16)
+            .padding(32)
         }
     }
 }

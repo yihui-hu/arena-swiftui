@@ -215,6 +215,7 @@ struct SearchChannelPreview: View {
                     }
                     
                     Text("\(channel.title)")
+                        .foregroundStyle(Color.primary)
                         .font(.system(size: 16))
                         .lineLimit(1)
                         .fontDesign(.rounded)
@@ -268,6 +269,7 @@ struct SearchUserPreview: View {
             ProfilePic(imageURL: searchUser.avatarImage.display, initials: searchUser.initials)
             
             Text("\(searchUser.username)")
+                .foregroundStyle(Color.primary)
                 .lineLimit(1)
                 .fontWeight(.medium)
                 .fontDesign(.rounded)
@@ -287,6 +289,7 @@ struct SearchBlockPreview: View {
                 .clipShape(RoundedRectangle(cornerRadius: 8))
             
             Text("\(searchBlock.title)")
+                .foregroundStyle(Color.primary)
                 .lineLimit(1)
                 .fontWeight(.medium)
                 .fontDesign(.rounded)
@@ -306,6 +309,7 @@ struct SearchBarStyle: TextFieldStyle {
             .cornerRadius(50)
             .fontDesign(.rounded)
             .fontWeight(.medium)
+            .tint(Color.primary)
     }
 }
 

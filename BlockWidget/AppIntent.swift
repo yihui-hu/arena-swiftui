@@ -14,6 +14,6 @@ struct ConfigurationAppIntent: AppIntent, WidgetConfigurationIntent {
     static var description = IntentDescription("Select a channel from Are.na to display blocks from")
 
     // An example configurable parameter
-    @Parameter(title: "Channel", default: "posterikas")
+    @Parameter(title: "Channel Slug", default: "posterikas")
     var channelSlug: String
 }

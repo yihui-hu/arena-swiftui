@@ -50,6 +50,7 @@ struct BlockView: View {
                 }
             }) {
                 Image(systemName: icon)
+                    .foregroundStyle(Color.primary)
             }
             .sensoryFeedback(.impact(flexibility: .solid, intensity: 0.4), trigger: showInfoModal)
         }
@@ -103,6 +104,7 @@ struct BlockView: View {
             ZStack {
                 ShareLink(item: URL(string: "https://are.na/block/\(blockData.id)")!) {
                     Image(systemName: "square.and.arrow.up")
+                        .foregroundStyle(Color.primary)
                         .padding(.bottom, 4)
                         .frame(width: 40, height: 40)
                         .background(.thickMaterial)
@@ -116,6 +118,7 @@ struct BlockView: View {
                         print("Connect")
                     }) {
                         Text("Connect")
+                            .foregroundStyle(Color.primary)
                             .font(.system(size: 16))
                             .fontDesign(.rounded)
                             .fontWeight(.medium)
@@ -215,6 +218,7 @@ struct BlockView: View {
                                                 Spacer()
                                                 NavigationLink(destination: UserView(userId: connectedById)) {
                                                     Text("\(connectedBy != "" ? connectedBy : "unknown")")
+                                                        .foregroundStyle(Color.primary)
                                                         .fontWeight(.medium)
                                                         .lineLimit(1)
                                                 }
@@ -233,6 +237,7 @@ struct BlockView: View {
                                                         self.presentingSafariView = true
                                                     }) {
                                                         Text("\(source)")
+                                                            .foregroundStyle(Color.primary)
                                                             .lineLimit(1)
                                                             .fontWeight(.medium)
                                                     }
@@ -286,7 +291,7 @@ struct BlockView: View {
                                             .cornerRadius(12)
                                             .overlay(
                                                 RoundedRectangle(cornerRadius: 12)
-                                                    .stroke(Color("backdrop-inverse"), lineWidth: 2)
+                                                    .stroke(Color("surface-text-secondary"), lineWidth: 1.5)
                                             )
                                         }
                                         
@@ -336,6 +341,7 @@ struct BlockView: View {
                                                                                 .foregroundColor(connection.status == "public" ? Color.green : Color.red)
                                                                         }
                                                                         Text("\(connection.title)")
+                                                                            .foregroundStyle(Color.primary)
                                                                             .font(.system(size: 16))
                                                                             .lineLimit(1)
                                                                             .fontDesign(.rounded)
@@ -369,6 +375,7 @@ struct BlockView: View {
                                                                     VStack(alignment: .leading, spacing: 4) {
                                                                         HStack {
                                                                             Text("\(comment.user.fullName)")
+                                                                                .foregroundStyle(Color.primary)
                                                                                 .fontDesign(.rounded)
                                                                                 .fontWeight(.medium)
                                                                             Spacer()
@@ -377,6 +384,7 @@ struct BlockView: View {
                                                                                 .font(.system(size: 14))
                                                                         }
                                                                         Text("\(comment.body)")
+                                                                            .foregroundStyle(Color.primary)
                                                                     }
                                                                     .frame(maxWidth: .infinity, alignment: .leading)
                                                                     .font(.system(size: 15))

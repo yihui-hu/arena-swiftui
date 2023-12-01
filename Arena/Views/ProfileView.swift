@@ -27,7 +27,7 @@ struct ProfileView: View {
                     }
                     
                     ToolbarItem(placement: .topBarTrailing) {
-                        NavigationLink(destination: ChangeAppIconView()) {
+                        NavigationLink(destination: SettingsView()) {
                             Image(systemName: "gearshape.fill")
                                 .resizable()
                                 .scaledToFit()
