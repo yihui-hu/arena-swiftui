@@ -7,18 +7,31 @@
 
 import SwiftUI
 import Defaults
+import BetterSafariView
 
 struct MenuItem: View {
     @State var iconName: String
     @State var text: String
+    @State var arrowName: String
     
     var body: some View {
-        HStack(spacing: 12) {
-            Image(systemName: iconName)
-                .foregroundStyle(Color("surface-text-secondary"))
-                .frame(width: 28, height: 28)
-            Text("\(text)")
-                .fontWeight(.medium)
+        HStack {
+            HStack(spacing: 12) {
+                Image(systemName: iconName)
+                    .foregroundStyle(Color("surface-text-secondary"))
+                    .fontWeight(.semibold)
+                    .frame(width: 28, height: 28)
+                Text("\(text)")
+                    .foregroundStyle(Color.primary)
+                    .fontWeight(.medium)
+            }
+            
+            Spacer()
+            
+            Image(systemName: arrowName)
+                .foregroundStyle(Color("surface-tertiary"))
+                .fontWeight(.semibold)
+                .frame(width: 24, height: 24)
         }
     }
 }
@@ -35,6 +48,7 @@ struct ThemeButton: View {
         }) {
             VStack(alignment: .leading, spacing: 12) {
                 Image(systemName: iconName)
+                    .fontWeight(.semibold)
                     .foregroundStyle(Color(selectedAppearance == appearance ? "text-primary" : "tab-unselected"))
                 
                 Text("\(text)")
@@ -54,9 +68,10 @@ struct ThemeButton: View {
 }
 
 struct SettingsView: View {
-    @State var isThemeModalPresented = false
-    @State var isAppIconModalPresented = false
+    @State private var presentingTwitter = false
+    @State private var presentingPrivacyPolicy = false
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.openURL) var openURL
     @AppStorage("selectedAppearance") private var selectedAppearance = 0
     
     var body: some View {
@@ -93,11 +108,50 @@ struct SettingsView: View {
                     
                     VStack(alignment: .leading, spacing: 16) {
                         NavigationLink(destination: ChannelView(channelSlug: "are-na-changelog")) {
-                            MenuItem(iconName: "sparkle", text: "What's New")
+                            MenuItem(iconName: "sparkle", text: "What's New", arrowName: "arrow.right")
                         }
-                        MenuItem(iconName: "message.fill", text: "Contact / Feedback")
-                        MenuItem(iconName: "at", text: "Follow on Twitter")
-                        MenuItem(iconName: "eyes", text: "Privacy Policy")
+                        
+                        Button(action: {
+                            MailFeedback()
+                        }) {
+                            MenuItem(iconName: "message.fill", text: "Send Feedback", arrowName: "arrow.up.right")
+                        }
+                        
+                        Button(action: {
+                            self.presentingTwitter = true
+                        }) {
+                            MenuItem(iconName: "at", text: "Follow on Twitter", arrowName: "arrow.up.right")
+                        }
+                        .safariView(isPresented: $presentingTwitter) {
+                            SafariView(
+                                url: URL(string: "https://twitter.com/_yihui")!,
+                                configuration: SafariView.Configuration(
+                                    entersReaderIfAvailable: false,
+                                    barCollapsingEnabled: true
+                                )
+                            )
+                            .preferredBarAccentColor(.clear)
+                            .preferredControlAccentColor(.accentColor)
+                            .dismissButtonStyle(.done)
+                        }
+
+                        Button(action: {
+                            self.presentingPrivacyPolicy = true
+                        }) {
+                            MenuItem(iconName: "eyes", text: "Privacy Policy", arrowName: "arrow.up.right")
+                        }
+                        .safariView(isPresented: $presentingPrivacyPolicy) {
+                            SafariView(
+                                url: URL(string: "https://arena-ios-app.vercel.app")!,
+                                configuration: SafariView.Configuration(
+                                    entersReaderIfAvailable: false,
+                                    barCollapsingEnabled: true
+                                )
+                            )
+                            .preferredBarAccentColor(.clear)
+                            .preferredControlAccentColor(.accentColor)
+                            .dismissButtonStyle(.done)
+                        }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(16)
@@ -119,12 +173,14 @@ struct SettingsView: View {
                     }
                     
                     Spacer()
+                    
+                    Text("Are.na (0.0.1)")
+                        .font(.system(size: 14))
+                        .foregroundStyle(Color("surface-tertiary"))
+                        .fontWeight(.semibold)
                 }
             }
         }
-        .navigationTitle("Settings")
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationBarTitleDisplayMode(.inline)
         .navigationBarBackButtonHidden()
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -137,6 +193,15 @@ struct SettingsView: View {
         }
         .toolbarBackground(Color("background"), for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
+    }
+    
+    private func MailFeedback() {
+        let email = "yyihui.hu@gmail.com"
+        let subject = "Are:na Feedback"
+        let body = "Please provide your feedback here :)"
+        guard let url = URL(string: "mailto:\(email)?subject=\(subject.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? "")&body=\(body.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? "")") else { return }
+        
+        openURL(url)
     }
 }
 

@@ -13,7 +13,7 @@ struct EndOfChannel: View {
             .font(.system(size: 14))
             .foregroundStyle(Color("surface-tertiary"))
             .fontDesign(.rounded)
-            .fontWeight(.medium)
+            .fontWeight(.semibold)
             .padding(.top, 24)
     }
 }
@@ -24,7 +24,7 @@ struct EndOfSearch: View {
             .font(.system(size: 14))
             .foregroundStyle(Color("surface-tertiary"))
             .fontDesign(.rounded)
-            .fontWeight(.medium)
+            .fontWeight(.semibold)
             .padding(.top, 24)
     }
 }
@@ -35,7 +35,7 @@ struct EndOfUser: View {
             .font(.system(size: 14))
             .foregroundStyle(Color("surface-tertiary"))
             .fontDesign(.rounded)
-            .fontWeight(.medium)
+            .fontWeight(.semibold)
             .padding(.top, 24)
     }
 }

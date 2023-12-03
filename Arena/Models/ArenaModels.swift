@@ -174,7 +174,7 @@ final class ArenaChannelContents: Codable {
 final class ArenaSearchResults: Codable {
     let currentPage, totalPages: Int
     var channels: [ArenaSearchedChannel]
-    var blocks: [ArenaSearchedBlock]
+    var blocks: [Block]
     var users: [ArenaSearchedUser]
     
     enum CodingKeys: String, CodingKey {
@@ -183,7 +183,7 @@ final class ArenaSearchResults: Codable {
         case channels, blocks, users
     }
     
-    init(currentPage: Int, totalPages: Int, channels: [ArenaSearchedChannel], blocks: [ArenaSearchedBlock], users: [ArenaSearchedUser]) {
+    init(currentPage: Int, totalPages: Int, channels: [ArenaSearchedChannel], blocks: [Block], users: [ArenaSearchedUser]) {
         self.currentPage = currentPage
         self.totalPages = totalPages
         self.channels = channels

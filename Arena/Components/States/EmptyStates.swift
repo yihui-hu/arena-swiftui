@@ -13,7 +13,7 @@ struct EmptyChannel: View {
             .font(.system(size: 14))
             .foregroundStyle(Color("surface-tertiary"))
             .fontDesign(.rounded)
-            .fontWeight(.medium)
+            .fontWeight(.semibold)
             .padding(.top, 24)
     }
 }
@@ -23,13 +23,21 @@ struct EmptySearch: View {
     let searchTerm: String
     
     var body: some View {
-        // TODO: Emulate Family's browser search empty state
-        Text("No \(items) found for search term: \(searchTerm)")
-            .font(.system(size: 14))
-            .foregroundStyle(Color("surface-tertiary"))
-            .fontDesign(.rounded)
-            .fontWeight(.medium)
-            .padding(.top, 24)
+        VStack(spacing: 16) {
+            Image(systemName: "magnifyingglass")
+                .imageScale(.large)
+                .fontWeight(.black)
+                .foregroundStyle(Color("surface-text-secondary"))
+                .frame(width: 52, height: 52)
+                .background(Color("surface"))
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+            Text("No \(items) found for search term: \(searchTerm)")
+                .font(.system(size: 14))
+                .foregroundStyle(Color("surface-tertiary"))
+                .fontDesign(.rounded)
+                .fontWeight(.semibold)
+        }
+        .padding(.top, 24)
     }
 }
 
@@ -40,7 +48,7 @@ struct EmptyUserChannels: View {
             .font(.system(size: 14))
             .foregroundStyle(Color("surface-tertiary"))
             .fontDesign(.rounded)
-            .fontWeight(.medium)
+            .fontWeight(.semibold)
             .padding(.top, 24)
     }
 }
@@ -51,11 +59,11 @@ struct EmptyBlockComments: View {
             .font(.system(size: 14))
             .foregroundStyle(Color("surface-tertiary"))
             .fontDesign(.rounded)
-            .fontWeight(.medium)
+            .fontWeight(.semibold)
             .padding(.vertical, 12)
     }
 }
 
 #Preview {
-    EmptyChannel()
+    EmptySearch(items: "blocks", searchTerm: "hi")
 }

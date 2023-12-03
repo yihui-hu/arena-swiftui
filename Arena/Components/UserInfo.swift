@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import Modals
 import Defaults
 import CoreImage.CIFilterBuiltins
 
@@ -117,6 +116,7 @@ struct UserInfo: View {
                         Image(systemName: "square.and.arrow.up")
                             .padding(.bottom, 4)
                             .imageScale(.small)
+                            .fontWeight(.medium)
                             .frame(width: 32, height: 32, alignment: .center)
                             .background(Color("surface"))
                             .foregroundColor(Color("surface-text-secondary"))
@@ -128,7 +128,7 @@ struct UserInfo: View {
                     if !channelsData.isLoading, userChannels.isEmpty {
                         EmptyUserChannels()
                     } else {
-                        ForEach(userChannels, id: \.self.id) { channel in
+                        ForEach(Array(zip(userChannels.indices, userChannels)), id: \.0) { _, channel in
                             ChannelCard(channel: channel)
                                 .onAppear {
                                     if userChannels.count >= 1 {
@@ -164,7 +164,7 @@ struct UserInfo: View {
             channelsData.refresh(userId: userId)
             userData.refresh(userId: userId)
         }
-        .modal(isPresented: $isShareModalPresented, size: .fraction(0.5), options: [.prefersDragHandle]) {
+        .sheet(isPresented: $isShareModalPresented) {
             VStack(spacing: 20) {
                 Image(uiImage: generateQRCode(from: "https://are.na/\(userSlug)"))
                     .interpolation(.none)
@@ -180,12 +180,14 @@ struct UserInfo: View {
                         .padding(.vertical, 6)
                         .padding(.horizontal, 10)
                         .background(
-                            RoundedRectangle(cornerRadius: 16)
+                            RoundedRectangle(cornerRadius: 24)
                                 .fill(Color("surface"))
                         )
                         .foregroundStyle(Color("surface-text-secondary"))
                 }
             }
+            .presentationDetents([.medium])
+            .presentationCornerRadius(32)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             .padding(.horizontal, 20)
             .padding(.top, 40)

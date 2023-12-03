@@ -27,9 +27,14 @@ struct SearchView: View {
         self._searchData = StateObject(wrappedValue: SearchData())
     }
     
-    let options = ["Channels", "Blocks", "Users"]
-    
     var body: some View {
+        let options = ["Channels", "Blocks", "Users"]
+        let gridGap: CGFloat = 8
+        let gridSpacing = gridGap + 8
+        let gridColumns: [GridItem] = Array(repeating: .init(.flexible(), spacing: gridGap), count: 2)
+        let displayWidth = UIScreen.main.bounds.width
+        let gridItemSize = (displayWidth - (gridGap * 3) - 16) / 2
+        
         NavigationStack {
             VStack {
                 VStack(spacing: 16) {
@@ -44,6 +49,11 @@ struct SearchView: View {
                             UITextField.appearance().clearButtonMode = .always
                         }
                         .focused($searchInputIsFocused)
+                        .onSubmit {
+                            searchData.searchTerm = searchTerm
+                            searchData.refresh()
+                        }
+                        .submitLabel(.search)
                     
                     if searchTerm != "" {
                         HStack(spacing: 8) {
@@ -52,11 +62,11 @@ struct SearchView: View {
                                     selection = option
                                 }) {
                                     Text("\(option)")
-                                        .foregroundStyle(selection == option ? Color("text-primary") : Color("surface-text-secondary"))
+                                        .foregroundStyle(selection == option ? Color("background") : Color("surface-text-secondary"))
                                 }
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 8)
-                                .background(Color(selection == option ? "surface-tertiary" : "surface"))
+                                .background(Color(selection == option ? "text-primary" : "surface"))
                                 .cornerRadius(16)
                             }
                             .opacity(isButtonFaded ? 1 : 0)
@@ -94,44 +104,74 @@ struct SearchView: View {
                         
                         ScrollView {
                             ScrollViewReader { proxy in
-                                LazyVStack(alignment: .leading, spacing: 8) {
-                                    
-                                    if selection == "Channels" {
-                                        ForEach(searchResults.channels, id: \.id) { channel in
-                                            NavigationLink(destination: ChannelView(channelSlug: channel.slug)) {
-                                                SearchChannelPreview(channel: channel, pinnedChannels: $pinnedChannels)
-                                            }
-                                            .onAppear {
-                                                if searchResults.channels.last?.id ?? -1 == channel.id {
-                                                    if !searchData.isLoading {
-                                                        searchData.loadMore()
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    } else if selection == "Blocks" {
-                                        // Zipping required because searchResults.blocks might contain duplicate ids
+                                if selection == "Blocks" {
+                                    LazyVGrid(columns: gridColumns, spacing: gridSpacing) {
                                         ForEach(Array(zip(searchResults.blocks.indices, searchResults.blocks)), id: \.0) { _, block in
-                                            NavigationLink(destination: SingleBlockView(blockId: block.id)) {
-                                                SearchBlockPreview(searchBlock: block)
-                                            }
-                                            .onAppear {
-                                                if searchResults.blocks.last?.id ?? -1 == block.id {
-                                                    if !searchData.isLoading {
-                                                        searchData.loadMore()
+                                            NavigationLink(destination: SingleBlockView(block: block)) {
+                                                VStack(spacing: 8) {
+                                                    ChannelViewBlockPreview(blockData: block, fontSize: 12, display: "Grid")
+                                                        .frame(width: gridItemSize, height: gridItemSize)
+                                                        .background(Color("background"))
+                                                        .contextMenu {
+                                                            Button {
+                                                                // Do something
+                                                            } label: {
+                                                                Label("Connect", systemImage: "arrow.right")
+                                                            }
+                                                            
+                                                            NavigationLink(destination: SingleBlockView(block: block)) {
+                                                                Label("View", systemImage: "eye")
+                                                            }
+                                                        } preview: {
+                                                            let img = block.image
+                                                            if img != nil {
+                                                                ChannelViewBlockPreview(blockData: block, fontSize: 16, display: "Feed")
+                                                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                                                            } else {
+                                                                ChannelViewBlockPreview(blockData: block, fontSize: 18, display: "Feed")
+                                                                    .padding(32)
+                                                                    .frame(width: 400, height: 400)
+                                                            }
+                                                        }
+                                                    
+                                                    ContentPreviewMetadata(block: block, display: "Grid")
+                                                        .padding(.horizontal, 12)
+                                                }
+                                                .onAppear {
+                                                    if searchResults.blocks.last?.id ?? -1 == block.id {
+                                                        if !searchData.isLoading {
+                                                            searchData.loadMore()
+                                                        }
                                                     }
                                                 }
                                             }
                                         }
-                                    } else if selection == "Users" {
-                                        ForEach(searchResults.users, id: \.id) { user in
-                                            NavigationLink(destination: UserView(userId: user.id)) {
-                                                SearchUserPreview(searchUser: user)
+                                    }
+                                } else {
+                                    LazyVStack(alignment: .leading, spacing: 8) {
+                                        if selection == "Channels" {
+                                            ForEach(searchResults.channels, id: \.id) { channel in
+                                                NavigationLink(destination: ChannelView(channelSlug: channel.slug)) {
+                                                    SearchChannelPreview(channel: channel, pinnedChannels: $pinnedChannels)
+                                                }
+                                                .onAppear {
+                                                    if searchResults.channels.last?.id ?? -1 == channel.id {
+                                                        if !searchData.isLoading {
+                                                            searchData.loadMore()
+                                                        }
+                                                    }
+                                                }
                                             }
-                                            .onAppear {
-                                                if searchResults.users.last?.id ?? -1 == user.id {
-                                                    if !searchData.isLoading {
-                                                        searchData.loadMore()
+                                        } else if selection == "Users" {
+                                            ForEach(searchResults.users, id: \.id) { user in
+                                                NavigationLink(destination: UserView(userId: user.id)) {
+                                                    SearchUserPreview(searchUser: user)
+                                                }
+                                                .onAppear {
+                                                    if searchResults.users.last?.id ?? -1 == user.id {
+                                                        if !searchData.isLoading {
+                                                            searchData.loadMore()
+                                                        }
                                                     }
                                                 }
                                             }
@@ -189,6 +229,7 @@ struct SearchView: View {
             .onChange(of: selection, initial: true) { oldSelection, newSelection in
                 if oldSelection != newSelection {
                     searchData.selection = newSelection
+                    searchData.isLoading = false
                     searchData.refresh()
                 }
             }
@@ -269,26 +310,6 @@ struct SearchUserPreview: View {
             ProfilePic(imageURL: searchUser.avatarImage.display, initials: searchUser.initials)
             
             Text("\(searchUser.username)")
-                .foregroundStyle(Color.primary)
-                .lineLimit(1)
-                .fontWeight(.medium)
-                .fontDesign(.rounded)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-}
-
-struct SearchBlockPreview: View {
-    let searchBlock: ArenaSearchedBlock
-    @State private var opacity: Double = 0
-    
-    var body: some View {
-        HStack(spacing: 12) {
-            ImagePreview(imageURL: searchBlock.image?.thumb.url ?? "")
-                .frame(width: 40, height: 40)
-                .clipShape(RoundedRectangle(cornerRadius: 8))
-            
-            Text("\(searchBlock.title)")
                 .foregroundStyle(Color.primary)
                 .lineLimit(1)
                 .fontWeight(.medium)
