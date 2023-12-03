@@ -13,90 +13,85 @@ final class PinnedChannelsData: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
     
-    @Default(.pinnedChannels) var pinnedChannels: [Int]
-    
-    private var lastProcessedIndex: Int = 0
-    private let batchSize: Int = 5
-    
-    init() {
-        fetchChannels(refresh: false)
+    init(pinnedChannels: [Int]) {
+        fetchChannels(pinnedChannels: pinnedChannels, refresh: false)
     }
     
-    final func loadMore() {
+    final func loadMore(pinnedChannels: [Int]) {
         print("Fetching more pinned channels")
-        fetchChannels(refresh: false)
+        fetchChannels(pinnedChannels: pinnedChannels, refresh: false)
     }
     
-    final func refresh() {
-        fetchChannels(refresh: true)
+    final func refresh(pinnedChannels: [Int]) {
+        fetchChannels(pinnedChannels: pinnedChannels, refresh: true)
     }
     
-    final func fetchChannels(refresh: Bool) {
+    final func fetchChannels(pinnedChannels: [Int], refresh: Bool) {
         guard !isLoading else {
             return
+        }
+        
+        if refresh {
+            self.channels = []
         }
 
         self.isLoading = true
         errorMessage = nil
-
-        let startIndex = lastProcessedIndex
-        let endIndex = min(lastProcessedIndex + batchSize, pinnedChannels.count)
-
-        guard startIndex < endIndex else {
-            // All channels have been processed
-            self.isLoading = false
-            return
-        }
-
-        let channelIdsToFetch = Array(pinnedChannels[startIndex..<endIndex])
-
+        
         let dispatchGroup = DispatchGroup()
 
-        for channelId in channelIdsToFetch {
+        var updatedChannels = self.channels ?? []
+
+        for channelId in pinnedChannels {
             dispatchGroup.enter()
             
-            guard let url = URL(string: "https://api.are.na/v2/channels/\(channelId)/?per=6)") else {
+            guard let url = URL(string: "https://api.are.na/v2/channels/\(channelId)/thumb") else {
                 dispatchGroup.leave()
                 continue
             }
 
             var request = URLRequest(url: url)
             request.setValue("Bearer \(Defaults[.accessToken])", forHTTPHeaderField: "Authorization")
-
+            
             let task = URLSession.shared.dataTask(with: request) { [unowned self] (data, response, error) in
                 defer {
                     dispatchGroup.leave()
                 }
 
-                if error != nil {
+                guard error == nil else {
+                    errorMessage = "Error retrieving data: \(error!.localizedDescription)"
                     return
                 }
 
-                if let data = data {
-                    let decoder = JSONDecoder()
-                    do {
-                        let channelContent = try decoder.decode(ArenaChannelPreview.self, from: data)
-                        DispatchQueue.main.async {
-                            var updatedChannels = self.channels ?? []
-                            if !refresh {
-                                updatedChannels.append(channelContent)
-                            } else {
-                                updatedChannels = [channelContent]
-                            }
-                            self.channels = updatedChannels
-                        }
-                    } catch let decodingError {
-                        print("Decoding Error: \(decodingError)")
-                        return
-                    }
+                guard let data = data else {
+                    return
+                }
+
+                let decoder = JSONDecoder()
+                do {
+                    let channelContent = try decoder.decode(ArenaChannelPreview.self, from: data)
+                    updatedChannels.append(channelContent)
+                } catch let decodingError {
+                    print("Decoding Error: \(decodingError)")
+                    errorMessage = "Error decoding data: \(decodingError.localizedDescription)"
                 }
             }
+
             task.resume()
         }
 
         dispatchGroup.notify(queue: .main) {
-            self.lastProcessedIndex += self.batchSize
+            // sort results, since dispatchGroup runs tasks in parallel with no respect for order
+            updatedChannels.sort { object1, object2 in
+                guard let index1 = Defaults[.pinnedChannels].firstIndex(of: object1.id),
+                      let index2 = Defaults[.pinnedChannels].firstIndex(of: object2.id) else {
+                    return false
+                }
+                return index1 < index2
+            }
+            self.channels = updatedChannels
             self.isLoading = false
         }
     }
+
 }

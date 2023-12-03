@@ -95,7 +95,11 @@ final class ArenaChannelPreview: Codable {
 }
 
 // MARK: - ArenaChannel
-final class ArenaChannel: Codable {
+final class ArenaChannel: Codable, Equatable {
+    static func == (lhs: ArenaChannel, rhs: ArenaChannel) -> Bool {
+        return lhs.id == rhs.id // Compare using a unique identifier, such as the 'id' property
+    }
+    
     let id: Int
     let title, createdAt, updatedAt, addedToAt: String
     let published, open, collaboration: Bool
@@ -175,7 +179,7 @@ final class ArenaSearchResults: Codable {
     let currentPage, totalPages: Int
     var channels: [ArenaSearchedChannel]
     var blocks: [Block]
-    var users: [ArenaSearchedUser]
+    var users: [User]
     
     enum CodingKeys: String, CodingKey {
         case totalPages = "total_pages"
@@ -183,7 +187,7 @@ final class ArenaSearchResults: Codable {
         case channels, blocks, users
     }
     
-    init(currentPage: Int, totalPages: Int, channels: [ArenaSearchedChannel], blocks: [Block], users: [ArenaSearchedUser]) {
+    init(currentPage: Int, totalPages: Int, channels: [ArenaSearchedChannel], blocks: [Block], users: [User]) {
         self.currentPage = currentPage
         self.totalPages = totalPages
         self.channels = channels
@@ -193,7 +197,11 @@ final class ArenaSearchResults: Codable {
 }
 
 // MARK: - ArenaSearchedChannel
-final class ArenaSearchedChannel: Codable {
+final class ArenaSearchedChannel: Codable, Equatable {
+    static func == (lhs: ArenaSearchedChannel, rhs: ArenaSearchedChannel) -> Bool {
+        return lhs.id == rhs.id // Compare using a unique identifier, such as the 'id' property
+    }
+    
     let title, createdAt, updatedAt, addedToAt: String
     let slug: String
     let length: Int
@@ -231,51 +239,6 @@ final class ArenaSearchedChannel: Codable {
         self.state = state
         self.user = user
         self.id = id
-    }
-}
-
-// MARK: - ArenaSearchedBlock
-final class ArenaSearchedBlock: Codable {
-    let title, generatedTitle: String
-    let content: String?
-    let source: ArenaSource?
-    let attachment: ArenaAttachment?
-    let image: ArenaImage?
-    let id: Int
-    
-    enum CodingKeys: String, CodingKey {
-        case title, content, source, attachment, image, id
-        case generatedTitle = "generated_title"
-    }
-    
-    init(title: String, generatedTitle: String, content: String?, source: ArenaSource?, attachment: ArenaAttachment?, image: ArenaImage?, id: Int) {
-        self.title = title
-        self.generatedTitle = generatedTitle
-        self.content = content
-        self.source = source
-        self.attachment = attachment
-        self.image = image
-        self.id = id
-    }
-}
-
-// MARK: - ArenaSearchedUser
-final class ArenaSearchedUser: Codable {
-    let slug, username, initials: String
-    let id: Int
-    let avatarImage: AvatarImage
-    
-    enum CodingKeys: String, CodingKey {
-        case slug, username, id, initials
-        case avatarImage = "avatar_image"
-    }
-    
-    init(slug: String, username: String, initials: String, id: Int, avatarImage: AvatarImage) {
-        self.slug = slug
-        self.username = username
-        self.initials = initials
-        self.id = id
-        self.avatarImage = avatarImage
     }
 }
 
@@ -588,5 +551,66 @@ final class BlockComment: Codable {
         self.userId = userId
         self.baseClass = baseClass
         self.user = user
+    }
+}
+
+//MARK: - Followers data
+final class ArenaFollowers: Codable {
+    let length, currentPage, totalPages: Int
+    var users: [User]
+    
+    enum CodingKeys: String, CodingKey {
+        case totalPages = "total_pages"
+        case currentPage = "current_page"
+        case users, length
+    }
+    
+    init(length: Int, currentPage: Int, totalPages: Int, users: [User]) {
+        self.length = length
+        self.currentPage = currentPage
+        self.totalPages = totalPages
+        self.users = users
+    }
+}
+
+//enum FollowingItem: Decodable, Equatable {
+//    case userItem(User)
+//    case channelItem(ArenaSearchedChannel)
+//    
+//    enum CodingKeys: CodingKey, CaseIterable {
+//        case userItem
+//        case channelItem
+//    }
+//    
+//    init(from decoder: Decoder) throws {
+//        let container = try decoder.container(keyedBy: CodingKeys.self)
+//        if let value = try container.decodeIfPresent(User.self, forKey: .userItem) {
+//            self = FollowingItem.userItem(value)
+//            return
+//        }
+//        
+//        if let value = try container.decodeIfPresent(ArenaSearchedChannel.self, forKey: .channelItem) {
+//            self = FollowingItem.channelItem(value)
+//            return
+//        }
+//        
+//        throw DecodingError.valueNotFound(Self.self, DecodingError.Context(codingPath: CodingKeys.allCases, debugDescription: "user/channel not found"))
+//    }
+//}
+
+//MARK: - Following data
+final class ArenaFollowing: Decodable {
+    let length, currentPage: Int
+    var users: [User]
+    
+    enum CodingKeys: String, CodingKey {
+        case currentPage = "current_page"
+        case users, length
+    }
+    
+    init(length: Int, currentPage: Int, totalPages: Int, users: [User]) {
+        self.length = length
+        self.currentPage = currentPage
+        self.users = users
     }
 }

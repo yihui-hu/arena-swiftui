@@ -18,7 +18,7 @@ final class SearchData: ObservableObject {
     var currentPage: Int = 1
     var totalPages: Int = 1
     
-    // MARK: - Search Initializer
+    // MARK: - Search init
     init() {
         if searchTerm != "" {
             fetchSearchResults()
@@ -29,7 +29,7 @@ final class SearchData: ObservableObject {
     
     // MARK: - Fetch more content
     final func loadMore() {
-        print("Fetching channel content: page \(self.currentPage) of \(self.totalPages)")
+        print("Fetching more search results: page \(self.currentPage) of \(self.totalPages)")
         if searchTerm != "" {
             fetchSearchResults()
         } else {
@@ -37,7 +37,7 @@ final class SearchData: ObservableObject {
         }
     }
     
-    // MARK: - Refresh Channel Metadata & Contents
+    // MARK: - Refresh search results
     final func refresh() {
         reset()
         if searchTerm != "" {
@@ -51,8 +51,7 @@ final class SearchData: ObservableObject {
         totalPages = 1
     }
     
-    
-    // MARK: - Fetch Channel Contents
+    // MARK: - Fetch search results
     final func fetchSearchResults() {
         guard currentPage <= totalPages else {
             return

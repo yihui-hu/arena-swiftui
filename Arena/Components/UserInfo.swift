@@ -34,8 +34,6 @@ struct UserInfo: View {
         let userCreatedAt = userData.user?.createdAt ?? ""
         let userCreation = dateFromString(string: userCreatedAt)
         let userBadge = userData.user?.badge ?? ""
-        let userFollowers = userData.user?.followerCount ?? 0
-        let userFollowing = userData.user?.followingCount ?? 0
         let userChannels = channelsData.channels?.channels ?? []
         
         ScrollView {
@@ -69,9 +67,9 @@ struct UserInfo: View {
                                 .padding(.horizontal, 10)
                                 .background(
                                     RoundedRectangle(cornerRadius: 16)
-                                        .fill(Color(userBadge == "supporter" ? "supporter-bg" : "premium-bg"))
+                                        .fill(Color(userBadge == "supporter" ? "supporter-bg" : userBadge == "investor" ? "investor-bg" : "premium-bg"))
                                 )
-                                .foregroundStyle(Color(userBadge == "supporter" ? "supporter" : "premium"))
+                                .foregroundStyle(Color(userBadge == "supporter" ? "supporter" : userBadge == "investor" ? "investor" : "premium"))
                         }
                     }
                 }
@@ -79,23 +77,20 @@ struct UserInfo: View {
                 
                 HStack {
                     HStack(spacing: 8) {
-                        Button(action: {
-                            
-                        }) {
-                            Text("\(userFollowing) following")
+                        NavigationLink(destination: FollowView(userId: userId, type: "following")) {
+                            Text("Following")
                                 .font(.system(size: 15))
                                 .fontDesign(.rounded)
                                 .fontWeight(.medium)
                         }
+                        
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
                         .background(Color("surface"))
                         .cornerRadius(16)
                         
-                        Button(action: {
-                            
-                        }) {
-                            Text("\(userFollowers) followers")
+                        NavigationLink(destination: FollowView(userId: userId, type: "followers")) {
+                            Text("Followers")
                                 .font(.system(size: 15))
                                 .fontDesign(.rounded)
                                 .fontWeight(.medium)
@@ -200,6 +195,7 @@ struct UserInfo: View {
         } else {
             pinnedChannels.append(channelId)
         }
+        Defaults[.pinnedChannelsChanged] = true
     }
     
     private func generateQRCode(from string: String) -> UIImage {

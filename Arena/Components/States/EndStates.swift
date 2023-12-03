@@ -40,6 +40,19 @@ struct EndOfUser: View {
     }
 }
 
+struct EndOfFollowView: View {
+    let text: String
+    
+    var body: some View {
+        Text("Reached end of \(text)")
+            .font(.system(size: 14))
+            .foregroundStyle(Color("surface-tertiary"))
+            .fontDesign(.rounded)
+            .fontWeight(.semibold)
+            .padding(.top, 24)
+    }
+}
+
 #Preview {
     EndOfChannel()
 }

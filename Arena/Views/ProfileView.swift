@@ -10,6 +10,7 @@ import Defaults
 
 struct ProfileView: View {
     let userId: Int
+    @Binding var tab: Int
         
     var body: some View {
         NavigationStack {
@@ -27,13 +28,26 @@ struct ProfileView: View {
                     }
                     
                     ToolbarItem(placement: .topBarTrailing) {
-                        NavigationLink(destination: SettingsView()) {
-                            Image(systemName: "gearshape.fill")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 20, height: 20)
+                        HStack(spacing: 8) {
+                            Button(action: {
+                                self.tab = 1
+                            }) {
+                                Image(systemName: "magnifyingglass")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 18, height: 18)
+                            }
+                            .fontWeight(.bold)
+                            .foregroundStyle(Color("surface-text-secondary"))
+                            
+                            NavigationLink(destination: SettingsView()) {
+                                Image(systemName: "gearshape.fill")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 20, height: 20)
+                            }
+                            .foregroundStyle(Color("surface-text-secondary"))
                         }
-                        .foregroundStyle(Color("surface-text-secondary"))
                     }
                 }
                 .toolbarBackground(Color("background"), for: .navigationBar)
@@ -44,8 +58,4 @@ struct ProfileView: View {
         .contentMargins(.leading, 0, for: .scrollIndicators)
         .contentMargins(16)
     }
-}
-
-#Preview {
-    ProfileView(userId: 49570)
 }

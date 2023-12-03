@@ -17,7 +17,7 @@ struct InitialSearch: View {
                 .foregroundStyle(Color("surface-text-secondary"))
                 .frame(width: 52, height: 52)
                 .background(Color("surface"))
-                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .clipShape(RoundedRectangle(cornerRadius: 16))
             Text("You haven't searched anything yet...")
                 .font(.system(size: 14))
                 .foregroundStyle(Color("surface-tertiary"))

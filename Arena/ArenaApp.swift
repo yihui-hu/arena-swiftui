@@ -10,6 +10,7 @@ import Defaults
 
 extension Defaults.Keys {
     static let pinnedChannels = Key<[Int]>("pinnedChannels", default: [])
+    static let pinnedChannelsChanged = Key<Bool>("pinnedChannelsChanged", default: false)
     static let accessToken = Key<String>("accessToken", default: "")
     static let username = Key<String>("username", default: "")
     static let userId = Key<Int>("userId", default: 0)

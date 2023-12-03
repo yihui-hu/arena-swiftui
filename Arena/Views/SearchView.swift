@@ -38,24 +38,39 @@ struct SearchView: View {
         NavigationStack {
             VStack {
                 VStack(spacing: 16) {
-                    TextField("Search...", text: $searchTerm)
-                        .onChange(of: searchTerm, debounceTime: .seconds(0.5)) { newValue in
-                            searchData.searchTerm = newValue
-                            searchData.refresh()
+                    HStack(spacing: 12) {
+                        TextField("Search...", text: $searchTerm)
+                            .onChange(of: searchTerm, debounceTime: .seconds(0.5)) { newValue in
+                                searchData.searchTerm = newValue
+                                searchData.refresh()
+                            }
+                            .textFieldStyle(SearchBarStyle())
+                            .autocorrectionDisabled()
+                            .onAppear {
+                                UITextField.appearance().clearButtonMode = .always
+                            }
+                            .focused($searchInputIsFocused)
+                            .onSubmit {
+                                if !(searchData.isLoading) {
+                                    searchData.searchTerm = searchTerm
+                                    searchData.refresh()
+                                }
+                            }
+                            .submitLabel(.search)
+                        
+                        if searchInputIsFocused {
+                            Button(action: {
+                                searchInputIsFocused = false
+                            }) {
+                                Text("Cancel")
+                                    .fontWeight(.medium)
+                                    .fontDesign(.rounded)
+                                    .foregroundStyle(Color("text-secondary"))
+                            }
                         }
-                        .textFieldStyle(SearchBarStyle())
-                        .autocorrectionDisabled()
-                        .onAppear {
-                            UITextField.appearance().clearButtonMode = .always
-                        }
-                        .focused($searchInputIsFocused)
-                        .onSubmit {
-                            searchData.searchTerm = searchTerm
-                            searchData.refresh()
-                        }
-                        .submitLabel(.search)
+                    }
+                    .animation(.bouncy(duration: 0.2), value: UUID())
                     
-                    if searchTerm != "" {
                         HStack(spacing: 8) {
                             ForEach(options, id: \.self) { option in
                                 Button(action: {
@@ -80,7 +95,6 @@ struct SearchView: View {
                         .fontDesign(.rounded)
                         .fontWeight(.semibold)
                         .font(.system(size: 15))
-                    }
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 16)
@@ -165,7 +179,7 @@ struct SearchView: View {
                                         } else if selection == "Users" {
                                             ForEach(searchResults.users, id: \.id) { user in
                                                 NavigationLink(destination: UserView(userId: user.id)) {
-                                                    SearchUserPreview(searchUser: user)
+                                                    UserPreview(user: user)
                                                 }
                                                 .onAppear {
                                                     if searchResults.users.last?.id ?? -1 == user.id {
@@ -299,23 +313,7 @@ struct SearchChannelPreview: View {
         } else {
             pinnedChannels.append(channelId)
         }
-    }
-}
-
-struct SearchUserPreview: View {
-    let searchUser: ArenaSearchedUser
-    
-    var body: some View {
-        HStack(spacing: 12) {
-            ProfilePic(imageURL: searchUser.avatarImage.display, initials: searchUser.initials)
-            
-            Text("\(searchUser.username)")
-                .foregroundStyle(Color.primary)
-                .lineLimit(1)
-                .fontWeight(.medium)
-                .fontDesign(.rounded)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
+        Defaults[.pinnedChannelsChanged] = true
     }
 }
 

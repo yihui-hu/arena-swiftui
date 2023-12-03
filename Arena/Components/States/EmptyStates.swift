@@ -64,6 +64,19 @@ struct EmptyBlockComments: View {
     }
 }
 
+struct EmptyFollowView: View {
+    let text: String
+    
+    var body: some View {
+        Text("No \(text)")
+            .font(.system(size: 14))
+            .foregroundStyle(Color("surface-tertiary"))
+            .fontDesign(.rounded)
+            .fontWeight(.semibold)
+            .padding(.vertical, 12)
+    }
+}
+
 #Preview {
     EmptySearch(items: "blocks", searchTerm: "hi")
 }

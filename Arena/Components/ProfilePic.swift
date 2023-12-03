@@ -15,7 +15,6 @@ struct ProfilePic: View {
     let fontSize: CGFloat?
     let dimension: CGFloat?
     let cornerRadius: CGFloat?
-    @State private var opacity: Double = 0
     
     init(imageURL: String, initials: String, fontSize: CGFloat? = 12, dimension: CGFloat? = 40, cornerRadius: CGFloat? = 8) {
         self.imageURL = imageURL
@@ -67,12 +66,6 @@ struct ProfilePic: View {
                     }
                     .frame(width: dimension ?? 40, height: dimension ?? 40)
                     .clipShape(RoundedRectangle(cornerRadius: cornerRadius ?? 8))
-                        .opacity(opacity)
-                        .onAppear {
-                            withAnimation(.easeIn(duration: 0.1)) {
-                                opacity = 1
-                            }
-                        }
                 } else if state.error != nil {
                     Image(systemName: "questionmark.folder.fill")
                         .foregroundColor(Color("surface-text-secondary"))

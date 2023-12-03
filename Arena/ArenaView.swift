@@ -11,10 +11,10 @@ import Pow
 import Defaults
 
 struct ArenaView: View {
-    @State private var item: Int = 0
+    @State var tab: Int = 0
     
-    var body: some View {        
-        StatefulTabView {
+    var body: some View {
+        StatefulTabView(selectedIndex: $tab) {
             Tab(systemImageName: "heart.fill") {
                 PinnedChannelsView()
             }
@@ -24,7 +24,7 @@ struct ArenaView: View {
             }
             
             Tab(systemImageName: "person.fill") {
-                ProfileView(userId: Defaults[.userId])
+                ProfileView(userId: Defaults[.userId], tab: $tab)
             }
         }
     }

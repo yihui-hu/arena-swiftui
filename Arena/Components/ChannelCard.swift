@@ -10,8 +10,14 @@ import Defaults
 
 struct ChannelCard: View {
     let channel: ArenaChannelPreview
+    let showPin: Bool?
     
     @Default(.pinnedChannels) var pinnedChannels
+    
+    init(channel: ArenaChannelPreview, showPin: Bool? = true) {
+        self.channel = channel
+        self.showPin = showPin
+    }
     
     struct HorizontalImageScroll: View {
         let contents: [Block]
@@ -50,10 +56,12 @@ struct ChannelCard: View {
                             .foregroundColor(Color("surface-text-secondary"))
                             .fontWeight(.medium)
                         
-                        if (pinnedChannels.contains(channel.id)) {
-                            Image(systemName: "pin.fill")
-                                .foregroundStyle(Color("surface-text-secondary"))
-                                .imageScale(.small)
+                        if let showPin = showPin, showPin {
+                            if (pinnedChannels.contains(channel.id)) {
+                                Image(systemName: "pin.fill")
+                                    .foregroundStyle(Color("surface-text-secondary"))
+                                    .imageScale(.small)
+                            }
                         }
                     }
                 }

@@ -134,6 +134,10 @@ struct SettingsView: View {
                             .preferredControlAccentColor(.accentColor)
                             .dismissButtonStyle(.done)
                         }
+                        
+                        ShareLink(item: URL(string: "https://arena-ios-app.vercel.app")!) {
+                            MenuItem(iconName: "square.and.arrow.up.fill", text: "Share Are:na", arrowName: "arrow.up.right")
+                        }
 
                         Button(action: {
                             self.presentingPrivacyPolicy = true
@@ -178,9 +182,12 @@ struct SettingsView: View {
                         .font(.system(size: 14))
                         .foregroundStyle(Color("surface-tertiary"))
                         .fontWeight(.semibold)
+                    
+                    Spacer()
                 }
             }
         }
+        .padding(.bottom, 4)
         .navigationBarBackButtonHidden()
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {

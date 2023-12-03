@@ -7,109 +7,86 @@
 
 import SwiftUI
 import Defaults
+import Combine
 
 struct PinnedChannelsView: View {
-    @ObservedObject private var pinnedChannelsData = PinnedChannelsData()
+    @StateObject private var pinnedChannelsData: PinnedChannelsData
     @Default(.pinnedChannels) var pinnedChannels
+    @Default(.pinnedChannelsChanged) var pinnedChannelsChanged
+    
+    init() {
+        self._pinnedChannelsData = StateObject(wrappedValue: PinnedChannelsData(pinnedChannels: Defaults[.pinnedChannels]))
+    }
     
     var body: some View {
         NavigationStack {
-            VStack {
-                if pinnedChannelsData.pinnedChannels.isEmpty {
+            VStack(alignment: .center) {
+                if pinnedChannels.isEmpty {
                     InitialPinnedChannels()
+                } else if pinnedChannelsData.isLoading {
+                    CircleLoadingSpinner()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 } else {
                     ScrollView {
                         LazyVStack(spacing: 12) {
                             ForEach(pinnedChannelsData.channels ?? [], id: \.id) { channel in
-                                ChannelCard(channel: channel)
-                                    .onAppear {
-                                        if let channels = pinnedChannelsData.channels, channels.count >= 2 {
-                                            if channels[channels.count - 2].id == channel.id {
-                                                pinnedChannelsData.loadMore()
-                                            }
-                                        }
-                                    }
+                                ChannelCard(channel: channel, showPin: false)
                                     .contentShape(ContentShapeKinds.contextMenuPreview, RoundedRectangle(cornerRadius: 32))
                                     .contextMenu {
                                         Button {
-                                            togglePin(channel.id)
+                                            removePinnedChannel(channel.id)
                                         } label: {
                                             Label(pinnedChannels.contains(channel.id) ? "Unpin" : "Pin", systemImage: pinnedChannels.contains(channel.id) ? "pin.slash.fill" : "pin.fill")
                                         }
                                     }
                             }
                         }
+                        
                     }
                     .padding(.bottom, 4)
                     .refreshable {
                         do { try await Task.sleep(nanoseconds: 500_000_000) } catch {}
-                        pinnedChannelsData.refresh()
+                        pinnedChannelsData.refresh(pinnedChannels: Defaults[.pinnedChannels])
                     }
-                }
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Text("Pinned")
-                        .foregroundStyle(Color("text-primary"))
-                        .font(.system(size: 20))
-                        .fontDesign(.rounded)
-                        .fontWeight(.semibold)
-                }
-            }
-            .toolbarBackground(Color("background"), for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
-            .background(Color("background"))
         }
+        .onAppear {
+            if pinnedChannelsChanged {
+                pinnedChannelsData.fetchChannels(pinnedChannels: Defaults[.pinnedChannels], refresh: true)
+                Defaults[.pinnedChannelsChanged] = false
+            }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Text("Pinned")
+                    .foregroundStyle(Color("text-primary"))
+                    .font(.system(size: 20))
+                    .fontDesign(.rounded)
+                    .fontWeight(.semibold)
+            }
+        }
+        .toolbarBackground(Color("background"), for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .background(Color("background"))
+    }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
         .background(Color("background"))
         .contentMargins(.leading, 0, for: .scrollIndicators)
         .contentMargins(16)
+}
+
+private func removePinnedChannel(_ channelId: Int) {
+    // If the channel is pinned, remove it from the view without refetching data
+    if let index = pinnedChannelsData.channels?.firstIndex(where: { $0.id == channelId }) {
+        var updatedChannels = pinnedChannelsData.channels ?? []
+        updatedChannels.remove(at: index)
+        pinnedChannelsData.channels = updatedChannels
     }
     
-    private func togglePin(_ channelId: Int) {
-        if pinnedChannels.contains(channelId) {
-            // If the channel is pinned, remove it from the view without refetching data
-            if let index = pinnedChannelsData.channels?.firstIndex(where: { $0.id == channelId }) {
-                var updatedChannels = pinnedChannelsData.channels ?? []
-                updatedChannels.remove(at: index)
-                pinnedChannelsData.channels = updatedChannels
-            }
-            
-            // Remove the channel from the pinned channels list
-            pinnedChannels.removeAll { $0 == channelId }
-        } else {
-            // If the channel is not pinned, fetch only that specific channel and append it to the view
-            guard let url = URL(string: "https://api.are.na/v2/channels/\(channelId)/?per=6)") else {
-                return
-            }
-
-            var request = URLRequest(url: url)
-            request.setValue("Bearer \(Defaults[.accessToken])", forHTTPHeaderField: "Authorization")
-
-            let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-                if let data = data {
-                    let decoder = JSONDecoder()
-                    do {
-                        let channelContent = try decoder.decode(ArenaChannelPreview.self, from: data)
-                        DispatchQueue.main.async {
-                            var updatedChannels = pinnedChannelsData.channels ?? []
-                            updatedChannels.append(channelContent)
-                            pinnedChannelsData.channels = updatedChannels
-                        }
-                    } catch let decodingError {
-                        print("Decoding Error: \(decodingError)")
-                        return
-                    }
-                }
-            }
-            task.resume()
-
-            // Append the channel to the pinned channels list
-            pinnedChannels.append(channelId)
-        }
-    }
-
+    // Remove the channel from the pinned channels list
+    pinnedChannels.removeAll { $0 == channelId }
+}
 }
 
 #Preview {

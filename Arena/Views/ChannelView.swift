@@ -221,13 +221,13 @@ struct ChannelView: View {
         }
     }
     
-    //    private func togglePin(_ channelId: Int) {
-    //        if pinnedChannels.contains(channelId) {
-    //            pinnedChannels.removeAll { $0 == channelId }
-    //        } else {
-    //            pinnedChannels.append(channelId)
-    //        }
-    //    }
+//        private func togglePin(_ channelId: Int) {
+//            if pinnedChannels.contains(channelId) {
+//                pinnedChannels.removeAll { $0 == channelId }
+//            } else {
+//                pinnedChannels.append(channelId)
+//            }
+//        }
 }
 
 struct ChannelViewHeader: View {

@@ -45,7 +45,6 @@ struct BlockTablePreview: View {
         HStack {
             ChannelViewBlockPreview(blockData: block, fontSize: 8, display: "Table")
                 .frame(width: 64, height: 64)
-//                .border(Color("surface-secondary"))
             ContentPreviewMetadata(block: block, display: display)
             
             Spacer()
@@ -124,7 +123,6 @@ struct BlockGridPreview: View {
             ChannelViewBlockPreview(blockData: block, fontSize: display == "Grid" ? 12 : display == "Feed" ? 16 : 10, display: display)
                 .frame(width: gridItemSize, height: gridItemSize)
                 .background(Color("background"))
-//                .border(Color("surface"))
                 .contextMenu {
                     Button {
                         // Do something
