@@ -9,6 +9,7 @@ import SwiftUI
 
 // Used in ChannelView
 import SwiftUI
+import BetterSafariView
 
 struct ChannelContentPreview: View {
     let block: Block
@@ -40,6 +41,7 @@ struct BlockTablePreview: View {
     let channelData: ChannelData
     let channelSlug: String
     let display: String
+    @State private var presentingSafariView = false
     
     var body: some View {
         HStack {
@@ -59,25 +61,21 @@ struct BlockTablePreview: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color("background"))
         .contextMenu {
-            Button {
-                // Do something
-            } label: {
-                Label("Connect", systemImage: "arrow.right")
-            }
-            
-            NavigationLink(destination: BlockView(blockData: block, channelData: channelData, channelSlug: channelSlug)) {
-                Label("View", systemImage: "eye")
-            }
+            BlockContextMenu(block: block, showViewOption: true, channelData: channelData, channelSlug: channelSlug, presentingSafariView: $presentingSafariView)
         } preview: {
-            let img = block.image
-            if img != nil {
-                ChannelViewBlockPreview(blockData: block, fontSize: 16, display: "Feed")
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else {
-                ChannelViewBlockPreview(blockData: block, fontSize: 18, display: "Feed")
-                    .padding(32)
-                    .frame(width: 400, height: 400)
-            }
+            BlockContextMenuPreview(block: block)
+        }
+        .safariView(isPresented: $presentingSafariView) {
+            SafariView(
+                url: URL(string: block.source?.url ?? "https://are.na/source/\(block.id)")!,
+                configuration: SafariView.Configuration(
+                    entersReaderIfAvailable: false,
+                    barCollapsingEnabled: true
+                )
+            )
+            .preferredBarAccentColor(.clear)
+            .preferredControlAccentColor(.accentColor)
+            .dismissButtonStyle(.done)
         }
     }
 }
@@ -117,38 +115,35 @@ struct BlockGridPreview: View {
     let channelSlug: String
     let gridItemSize: CGFloat
     let display: String
+    @State private var presentingSafariView = false
 
     var body: some View {
         VStack(spacing: 8) {
             ChannelViewBlockPreview(blockData: block, fontSize: display == "Grid" ? 12 : display == "Feed" ? 16 : 10, display: display)
                 .frame(width: gridItemSize, height: gridItemSize)
                 .background(Color("background"))
-                .contextMenu {
-                    Button {
-                        // Do something
-                    } label: {
-                        Label("Connect", systemImage: "arrow.right")
-                    }
-                    
-                    NavigationLink(destination: BlockView(blockData: block, channelData: channelData, channelSlug: channelSlug)) {
-                        Label("View", systemImage: "eye")
-                    }
-                } preview: {
-                    let img = block.image
-                    if img != nil {
-                        ChannelViewBlockPreview(blockData: block, fontSize: 16, display: "Feed")
-                            .frame(maxWidth: .infinity, maxHeight: .infinity)
-                    } else {
-                        ChannelViewBlockPreview(blockData: block, fontSize: 18, display: "Feed")
-                            .padding(32)
-                            .frame(width: 400, height: 400)
-                    }
-                }
             
             if display != "Large Grid" {
                 ContentPreviewMetadata(block: block, display: display)
                     .padding(.horizontal, 12)
             }
+        }
+        .contextMenu {
+            BlockContextMenu(block: block, showViewOption: true, channelData: channelData, channelSlug: channelSlug, presentingSafariView: $presentingSafariView)
+        } preview: {
+            BlockContextMenuPreview(block: block)
+        }
+        .safariView(isPresented: $presentingSafariView) {
+            SafariView(
+                url: URL(string: block.source?.url ?? "https://are.na/source/\(block.id)")!,
+                configuration: SafariView.Configuration(
+                    entersReaderIfAvailable: false,
+                    barCollapsingEnabled: true
+                )
+            )
+            .preferredBarAccentColor(.clear)
+            .preferredControlAccentColor(.accentColor)
+            .dismissButtonStyle(.done)
         }
     }
 }

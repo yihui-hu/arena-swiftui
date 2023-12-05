@@ -21,6 +21,7 @@ struct BlockView: View {
     
     @State private var currentIndex: Int
     @State private var presentingSafariView = false
+    @State private var presentingFindOriginalView = false
     @State private var showInfoModal: Bool = false
     @State private var isLoadingBlockConnectionsComments: Bool = false
     @State private var shouldNavigateToChannelView: Bool = false
@@ -42,6 +43,7 @@ struct BlockView: View {
     struct InfoModalButton: View {
         @Binding var showInfoModal: Bool
         var icon: String
+        var color: String
         
         var body: some View {
             Button(action: {
@@ -50,10 +52,47 @@ struct BlockView: View {
                 }
             }) {
                 Image(systemName: icon)
-                    .foregroundStyle(Color.primary)
+                    .foregroundStyle(Color(color))
                     .fontWeight(.semibold)
             }
             .sensoryFeedback(.impact(flexibility: .solid, intensity: 0.4), trigger: showInfoModal)
+        }
+    }
+    
+    struct BlockSource: View {
+        @Binding var presentingSafariView: Bool
+        var source: String
+        var sourceURL: String
+        
+        var body: some View {
+            HStack(spacing: 20) {
+                Text("Source")
+                    .fontDesign(.rounded)
+                    .fontWeight(.semibold)
+                Spacer()
+                
+                Button(action: {
+                    self.presentingSafariView = true
+                }) {
+                    Text("\(source)")
+                        .foregroundStyle(Color.primary)
+                        .lineLimit(1)
+                        .fontWeight(.medium)
+                }
+                .safariView(isPresented: $presentingSafariView) {
+                    SafariView(
+                        url: URL(string: sourceURL)!,
+                        configuration: SafariView.Configuration(
+                            entersReaderIfAvailable: false,
+                            barCollapsingEnabled: true
+                        )
+                    )
+                    .preferredBarAccentColor(.clear)
+                    .preferredControlAccentColor(.accentColor)
+                    .dismissButtonStyle(.done)
+                }
+            }
+            Divider()
         }
     }
     
@@ -152,14 +191,19 @@ struct BlockView: View {
                                 ScrollViewReader { proxy in
                                     VStack(spacing: 20) {
                                         let currentBlock = channelData.contents?[currentIndex]
+                                        let blockURL = "https://are.na/block/\(currentBlock?.id ?? 0)"
                                         let title = currentBlock?.title ?? ""
                                         let description = currentBlock?.description ?? ""
                                         let connectedAt = currentBlock?.connectedAt ?? ""
                                         let updatedAt = currentBlock?.updatedAt ?? ""
                                         let connectedBy = currentBlock?.connectedByUsername ?? ""
                                         let connectedById = currentBlock?.connectedByUserId ?? 0
+                                        let image = currentBlock?.image?.filename ?? ""
+                                        let imageURL = currentBlock?.image?.original.url ?? blockURL
                                         let source = currentBlock?.source?.title ?? currentBlock?.source?.url ?? ""
-                                        let sourceURL = currentBlock?.source?.url ?? "https://are.na/block/\(currentBlock?.id ?? 0)"
+                                        let sourceURL = currentBlock?.source?.url ?? blockURL
+                                        let attachment = currentBlock?.attachment?.filename ?? ""
+                                        let attachmentURL = currentBlock?.attachment?.url ?? blockURL
                                         
                                         // Title and Description
                                         VStack(alignment: .leading, spacing: 4) {
@@ -193,6 +237,7 @@ struct BlockView: View {
                                         
                                         // Metadata
                                         VStack(spacing: 4) {
+                                            // Added date
                                             HStack(spacing: 20) {
                                                 Text("Added")
                                                     .fontDesign(.rounded)
@@ -203,6 +248,7 @@ struct BlockView: View {
                                             }
                                             Divider()
                                             
+                                            // Updated date
                                             HStack(spacing: 20) {
                                                 Text("Updated")
                                                     .fontDesign(.rounded)
@@ -213,6 +259,7 @@ struct BlockView: View {
                                             }
                                             Divider()
                                             
+                                            // Connected by
                                             HStack(spacing: 20) {
                                                 Text("Connected by")
                                                     .fontDesign(.rounded)
@@ -228,35 +275,15 @@ struct BlockView: View {
                                             }
                                             Divider()
                                             
-                                            if source != "" {
-                                                HStack(spacing: 20) {
-                                                    Text("Source")
-                                                        .fontDesign(.rounded)
-                                                        .fontWeight(.semibold)
-                                                    Spacer()
-                                                    
-                                                    Button(action: {
-                                                        self.presentingSafariView = true
-                                                    }) {
-                                                        Text("\(source)")
-                                                            .foregroundStyle(Color.primary)
-                                                            .lineLimit(1)
-                                                            .fontWeight(.medium)
-                                                    }
-                                                    .safariView(isPresented: $presentingSafariView) {
-                                                        SafariView(
-                                                            url: URL(string: sourceURL)!,
-                                                            configuration: SafariView.Configuration(
-                                                                entersReaderIfAvailable: false,
-                                                                barCollapsingEnabled: true
-                                                            )
-                                                        )
-                                                        .preferredBarAccentColor(.clear)
-                                                        .preferredControlAccentColor(.accentColor)
-                                                        .dismissButtonStyle(.done)
-                                                    }
-                                                }
-                                                Divider()
+                                            // Block source
+                                            if !(source.isEmpty) {
+                                                BlockSource(presentingSafariView: $presentingSafariView, source: source, sourceURL: sourceURL)
+                                            } else if !(attachment.isEmpty) {
+                                                BlockSource(presentingSafariView: $presentingSafariView, source: attachment, sourceURL: attachmentURL)
+                                            } else if !(image.isEmpty) {
+                                                BlockSource(presentingSafariView: $presentingSafariView, source: image, sourceURL: imageURL)
+                                            } else {
+                                                BlockSource(presentingSafariView: $presentingSafariView, source: blockURL, sourceURL: blockURL)
                                             }
                                         }
                                         .font(.system(size: 15))
@@ -279,22 +306,43 @@ struct BlockView: View {
                                             
                                             Spacer().frame(width: 16)
                                             
-                                            Button(action: {
-                                                print("Actions")
-                                            }) {
+                                            Menu {
+                                                Button(action: {
+                                                    print("Share")
+                                                }) {
+                                                    Label("Share", systemImage: "square.and.arrow.up")
+                                                }
+                                                
+                                                if currentBlock?.contentClass == "Image" {
+                                                    Button(action: {
+                                                        presentingFindOriginalView = true
+                                                    }) {
+                                                        Label("Find original", systemImage: "sparkle.magnifyingglass")
+                                                    }
+                                                }
+                                            } label: {
                                                 Text("Actions")
                                                     .font(.system(size: 15))
                                                     .fontDesign(.rounded)
                                                     .fontWeight(.semibold)
                                                     .foregroundColor(Color("text-primary"))
+                                                    .padding(.vertical, 8)
+                                                    .frame(maxWidth: .infinity)
+                                                    .background(Color("surface-tertiary"))
+                                                    .cornerRadius(12)
                                             }
-                                            .padding(.vertical, 8)
-                                            .frame(maxWidth: .infinity)
-                                            .cornerRadius(12)
-                                            .overlay(
-                                                RoundedRectangle(cornerRadius: 12)
-                                                    .stroke(Color("surface-text-secondary"), lineWidth: 1.5)
+                                        }
+                                        .safariView(isPresented: $presentingFindOriginalView) {
+                                            SafariView(
+                                                url: URL(string: "https://www.google.com/searchbyimage?image_url=\(imageURL)")!,
+                                                configuration: SafariView.Configuration(
+                                                    entersReaderIfAvailable: false,
+                                                    barCollapsingEnabled: true
+                                                )
                                             )
+                                            .preferredBarAccentColor(.clear)
+                                            .preferredControlAccentColor(.accentColor)
+                                            .dismissButtonStyle(.done)
                                         }
                                         
                                         // Connections and Comments
@@ -422,24 +470,24 @@ struct BlockView: View {
                     }
                     
                     ZStack {
-                        InfoModalButton(showInfoModal: $showInfoModal, icon: "info")
+                        InfoModalButton(showInfoModal: $showInfoModal, icon: "info", color: "backdrop-inverse")
                             .offset(x: showInfoModal ? 120 : 0, y: showInfoModal ? -40 : 0)
                             .opacity(showInfoModal ? 0 : 1)
                             .scaleEffect(showInfoModal ? 0 : 1)
                         
-                        InfoModalButton(showInfoModal: $showInfoModal, icon: "x.circle.fill")
+                        InfoModalButton(showInfoModal: $showInfoModal, icon: "x.circle.fill", color: "surface-text-secondary")
                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
-                            .offset(x: showInfoModal ? -16 : 24, y: showInfoModal ? 16 : -24)
-                            .opacity(showInfoModal ? 0.5 : 0)
-                            .scaleEffect(showInfoModal ? 1 : 0)
+                            .offset(x: showInfoModal ? -40 : 24, y: showInfoModal ? 40 : -24)
+                            .opacity(showInfoModal ? 1 : 0)
+                            .scaleEffect(showInfoModal ? 1.2 : 0)
                     }
-                    .onChange(of: showInfoModal) { _ in
+                    .onChange(of: showInfoModal) { _, _ in
                         if showInfoModal {
                             fetchConnectionsData()
                             fetchCommentsData()
                         }
                     }
-                    .onChange(of: currentIndex) { _ in
+                    .onChange(of: currentIndex) { _, _ in
                         if showInfoModal {
                             fetchConnectionsData()
                             fetchCommentsData()

@@ -40,8 +40,7 @@ struct ChannelView: View {
     @State private var content = ContentOption.all
     let contentOptions = ContentOption.allCases
     
-    //    @Default(.pinnedChannels) var pinnedChannels
-    //    let pinImage = pinnedChannels.contains(channelData.channel.id) ? "pin.slash.fill" : "pin.fill"
+//    @Default(.pinnedChannels) var pinnedChannels
     @Environment(\.dismiss) private var dismiss
     
     init(channelSlug: String) {
@@ -55,21 +54,25 @@ struct ChannelView: View {
             return Image(systemName: "square.grid.2x2")
                 .resizable()
                 .scaledToFit()
+                .fontWeight(.semibold)
                 .frame(width: 18, height: 18)
         case .largeGrid:
             return Image(systemName: "square.grid.3x3")
                 .resizable()
                 .scaledToFit()
+                .fontWeight(.semibold)
                 .frame(width: 18, height: 18)
         case .table:
             return Image(systemName: "rectangle.grid.1x2")
                 .resizable()
                 .scaledToFit()
+                .fontWeight(.semibold)
                 .frame(width: 18, height: 18)
         case .feed:
             return Image(systemName: "square")
                 .resizable()
                 .scaledToFit()
+                .fontWeight(.semibold)
                 .frame(width: 18, height: 18)
         }
     }
@@ -161,11 +164,12 @@ struct ChannelView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     HStack(spacing: 8) {
                         Button(action: {
-                            dismiss()
+                            togglePin(channelData.channel?.id ?? 0)
                         }) {
-                            Image(systemName: "pin.fill")
+                            Image(systemName: Defaults[.pinnedChannels].contains(channelData.channel?.id ?? 0) ? "pin.slash.fill" : "pin.fill")
                                 .resizable()
                                 .scaledToFit()
+                                .fontWeight(.semibold)
                                 .frame(width: 20, height: 20)
                         }
                         
@@ -189,6 +193,7 @@ struct ChannelView: View {
                             Image(systemName: "arrow.up.arrow.down")
                                 .resizable()
                                 .scaledToFit()
+                                .fontWeight(.semibold)
                                 .frame(width: 20, height: 20)
                         }
                     }
@@ -221,22 +226,28 @@ struct ChannelView: View {
         }
     }
     
-//        private func togglePin(_ channelId: Int) {
-//            if pinnedChannels.contains(channelId) {
-//                pinnedChannels.removeAll { $0 == channelId }
-//            } else {
-//                pinnedChannels.append(channelId)
-//            }
-//        }
+    private func togglePin(_ channelId: Int) {
+        if Defaults[.pinnedChannels].contains(channelId) {
+            Defaults[.pinnedChannels].removeAll { $0 == channelId }
+        } else {
+            Defaults[.pinnedChannels].append(channelId)
+        }
+        Defaults[.pinnedChannelsChanged] = true
+    }
 }
 
 struct ChannelViewHeader: View {
     @StateObject var channelData: ChannelData
     @Binding var content: ContentOption
+    @State var descriptionExpanded = false
     var contentOptions: [ContentOption]
     
     var body: some View {
         let channelTitle = channelData.channel?.title ?? ""
+        let channelCreatedAt = channelData.channel?.createdAt ?? ""
+        let channelCreated = dateFromString(string: channelCreatedAt)
+        let channelUpdatedAt = channelData.channel?.updatedAt ?? ""
+        let channelUpdated = relativeTime(channelUpdatedAt)
         let channelStatus = channelData.channel?.status ?? ""
         let channelDescription = channelData.channel?.metadata?.description ?? ""
         let channelOwner = channelData.channel?.user.fullName ?? ""
@@ -244,43 +255,60 @@ struct ChannelViewHeader: View {
         let channelCollaborators = channelData.channel?.collaborators ?? []
         
         VStack(spacing: 16) {
-            // MARK: Channel Title
+            // MARK: Channel Title / Dates
             HStack {
                 if !channelTitle.isEmpty {
-                    HStack(spacing: 4) {
-                        if channelStatus != "closed" {
-                            Image(systemName: "circle.fill")
-                                .scaleEffect(0.5)
-                                .foregroundColor(channelStatus == "public" ? Color.green : Color.red)
+                    VStack(spacing: 4) {
+                        HStack(spacing: 4) {
+                            if channelStatus != "closed" {
+                                Image(systemName: "circle.fill")
+                                    .scaleEffect(0.5)
+                                    .foregroundColor(channelStatus == "public" ? Color.green : Color.red)
+                            }
+                            Text("\(channelTitle)")
+                                .foregroundColor(Color("text-primary"))
+                                .font(.system(size: 18))
+                                .fontWeight(.semibold)
                         }
-                        Text("\(channelTitle)")
-                            .foregroundColor(Color("text-primary"))
-                            .fontWeight(.semibold)
+                        
+                        Text("started ")
+                            .foregroundColor(Color("text-secondary"))
+                            .font(.system(size: 14)) +
+                        Text(channelCreated, style: .date)
+                            .foregroundStyle(Color("text-secondary"))
+                            .font(.system(size: 14)) +
+                        Text(" • updated \(channelUpdated)")
+                            .foregroundColor(Color("text-secondary"))
+                            .font(.system(size: 14))
                     }
                 } else {
-                    Text("Loading...")
+                    Text("loading...")
+                        .font(.system(size: 18))
+                        .fontWeight(.semibold)
                 }
             }
             .fontDesign(.rounded)
-            .font(.system(size: 18))
             .foregroundColor(Color("text-primary"))
-            .fontWeight(.semibold)
             .lineLimit(2)
             .multilineTextAlignment(.center)
             
-            VStack(spacing: 8) {
+            VStack(spacing: 12) {
                 // MARK: Channel Description
-                HStack {
-                    if !channelDescription.isEmpty {
-                        Text("\(channelDescription)")
-                    }
+                if !channelDescription.isEmpty {
+                    Text("\(channelDescription)")
+                        .font(.system(size: 15))
+                        .fontWeight(.regular)
+                        .fontDesign(.default)
+                        .foregroundColor(Color("text-secondary"))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .lineLimit(descriptionExpanded ? nil : 2)
+                        .onTapGesture {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                descriptionExpanded.toggle()
+                            }
+                        }
+                        .sensoryFeedback(.impact(flexibility: .solid, intensity: 0.4), trigger: descriptionExpanded)
                 }
-                .font(.system(size: 15))
-                .fontWeight(.regular)
-                .fontDesign(.default)
-                .foregroundColor(Color("text-secondary"))
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .lineLimit(3)
                 
                 // MARK: Channel Attribution
                 if !channelOwner.isEmpty {
@@ -332,36 +360,36 @@ struct ChannelViewHeader: View {
         }
         .padding(12)
         
-        //        // MARK: Channel Content Options
-        //        ScrollView(.horizontal) {
-        //            HStack(spacing: 8) {
-        //                ForEach(contentOptions, id: \.self) { option in
-        //                    Button(action: {
-        //                        content = option
-        //                    }) {
-        //                        HStack(spacing: 8) {
-        //                            Text("\(option.rawValue)")
-        //                                .foregroundStyle(Color(content == option ? "text-primary" : "surface-text-secondary"))
-        //
-        //                            if option.rawValue == "All", let channelLength = channelData.channel?.length {
-        //                                Text("\(channelLength)")
-        //                                    .foregroundStyle(Color(content == option ? "surface-text-secondary" : "surface-tertiary"))
-        //                            }
-        //                        }
-        //                    }
-        //                    .padding(.horizontal, 16)
-        //                    .padding(.vertical, 8)
-        //                    .background(Color(content == option ? "surface-tertiary" : "surface"))
-        //                    .cornerRadius(16)
-        //                }
-        //            }
-        //            .frame(maxWidth: .infinity, alignment: .leading)
-        //            .fontDesign(.rounded)
-        //            .fontWeight(.semibold)
-        //            .font(.system(size: 15))
-        //        }
-        //        .scrollIndicators(.hidden)
-        //        .padding(.bottom, 4)
+        // MARK: Channel Content Options
+        ScrollView(.horizontal) {
+            HStack(spacing: 8) {
+                ForEach(contentOptions, id: \.self) { option in
+                    Button(action: {
+                        content = option
+                    }) {
+                        HStack(spacing: 8) {
+                            Text("\(option.rawValue)")
+                                .foregroundStyle(Color(content == option ? "background" : "surface-text-secondary"))
+
+                            if option.rawValue == "All", let channelLength = channelData.channel?.length {
+                                Text("\(channelLength)")
+                                    .foregroundStyle(Color(content == option ? "surface-text-secondary" : "surface-tertiary"))
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 8)
+                    .background(Color(content == option ? "text-primary" : "surface"))
+                    .cornerRadius(16)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .fontDesign(.rounded)
+            .fontWeight(.semibold)
+            .font(.system(size: 15))
+        }
+        .scrollIndicators(.hidden)
+        .padding(.bottom, 4)
     }
 }
 

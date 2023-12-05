@@ -15,6 +15,7 @@ struct ChannelCardContentPreview: View {
         VStack {
             if block.baseClass == "Block" {
                 ChannelCardBlockPreview(blockData: block, fontSize: 14)
+                    .frame(maxWidth: 250)
                     .background(Color("surface-secondary"))
             } else {
                 ChannelPreview(blockData: block, fontSize: 14, display: "Default")

@@ -400,7 +400,7 @@ struct SingleBlockView: View {
                             .opacity(showInfoModal ? 0.5 : 0)
                             .scaleEffect(showInfoModal ? 1 : 0)
                     }
-                    .onChange(of: showInfoModal) { _ in
+                    .onChange(of: showInfoModal) { _, _  in
                         if showInfoModal {
                             fetchConnectionsData()
                             fetchCommentsData()

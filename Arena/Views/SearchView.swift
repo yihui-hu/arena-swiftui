@@ -69,7 +69,7 @@ struct SearchView: View {
                             }
                         }
                     }
-                    .animation(.bouncy(duration: 0.2), value: UUID())
+                    .animation(.bouncy(duration: 0.3), value: UUID())
                     
                         HStack(spacing: 8) {
                             ForEach(options, id: \.self) { option in
@@ -77,7 +77,7 @@ struct SearchView: View {
                                     selection = option
                                 }) {
                                     Text("\(option)")
-                                        .foregroundStyle(selection == option ? Color("background") : Color("surface-text-secondary"))
+                                        .foregroundStyle(Color(selection == option ? "background" : "surface-text-secondary"))
                                 }
                                 .padding(.horizontal, 16)
                                 .padding(.vertical, 8)
