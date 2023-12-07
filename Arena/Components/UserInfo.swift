@@ -132,7 +132,7 @@ struct UserInfo: View {
                                         }
                                     }
                                 }
-                                .contentShape(ContentShapeKinds.contextMenuPreview, RoundedRectangle(cornerRadius: 32))
+                                .contentShape(.contextMenuPreview, RoundedRectangle(cornerRadius: 32))
                                 .contextMenu {
                                     Button {
                                         togglePin(channel.id)
