@@ -19,6 +19,14 @@ struct ArenaView: View {
                 PinnedChannelsView()
             }
             
+            Tab(systemImageName: "asterisk") {
+                ExploreView()
+            }
+            
+            Tab(systemImageName: "plus.app.fill") {
+                ConnectView()
+            }
+            
             Tab(systemImageName: "magnifyingglass") {
                 SearchView()
             }

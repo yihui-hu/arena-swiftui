@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Defaults
 import UniformTypeIdentifiers
 
 struct BlockContextMenu: View {
@@ -18,7 +19,9 @@ struct BlockContextMenu: View {
     
     var body: some View {
         Button {
-            // Perform connecting
+            Defaults[.connectSheetOpen] = true
+            Defaults[.connectItemId] = block.id
+            Defaults[.connectItemType] = "Block"
         } label: {
             Label("Connect", systemImage: "arrow.right")
         }
@@ -63,14 +66,7 @@ struct BlockContextMenu: View {
             }
         }
         
-        // TODO: Handle nil channelData and channelSlug
-        if block.contentClass == "Channel" {
-            Button {
-                print("Navigate to channel")
-            } label: {
-                Label("View", systemImage: "eye")
-            }
-        } else if showViewOption, channelData != nil, channelSlug != nil {
+        if showViewOption, channelData != nil, channelSlug != nil {
             NavigationLink(destination: BlockView(blockData: block, channelData: channelData!, channelSlug: channelSlug!)) {
                 Label("View Block", systemImage: "eye")
             }
@@ -78,7 +74,6 @@ struct BlockContextMenu: View {
     }
 }
 
-// TODO: Handle channel content preview
 struct BlockContextMenuPreview: View {
     let block: Block
     
@@ -86,12 +81,48 @@ struct BlockContextMenuPreview: View {
         let img = block.image
         
         if img != nil {
-            ChannelViewBlockPreview(blockData: block, fontSize: 16, display: "Feed")
+            ChannelViewBlockPreview(blockData: block, fontSize: 16, display: "Grid", isContextMenuPreview: true)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
-            ChannelViewBlockPreview(blockData: block, fontSize: 18, display: "Feed")
+            ChannelViewBlockPreview(blockData: block, fontSize: 18, display: "Feed", isContextMenuPreview: true)
                 .padding(32)
                 .frame(width: 400, height: 400)
         }
+    }
+}
+
+struct ChannelContextMenu: View {
+    let channel: Block // I deeply regret and apologise for this semantic mess 🙏
+    let showViewOption: Bool
+    
+    var body: some View {
+        Button {
+            Defaults[.connectSheetOpen] = true
+            Defaults[.connectItemId] = channel.id
+            Defaults[.connectItemType] = "Channel"
+        } label: {
+            Label("Connect", systemImage: "arrow.right")
+        }
+
+        if showViewOption {
+            NavigationLink(destination: ChannelView(channelSlug: channel.slug ?? "")) {
+                Label("View Channel", systemImage: "eye")
+            }
+        }
+    }
+}
+
+struct ChannelContextMenuPreview: View {
+    let channel: Block
+    
+    var body: some View {
+        VStack {
+            Text("\(channel.title)")
+                .foregroundStyle(Color("arena-orange"))
+            Text("by \(channel.user.username)")
+                .foregroundStyle(Color("text-primary"))
+        }
+        .padding(32)
+        .frame(width: 400, height: 400)
     }
 }

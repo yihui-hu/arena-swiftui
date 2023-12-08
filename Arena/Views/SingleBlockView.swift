@@ -17,7 +17,6 @@ struct SingleBlockView: View {
     @State private var isLoadingBlockConnectionsComments: Bool = false
     
     @State private var showInfoModal: Bool = false
-    @State private var shouldNavigateToChannelView: Bool = false
     @State private var presentingSafariView = false
     @State private var selectedConnectionSlug: String?
     @State private var scrollOffset: CGFloat = 0

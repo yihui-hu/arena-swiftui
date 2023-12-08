@@ -24,7 +24,6 @@ struct InitialSearch: View {
                 .fontDesign(.rounded)
                 .fontWeight(.semibold)
         }
-        .padding(.top, 24)
     }
 }
 

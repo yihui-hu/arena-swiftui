@@ -69,7 +69,8 @@ struct BlockPreview: View {
             } else if previewText != "" {
                 GeometryReader { geometry in
                     ScrollView {
-                        Text(previewText)
+                        Text(.init(previewText))
+                            .tint(.primary)
                             .foregroundStyle(Color("text-primary"))
                             .font(.system(size: fontSize ?? 16))
                             .frame(minHeight: geometry.size.height)
@@ -114,16 +115,17 @@ struct ChannelViewBlockPreview: View {
     let blockData: Block?
     let fontSize: CGFloat?
     let display: String
+    let isContextMenuPreview: Bool?
     
     var body: some View {
-        let previewImgURL = display == "Feed" ? blockData?.image?.display.url : blockData?.image?.thumb.url ?? nil
+        let previewImgURL = (display == "Feed" || display == "Grid") ? blockData?.image?.display.url : blockData?.image?.thumb.url ?? nil
         let previewText = blockData?.content ?? ""
         let previewAttachment = blockData?.attachment ?? nil
         // TODO: embeds
         
         VStack {
             if previewImgURL != nil {
-                ImagePreview(imageURL: previewImgURL!)
+                ImagePreview(imageURL: previewImgURL!, isContextMenuPreview: isContextMenuPreview)
             } else if previewText != "" {
                 if (display == "Table") {
                     Image(systemName: "text.alignleft")
@@ -131,7 +133,8 @@ struct ChannelViewBlockPreview: View {
                         .imageScale(.medium)
                         .foregroundStyle(Color("surface-text-secondary"))
                 } else {
-                    Text(previewText)
+                    Text(.init(previewText))
+                        .tint(.primary)
                         .padding(display == "Large Grid" ? 12 : 16)
                         .foregroundStyle(Color("text-primary"))
                         .font(.system(size: fontSize ?? 16))
@@ -172,7 +175,8 @@ struct ChannelCardBlockPreview: View {
                 ImagePreview(imageURL: previewImgURL!, isChannelCard: true)
                     .frame(height: 132)
             } else if previewText != "" {
-                Text(previewText)
+                Text(.init(previewText))
+                    .tint(.primary)
                     .padding(16)
                     .frame(width: 132, height: 132)
                     .foregroundStyle(Color("text-primary"))

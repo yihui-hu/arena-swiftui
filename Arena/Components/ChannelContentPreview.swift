@@ -17,20 +17,21 @@ struct ChannelContentPreview: View {
     let channelSlug: String
     let gridItemSize: CGFloat
     let display: String
+    @Binding var presentingConnectSheet: Bool
     
     var body: some View {
         if block.baseClass == "Block" {
             if display == "Table" {
-                BlockTablePreview(block: block, channelData: channelData, channelSlug: channelSlug, display: display)
+                BlockTablePreview(block: block, channelData: channelData, channelSlug: channelSlug, display: display, presentingConnectSheet: $presentingConnectSheet)
             } else {
-                BlockGridPreview(block: block, channelData: channelData, channelSlug: channelSlug, gridItemSize: gridItemSize, display: display)
+                BlockGridPreview(block: block, channelData: channelData, channelSlug: channelSlug, gridItemSize: gridItemSize, display: display, presentingConnectSheet: $presentingConnectSheet)
             }
         } else {
             // TODO: Added channelSlug here... might want to do something interesting in the future (preview blocks in context menu!). If not, clean up
             if display == "Table" {
-                ChannelTablePreview(block: block, channelSlug: channelSlug, display: display)
+                ChannelTablePreview(block: block, channelSlug: channelSlug, display: display, presentingConnectSheet: $presentingConnectSheet)
             } else {
-                ChannelGridPreview(block: block, channelSlug: channelSlug, gridItemSize: gridItemSize, display: display)
+                ChannelGridPreview(block: block, channelSlug: channelSlug, gridItemSize: gridItemSize, display: display, presentingConnectSheet: $presentingConnectSheet)
             }
         }
     }
@@ -42,10 +43,11 @@ struct BlockTablePreview: View {
     let channelSlug: String
     let display: String
     @State private var presentingSafariView = false
+    @Binding var presentingConnectSheet: Bool
     
     var body: some View {
         HStack {
-            ChannelViewBlockPreview(blockData: block, fontSize: 8, display: "Table")
+            ChannelViewBlockPreview(blockData: block, fontSize: 8, display: "Table", isContextMenuPreview: false)
                 .frame(width: 64, height: 64)
             ContentPreviewMetadata(block: block, display: display)
             
@@ -84,6 +86,7 @@ struct ChannelTablePreview: View {
     let block: Block
     let channelSlug: String
     let display: String
+    @Binding var presentingConnectSheet: Bool
     
     var body: some View {
         HStack {
@@ -106,6 +109,12 @@ struct ChannelTablePreview: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color("background"))
+        .contextMenu {
+            ChannelContextMenu(channel: block, showViewOption: true)
+        } preview: {
+            ChannelContextMenuPreview(channel: block)
+        }
     }
 }
 
@@ -116,22 +125,24 @@ struct BlockGridPreview: View {
     let gridItemSize: CGFloat
     let display: String
     @State private var presentingSafariView = false
-
+    @Binding var presentingConnectSheet: Bool
+    
     var body: some View {
+        let _ = Self._printChanges()
         VStack(spacing: 8) {
-            ChannelViewBlockPreview(blockData: block, fontSize: display == "Grid" ? 12 : display == "Feed" ? 16 : 10, display: display)
+            ChannelViewBlockPreview(blockData: block, fontSize: display == "Grid" ? 12 : display == "Feed" ? 16 : 10, display: display, isContextMenuPreview: false)
                 .frame(width: gridItemSize, height: gridItemSize)
                 .background(Color("background"))
+                .contextMenu {
+                    BlockContextMenu(block: block, showViewOption: true, channelData: channelData, channelSlug: channelSlug, presentingSafariView: $presentingSafariView)
+                } preview: {
+                    BlockContextMenuPreview(block: block)
+                }
             
             if display != "Large Grid" {
                 ContentPreviewMetadata(block: block, display: display)
                     .padding(.horizontal, 12)
             }
-        }
-        .contextMenu {
-            BlockContextMenu(block: block, showViewOption: true, channelData: channelData, channelSlug: channelSlug, presentingSafariView: $presentingSafariView)
-        } preview: {
-            BlockContextMenuPreview(block: block)
         }
         .safariView(isPresented: $presentingSafariView) {
             SafariView(
@@ -153,12 +164,19 @@ struct ChannelGridPreview: View {
     let channelSlug: String
     let gridItemSize: CGFloat
     let display: String
+    @Binding var presentingConnectSheet: Bool
     
     var body: some View {
         VStack(spacing: 8) {
             ChannelPreview(blockData: block, fontSize: display != "Large Grid" ? 16 : 12, display: display)
                 .frame(width: gridItemSize, height: gridItemSize)
                 .border(Color("arena-orange"))
+                .background(Color("background"))
+                .contextMenu {
+                    ChannelContextMenu(channel: block, showViewOption: true)
+                } preview: {
+                    ChannelContextMenuPreview(channel: block)
+                }
             
             if display != "Large Grid" {
                 ContentPreviewMetadata(block: block, display: display)

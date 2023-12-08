@@ -14,6 +14,7 @@ import NukeUI
 struct ImagePreview: View {
     let imageURL: String
     var isChannelCard: Bool? = false
+    var isContextMenuPreview: Bool? = false
     @State private var opacity: Double = 0
     
     var body: some View {
@@ -28,25 +29,23 @@ struct ImagePreview: View {
                 case .error:
                     ImageError()
                 case .success(let image):
-                    HStack {
-                        if isChannelCard == true {
-                            image
-                                .aspectRatio(contentMode: .fit)
-                                .opacity(opacity)
-                                .onAppear {
-                                    withAnimation(.easeIn(duration: 0.1)) {
-                                        opacity = 1
-                                    }
+                    if isChannelCard == true {
+                        image
+                            .aspectRatio(contentMode: .fit)
+                            .opacity(opacity)
+                            .onAppear {
+                                withAnimation(.easeIn(duration: 0.1)) {
+                                    opacity = 1
                                 }
-                        } else {
-                            image
-                        }
-                    }
-                    .opacity(opacity)
-                    .onAppear {
-                        withAnimation(.easeIn(duration: 0.1)) {
-                            opacity = 1
-                        }
+                            }
+                    } else {
+                        image
+                            .opacity(opacity)
+                            .onAppear {
+                                withAnimation(.easeIn(duration: 0.1)) {
+                                    opacity = 1
+                                }
+                            }
                     }
                 }
             }
@@ -54,16 +53,23 @@ struct ImagePreview: View {
         } else {
             LazyImage(url: url) { state in
                 if let image = state.image {
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .opacity(opacity)
-                        .onAppear {
-                            withAnimation(.easeIn(duration: 0.1)) {
-                                opacity = 1
+                    if isContextMenuPreview == true {
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    } else {
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .opacity(opacity)
+                            .onAppear {
+                                withAnimation(.easeIn(duration: 0.1)) {
+                                    opacity = 1
+                                }
                             }
-                        }
+                    }
                 } else if state.error != nil {
                     ImageError()
                 } else {

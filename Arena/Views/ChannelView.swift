@@ -34,13 +34,14 @@ struct ChannelView: View {
     let channelSlug: String
     
     @State private var selection = SortOption.position
-    let sortOptions = SortOption.allCases
     @State private var display = DisplayOption.grid
-    let displayOptions = DisplayOption.allCases
     @State private var content = ContentOption.all
+    let sortOptions = SortOption.allCases
+    let displayOptions = DisplayOption.allCases
     let contentOptions = ContentOption.allCases
     
-//    @Default(.pinnedChannels) var pinnedChannels
+    @State private var presentingConnectSheet: Bool = false
+    
     @Environment(\.dismiss) private var dismiss
     
     init(channelSlug: String) {
@@ -90,7 +91,7 @@ struct ChannelView: View {
     private func ChannelViewContents(gridItemSize: CGFloat) -> some View {
         ForEach(channelData.contents ?? [], id: \.self.id) { block in
             NavigationLink(destination: destinationView(for: block, channelData: channelData, channelSlug: channelSlug)) {
-                ChannelContentPreview(block: block, channelData: channelData, channelSlug: channelSlug, gridItemSize: gridItemSize, display: display.rawValue)
+                ChannelContentPreview(block: block, channelData: channelData, channelSlug: channelSlug, gridItemSize: gridItemSize, display: display.rawValue, presentingConnectSheet: $presentingConnectSheet)
             }
             .onAppear {
                 loadMoreChannelData(channelData: channelData, channelSlug: self.channelSlug, block: block)
@@ -141,6 +142,14 @@ struct ChannelView: View {
                 } else if channelData.currentPage > channelData.totalPages {
                     EndOfChannel()
                 }
+            }
+            .sheet(isPresented: $presentingConnectSheet) {
+                ConnectExistingView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                    .presentationDetents([.fraction(0.64), .large])
+                    .presentationContentInteraction(.scrolls)
+                    .presentationCornerRadius(32)
+                    .contentMargins(16)
             }
             .padding(.bottom, 4)
             .background(Color("background"))
@@ -295,7 +304,8 @@ struct ChannelViewHeader: View {
             VStack(spacing: 12) {
                 // MARK: Channel Description
                 if !channelDescription.isEmpty {
-                    Text("\(channelDescription)")
+                    Text(.init(channelDescription))
+                        .tint(Color.primary)
                         .font(.system(size: 15))
                         .fontWeight(.regular)
                         .fontDesign(.default)

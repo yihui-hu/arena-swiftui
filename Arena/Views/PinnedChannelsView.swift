@@ -31,7 +31,7 @@ struct PinnedChannelsView: View {
                         LazyVStack(spacing: 12) {
                             ForEach(pinnedChannelsData.channels ?? [], id: \.id) { channel in
                                 ChannelCard(channel: channel, showPin: false)
-                                    .contentShape(ContentShapeKinds.contextMenuPreview, RoundedRectangle(cornerRadius: 32))
+                                    .contentShape(.contextMenuPreview, RoundedRectangle(cornerRadius: 32))
                                     .contextMenu {
                                         Button {
                                             removePinnedChannel(channel.id)

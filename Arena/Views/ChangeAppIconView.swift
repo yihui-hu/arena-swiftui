@@ -72,14 +72,6 @@ final class ChangeAppIconViewModel: ObservableObject {
     }
 }
 
-struct ScaleButtonStyle: ButtonStyle {
-    func makeBody(configuration: Self.Configuration) -> some View {
-        configuration.label
-            .scaleEffect(configuration.isPressed ? 0.9 : 1)
-            .animation(.linear(duration: 0.1), value: configuration.isPressed)
-    }
-}
-
 struct ChangeAppIconView: View {
     @StateObject var viewModel = ChangeAppIconViewModel()
     @Environment(\.dismiss) private var dismiss
@@ -105,17 +97,6 @@ struct ChangeAppIconView: View {
                 .buttonStyle(ScaleButtonStyle())
             }
         }
-    }
-}
-
-struct CheckboxView: View {
-    let isSelected: Bool
-    
-    var body: some View {
-        Image(systemName: isSelected ? "checkmark.square.fill" : "square")
-            .resizable()
-            .aspectRatio(contentMode: .fit)
-            .frame(width: 16, height: 16)
     }
 }
 

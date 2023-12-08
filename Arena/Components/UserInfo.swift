@@ -17,6 +17,9 @@ struct UserInfo: View {
     @StateObject var userData: UserData
     @State private var selectedChannelSlug: String?
     @State private var isShareModalPresented: Bool = false
+    @State private var presentingConnectSheet = false
+    @State private var itemId = 0
+    @State private var type = "Channel"
     
     @Default(.pinnedChannels) var pinnedChannels
     
@@ -135,6 +138,13 @@ struct UserInfo: View {
                                 .contentShape(.contextMenuPreview, RoundedRectangle(cornerRadius: 32))
                                 .contextMenu {
                                     Button {
+                                        itemId = channel.id
+                                        presentingConnectSheet = true
+                                    } label: {
+                                        Label("Connect", systemImage: "arrow.right")
+                                    }
+                                    
+                                    Button {
                                         togglePin(channel.id)
                                     } label: {
                                         Label(pinnedChannels.contains(channel.id) ? "Unpin" : "Pin", systemImage: pinnedChannels.contains(channel.id) ? "pin.slash.fill" : "pin.fill")
@@ -186,6 +196,14 @@ struct UserInfo: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             .padding(.horizontal, 20)
             .padding(.top, 40)
+        }
+        .sheet(isPresented: $presentingConnectSheet) {
+            ConnectExistingView()
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                .presentationDetents([.fraction(0.64), .large])
+                .presentationContentInteraction(.scrolls)
+                .presentationCornerRadius(32)
+                .contentMargins(16)
         }
     }
     

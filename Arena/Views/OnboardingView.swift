@@ -145,20 +145,6 @@ struct OnboardingView: View {
     }
 }
 
-struct OnboardingInputStyle: TextFieldStyle {
-    func _body(configuration: TextField<Self._Label>) -> some View {
-        configuration
-            .padding(.leading, 20)
-            .padding(.trailing, 12)
-            .padding(.vertical, 12)
-            .foregroundColor(Color("text-primary"))
-            .background(Color("surface"))
-            .cornerRadius(16)
-            .fontDesign(.rounded)
-            .fontWeight(.medium)
-    }
-}
-
 struct VerificationView: View {
     @Binding var accessToken: String
     @Binding var username: String

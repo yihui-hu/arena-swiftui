@@ -1,5 +1,5 @@
 //
-//  ConnectView.swift
+//  ConnectExistingView.swift
 //  Arena
 //
 //  Created by Yihui Hu on 6/12/23.
@@ -7,28 +7,23 @@
 
 import SwiftUI
 import Defaults
-import SwiftUIX
 
 struct ConnectExistingView: View {
     @StateObject var channelsData: ChannelsData
     @StateObject private var channelSearchData: SearchData
     @FocusState private var searchInputIsFocused: Bool
     
-    @State private var itemId: Int
-    @State private var type: String
     @State private var searchTerm: String = ""
-    @State private var selection: String = "Channels"
     @State private var channelsToConnect: [String] = []
     @State private var isConnecting: Bool = false
     
-    init(itemId: Int, type: String) {
+    init() {
         self._channelSearchData = StateObject(wrappedValue: SearchData())
         self._channelsData = StateObject(wrappedValue: ChannelsData(userId: Defaults[.userId]))
-        self.itemId = itemId
-        self.type = type
     }
     
     var body: some View {
+        let _ = Self._printChanges()
         let userChannels = channelsData.channels?.channels ?? []
         
         VStack(spacing: 0) {
@@ -70,7 +65,7 @@ struct ConnectExistingView: View {
                         isConnecting = true
                         
                         Task {
-                            await connectToChannel(channels: channelsToConnect, id: itemId , type: type) {
+                            await connectToChannel(channels: channelsToConnect, id: Defaults[.connectItemId] , type: Defaults[.connectItemType]) {
                                 isConnecting = false
                                 channelsToConnect = []
                             }
@@ -113,7 +108,7 @@ struct ConnectExistingView: View {
                                 SmallChannelPreview(channel: channel)
                                     .overlay(
                                         RoundedRectangle(cornerRadius: 16)
-                                            .stroke(Color(channelsToConnect.contains(channel.slug) ? "surface-text-secondary" : "clear"), lineWidth: 2)
+                                            .stroke(channelsToConnect.contains(channel.slug) ? Color("surface-text-secondary") : Color.clear, lineWidth: 2)
                                     )
                                     .padding(.bottom, 8)
                                     .onBecomingVisible {
@@ -158,7 +153,7 @@ struct ConnectExistingView: View {
                                     SmallChannelPreviewUser(channel: channel)
                                         .overlay(
                                             RoundedRectangle(cornerRadius: 16)
-                                                .stroke(Color(channelsToConnect.contains(channel.slug) ? "surface-text-secondary" : "clear"), lineWidth: 2)
+                                                .stroke(channelsToConnect.contains(channel.slug) ? Color("surface-text-secondary") : Color.clear, lineWidth: 2)
                                         )
                                         .padding(.bottom, 8)
                                         .onBecomingVisible {

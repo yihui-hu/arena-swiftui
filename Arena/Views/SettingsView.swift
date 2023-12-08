@@ -86,9 +86,7 @@ struct SettingsView: View {
                             
                             HStack(spacing: 16) {
                                 ThemeButton(selectedAppearance: $selectedAppearance, appearance: 1, iconName: "sun.max.fill", text: "Light")
-                                
                                 ThemeButton(selectedAppearance: $selectedAppearance, appearance: 2, iconName: "moon.fill", text: "Dark")
-                                
                                 ThemeButton(selectedAppearance: $selectedAppearance, appearance: 0, iconName: "circle.lefthalf.filled", text: "System")
                             }
                         }

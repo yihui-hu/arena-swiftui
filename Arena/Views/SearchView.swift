@@ -123,7 +123,7 @@ struct SearchView: View {
                                         ForEach(Array(zip(searchResults.blocks.indices, searchResults.blocks)), id: \.0) { _, block in
                                             NavigationLink(destination: SingleBlockView(block: block)) {
                                                 VStack(spacing: 8) {
-                                                    ChannelViewBlockPreview(blockData: block, fontSize: 12, display: "Grid")
+                                                    ChannelViewBlockPreview(blockData: block, fontSize: 12, display: "Grid", isContextMenuPreview: false)
                                                         .frame(width: gridItemSize, height: gridItemSize)
                                                         .background(Color("background"))
                                                         .contextMenu {
@@ -139,10 +139,10 @@ struct SearchView: View {
                                                         } preview: {
                                                             let img = block.image
                                                             if img != nil {
-                                                                ChannelViewBlockPreview(blockData: block, fontSize: 16, display: "Feed")
+                                                                ChannelViewBlockPreview(blockData: block, fontSize: 16, display: "Feed", isContextMenuPreview: false)
                                                                     .frame(maxWidth: .infinity, maxHeight: .infinity)
                                                             } else {
-                                                                ChannelViewBlockPreview(blockData: block, fontSize: 18, display: "Feed")
+                                                                ChannelViewBlockPreview(blockData: block, fontSize: 18, display: "Feed", isContextMenuPreview: false)
                                                                     .padding(32)
                                                                     .frame(width: 400, height: 400)
                                                             }
@@ -314,21 +314,6 @@ struct SearchChannelPreview: View {
             pinnedChannels.append(channelId)
         }
         Defaults[.pinnedChannelsChanged] = true
-    }
-}
-
-struct SearchBarStyle: TextFieldStyle {
-    func _body(configuration: TextField<Self._Label>) -> some View {
-        configuration
-            .padding(.leading, 20)
-            .padding(.trailing, 12)
-            .padding(.vertical, 12)
-            .foregroundColor(Color("text-primary"))
-            .background(Color("surface"))
-            .cornerRadius(50)
-            .fontDesign(.rounded)
-            .fontWeight(.medium)
-            .tint(Color.primary)
     }
 }
 
