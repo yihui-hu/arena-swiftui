@@ -26,6 +26,11 @@ struct ArenaApp: App {
     @Default(.connectSheetOpen) var connectSheetOpen
     @AppStorage("selectedAppearance") var selectedAppearance = 0
     
+    init() {
+        UIPageControl.appearance().currentPageIndicatorTintColor = .textPrimary
+        UIPageControl.appearance().pageIndicatorTintColor = UIColor.textPrimary.withAlphaComponent(0.2)
+    }
+    
     var body: some Scene {
         WindowGroup {
             if onboardingDone {

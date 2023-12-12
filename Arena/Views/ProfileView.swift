@@ -30,7 +30,7 @@ struct ProfileView: View {
                     ToolbarItem(placement: .topBarTrailing) {
                         HStack(spacing: 8) {
                             Button(action: {
-                                self.tab = 1
+                                self.tab = 3
                             }) {
                                 Image(systemName: "magnifyingglass")
                                     .resizable()

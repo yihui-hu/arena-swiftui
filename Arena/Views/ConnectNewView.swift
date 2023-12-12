@@ -1,29 +1,38 @@
 //
-//  ConnectExistingView.swift
+//  ConnectNewView.swift
 //  Arena
 //
-//  Created by Yihui Hu on 6/12/23.
+//  Created by Yihui Hu on 12/12/23.
 //
 
 import SwiftUI
 import Defaults
 
-struct ConnectExistingView: View {
+struct ConnectNewView: View {
     @StateObject var channelsData: ChannelsData
     @StateObject private var channelSearchData: SearchData
     @FocusState private var searchInputIsFocused: Bool
     
     @State private var searchTerm: String = ""
+    @State private var selection: String = "Channels"
     @State private var channelsToConnect: [String] = []
     @State private var isConnecting: Bool = false
     
-    init() {
+    @Binding var imageData: [Data]
+    @Binding var textData: String
+    @Binding var linkData: [String]
+    
+    @Environment(\.dismiss) private var dismiss
+    
+    init(imageData: Binding<[Data]>, textData: Binding<String>, linkData: Binding<[String]>) {
         self._channelSearchData = StateObject(wrappedValue: SearchData())
         self._channelsData = StateObject(wrappedValue: ChannelsData(userId: Defaults[.userId]))
+        self._imageData = imageData
+        self._textData = textData
+        self._linkData = linkData
     }
     
     var body: some View {
-        let _ = Self._printChanges()
         let userChannels = channelsData.channels?.channels ?? []
         
         VStack(spacing: 0) {
@@ -35,7 +44,7 @@ struct ConnectExistingView: View {
                         channelSearchData.refresh()
                     }
                     .multilineTextAlignment(.leading)
-                    .textFieldStyle(ConnectSearchBarStyle())
+                    .textFieldStyle(SearchBarStyle())
                     .autocorrectionDisabled()
                     .onAppear {
                         UITextField.appearance().clearButtonMode = .always
@@ -64,10 +73,12 @@ struct ConnectExistingView: View {
                     Button(action: {
                         isConnecting = true
                         
-                        Task {
-                            await connectToChannel(channels: channelsToConnect, id: Defaults[.connectItemId] , type: Defaults[.connectItemType]) {
-                                isConnecting = false
-                                channelsToConnect = []
+                        if !(imageData.isEmpty) {
+                            Task {
+                                await connectImagesToChannel(channels: channelsToConnect, selectedPhotosData: imageData) {
+                                    isConnecting = false
+                                    channelsToConnect = []
+                                }
                             }
                         }
                     }) {
@@ -183,6 +194,19 @@ struct ConnectExistingView: View {
         }
         .contentMargins(.top, 1)
         .contentMargins(.top, -1, for: .scrollIndicators)
+        .padding(.bottom, 4)
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    BackButton()
+                }
+            }
+        }
+        .toolbarBackground(Color("background"), for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
     }
 }
-

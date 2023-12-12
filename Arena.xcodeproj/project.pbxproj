@@ -41,6 +41,11 @@
 		8F6B06312AE5ACC500EEDE9C /* ChannelCardContentPreview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6B06302AE5ACC500EEDE9C /* ChannelCardContentPreview.swift */; };
 		8F6B06342AE5B87400EEDE9C /* ChannelCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6B06332AE5B87400EEDE9C /* ChannelCard.swift */; };
 		8F6B06362AE5C32A00EEDE9C /* DelayAppearanceModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6B06352AE5C32A00EEDE9C /* DelayAppearanceModifier.swift */; };
+		8F77C66F2B257A5B00276550 /* connect-flower-dark.riv in Resources */ = {isa = PBXBuildFile; fileRef = 8F77C66E2B257A5B00276550 /* connect-flower-dark.riv */; };
+		8F77C6712B257B3800276550 /* connect-flower-light.riv in Resources */ = {isa = PBXBuildFile; fileRef = 8F77C6702B257B3800276550 /* connect-flower-light.riv */; };
+		8F77C6732B2658AC00276550 /* ConnectImagesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F77C6722B2658AC00276550 /* ConnectImagesView.swift */; };
+		8F785AD82B289FB4005101E6 /* ConnectNewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F785AD72B289FB4005101E6 /* ConnectNewView.swift */; };
+		8F785ADA2B28A603005101E6 /* ConnectTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F785AD92B28A603005101E6 /* ConnectTextView.swift */; };
 		8F7A03E72AE5EC9F005C4096 /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F7A03E62AE5EC9F005C4096 /* ProfileView.swift */; };
 		8F7A03E92AE6C5A0005C4096 /* OnBecomingVisible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F7A03E82AE6C5A0005C4096 /* OnBecomingVisible.swift */; };
 		8F840B8A2B066D2800B17F31 /* ChangeAppIconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F840B892B066D2800B17F31 /* ChangeAppIconView.swift */; };
@@ -156,6 +161,11 @@
 		8F6B06302AE5ACC500EEDE9C /* ChannelCardContentPreview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelCardContentPreview.swift; sourceTree = "<group>"; };
 		8F6B06332AE5B87400EEDE9C /* ChannelCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelCard.swift; sourceTree = "<group>"; };
 		8F6B06352AE5C32A00EEDE9C /* DelayAppearanceModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DelayAppearanceModifier.swift; sourceTree = "<group>"; };
+		8F77C66E2B257A5B00276550 /* connect-flower-dark.riv */ = {isa = PBXFileReference; lastKnownFileType = file; path = "connect-flower-dark.riv"; sourceTree = "<group>"; };
+		8F77C6702B257B3800276550 /* connect-flower-light.riv */ = {isa = PBXFileReference; lastKnownFileType = file; path = "connect-flower-light.riv"; sourceTree = "<group>"; };
+		8F77C6722B2658AC00276550 /* ConnectImagesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectImagesView.swift; sourceTree = "<group>"; };
+		8F785AD72B289FB4005101E6 /* ConnectNewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectNewView.swift; sourceTree = "<group>"; };
+		8F785AD92B28A603005101E6 /* ConnectTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectTextView.swift; sourceTree = "<group>"; };
 		8F7A03E62AE5EC9F005C4096 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		8F7A03E82AE6C5A0005C4096 /* OnBecomingVisible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnBecomingVisible.swift; sourceTree = "<group>"; };
 		8F8117472B01B22000B2280C /* StatefulTabView */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = StatefulTabView; path = ../StatefulTabView; sourceTree = "<group>"; };
@@ -275,6 +285,8 @@
 		8F3A8B9B2B07B46900FC5F6D /* Rive */ = {
 			isa = PBXGroup;
 			children = (
+				8F77C6702B257B3800276550 /* connect-flower-light.riv */,
+				8F77C66E2B257A5B00276550 /* connect-flower-dark.riv */,
 				8F3A8BA62B07BFC700FC5F6D /* pinned-channels-initial-light.riv */,
 				8F3A8BA42B07BDD900FC5F6D /* pinned-channels-initial-dark.riv */,
 				8F3A8BA22B07BDD000FC5F6D /* pinned-channels-demo.riv */,
@@ -448,6 +460,9 @@
 				8FB8CF362B1A437A0073BBA9 /* PrivacyPolicyView.swift */,
 				8FAD97EB2B1CDF7A0076DB60 /* FollowView.swift */,
 				8FB5D3972B210D17006D5D59 /* ConnectView.swift */,
+				8F77C6722B2658AC00276550 /* ConnectImagesView.swift */,
+				8F785AD92B28A603005101E6 /* ConnectTextView.swift */,
+				8F785AD72B289FB4005101E6 /* ConnectNewView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -630,7 +645,9 @@
 				8F3A8BA52B07BDD900FC5F6D /* pinned-channels-initial-dark.riv in Resources */,
 				8F3A8BA32B07BDD000FC5F6D /* pinned-channels-demo.riv in Resources */,
 				8FF0C5A92AD89C3D007D5959 /* Preview Assets.xcassets in Resources */,
+				8F77C66F2B257A5B00276550 /* connect-flower-dark.riv in Resources */,
 				8F3A8BA72B07BFC700FC5F6D /* pinned-channels-initial-light.riv in Resources */,
+				8F77C6712B257B3800276550 /* connect-flower-light.riv in Resources */,
 				8FF0C5A62AD89C3D007D5959 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -686,6 +703,7 @@
 				8FB168B52ADA53DF00426906 /* ChannelData.swift in Sources */,
 				8F840B8A2B066D2800B17F31 /* ChangeAppIconView.swift in Sources */,
 				8F8542782AFF15C20078E82C /* PinnedChannelsData.swift in Sources */,
+				8F785ADA2B28A603005101E6 /* ConnectTextView.swift in Sources */,
 				8F7A03E92AE6C5A0005C4096 /* OnBecomingVisible.swift in Sources */,
 				8FD7E3F32ADB6EEC00A15E16 /* BlockPreviews.swift in Sources */,
 				8FD7E3F02ADADF9000A15E16 /* BlockData.swift in Sources */,
@@ -703,6 +721,7 @@
 				8FBBCE9B2B20413100149A62 /* ConnectExistingView.swift in Sources */,
 				8F1037412B2022B4007B680C /* ConnectToChannelData.swift in Sources */,
 				8F60D5D12B0057CE00DB3D78 /* UserView.swift in Sources */,
+				8F77C6732B2658AC00276550 /* ConnectImagesView.swift in Sources */,
 				8F6B06202AE4A60F00EEDE9C /* ProfilePic.swift in Sources */,
 				8F37FE542B0D9C630019E4AD /* UserInfo.swift in Sources */,
 				8FF0C5D12AD8CA7D007D5959 /* PinnedChannelsView.swift in Sources */,
@@ -716,6 +735,7 @@
 				8FB8CF372B1A437A0073BBA9 /* PrivacyPolicyView.swift in Sources */,
 				8F3A8B952B0711A000FC5F6D /* EmptyStates.swift in Sources */,
 				8FF0C5A22AD89C3B007D5959 /* ArenaApp.swift in Sources */,
+				8F785AD82B289FB4005101E6 /* ConnectNewView.swift in Sources */,
 				8F3A8B932B06C31200FC5F6D /* EndStates.swift in Sources */,
 				8F6B06362AE5C32A00EEDE9C /* DelayAppearanceModifier.swift in Sources */,
 				8FF0C5CE2AD8C40E007D5959 /* ArenaModels.swift in Sources */,

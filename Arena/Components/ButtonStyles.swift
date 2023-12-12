@@ -23,3 +23,11 @@ struct ConnectChannelButtonStyle: ButtonStyle {
             .animation(.easeInOut(duration: 0.2), value: configuration.isPressed)
     }
 }
+
+struct ConnectButtonStyle: ButtonStyle {
+    func makeBody(configuration: Self.Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.96 : 1)
+            .animation(.linear(duration: 0.1), value: configuration.isPressed)
+    }
+}

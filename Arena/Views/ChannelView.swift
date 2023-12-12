@@ -56,25 +56,25 @@ struct ChannelView: View {
                 .resizable()
                 .scaledToFit()
                 .fontWeight(.semibold)
-                .frame(width: 18, height: 18)
+                .frame(width: 16, height: 16)
         case .largeGrid:
             return Image(systemName: "square.grid.3x3")
                 .resizable()
                 .scaledToFit()
                 .fontWeight(.semibold)
-                .frame(width: 18, height: 18)
+                .frame(width: 16, height: 16)
         case .table:
             return Image(systemName: "rectangle.grid.1x2")
                 .resizable()
                 .scaledToFit()
                 .fontWeight(.semibold)
-                .frame(width: 18, height: 18)
+                .frame(width: 16, height: 16)
         case .feed:
             return Image(systemName: "square")
                 .resizable()
                 .scaledToFit()
                 .fontWeight(.semibold)
-                .frame(width: 18, height: 18)
+                .frame(width: 16, height: 16)
         }
     }
     
@@ -283,7 +283,7 @@ struct ChannelViewHeader: View {
                         Text("started ")
                             .foregroundColor(Color("text-secondary"))
                             .font(.system(size: 14)) +
-                        Text(channelCreated, style: .date)
+                        Text(channelCreated, format: Date.FormatStyle(date: .abbreviated, time: .omitted))
                             .foregroundStyle(Color("text-secondary"))
                             .font(.system(size: 14)) +
                         Text(" • updated \(channelUpdated)")

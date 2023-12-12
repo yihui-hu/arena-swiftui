@@ -7,198 +7,117 @@
 
 import SwiftUI
 import Defaults
+import RiveRuntime
+import PhotosUI
 
-struct ConnectView: View {
+struct ConnectItem: View {
+    var text: String
+    var icon: String
+    
     var body: some View {
-        NavigationLink(destination: ConnectToChannelsListView()) {
-            Text("Next")
+        HStack(alignment: .center, spacing: 12) {
+            Image(systemName: icon)
+                .foregroundStyle(Color("surface-text-secondary"))
+                .frame(width: 40, height: 40)
+                .background(Color("surface-secondary"))
+                .clipShape(Circle())
+            
+            Text(text)
+                .foregroundStyle(Color("text-primary"))
+                .fontWeight(.medium)
+                .fontDesign(.rounded)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
-//struct ConnectImageView: View {
-//    
-//}
-//
-//struct ConnectTextView: View {
-//    
-//}
-
-struct ConnectToChannelsListView: View {
-    @StateObject var channelsData: ChannelsData
-    @StateObject private var channelSearchData: SearchData
-    @FocusState private var searchInputIsFocused: Bool
-    
-    @State private var searchTerm: String = ""
-    @State private var selection: String = "Channels"
-    @State private var channelsToConnect: [String] = []
-    @State private var isConnecting: Bool = false
-    
-    init() {
-        self._channelSearchData = StateObject(wrappedValue: SearchData())
-        self._channelsData = StateObject(wrappedValue: ChannelsData(userId: Defaults[.userId]))
-    }
+struct ConnectView: View {
+    @State private var selectedPhotos: [PhotosPickerItem] = []
+    @State private var selectedPhotosData: [Data] = []
+    @State private var showConnectImagesView = false
+    @State private var showConnectTextView = false
     
     var body: some View {
-        let userChannels = channelsData.channels?.channels ?? []
-        
-        VStack(spacing: 0) {
-            // Search input
-            HStack(spacing: 12) {
-                TextField("Search...", text: $searchTerm)
-                    .onChange(of: searchTerm, debounceTime: .seconds(0.5)) { newValue in
-                        channelSearchData.searchTerm = newValue
-                        channelSearchData.refresh()
-                    }
-                    .multilineTextAlignment(.leading)
-                    .textFieldStyle(SearchBarStyle())
-                    .autocorrectionDisabled()
-                    .onAppear {
-                        UITextField.appearance().clearButtonMode = .always
-                    }
-                    .focused($searchInputIsFocused)
-                    .onSubmit {
-                        if !(channelSearchData.isLoading) {
-                            channelSearchData.searchTerm = searchTerm
-                            channelSearchData.refresh()
-                        }
-                    }
-                    .submitLabel(.search)
+        NavigationStack {
+            VStack {
+                Spacer()
                 
-                if searchInputIsFocused {
-                    Button(action: {
-                        searchInputIsFocused = false
-                    }) {
-                        Text("Cancel")
-                            .fontWeight(.medium)
-                            .fontDesign(.rounded)
-                            .foregroundStyle(Color("text-secondary"))
-                    }
-                }
+                ConnectFlower()
                 
-                if !(channelsToConnect.isEmpty), !searchInputIsFocused {
+                Spacer()
+                
+                VStack(alignment: .leading, spacing: 16) {
                     Button(action: {
-                        isConnecting = true
                         
-//                        Task {
-//                            await connectToChannel(channels: channelsToConnect, id: itemId , type: type) {
-//                                isConnecting = false
-//                                channelsToConnect = []
-//                            }
-//                        }
                     }) {
-                        if isConnecting {
-                            CircleLoadingSpinner(customColor: "background", customBgColor: "surface")
-                        } else {
-                            Text("Connect")
-                                .font(.system(size: 15))
-                                .fontWeight(.medium)
-                                .fontDesign(.rounded)
-                                .foregroundStyle(Color("background"))
-                        }
+                        ConnectItem(text: "New channel", icon: "square.grid.2x2.fill")
                     }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 12)
-                    .background(Color("text-primary"))
-                    .cornerRadius(64)
-                    .disabled(isConnecting)
-                }
-            }
-            .animation(.bouncy(duration: 0.3), value: UUID())
-            .padding(16)
-            
-            // List of channels
-            ScrollView {
-                LazyVStack(spacing: 0) {
-                    if let searchResults = channelSearchData.searchResults, searchTerm != "" {
-                        ForEach(searchResults.channels, id: \.id) { channel in
-                            Button(action: {
-                                withAnimation(.easeInOut(duration: 0.1)) {
-                                    if channelsToConnect.contains(channel.slug) {
-                                        channelsToConnect.removeAll { $0 == channel.slug }
-                                    } else {
-                                        channelsToConnect.append(channel.slug)
+                    .buttonStyle(ConnectButtonStyle())
+                    
+                    Button(action: {
+                        showConnectTextView = true
+                    }) {
+                        ConnectItem(text: "New text block", icon: "text.alignleft")
+                    }
+                    .buttonStyle(ConnectButtonStyle())
+                    
+                    Button(action: {
+                        
+                    }) {
+                        ConnectItem(text: "Add link", icon: "link")
+                    }
+                    .buttonStyle(ConnectButtonStyle())
+                    
+                    Button(action: {}) {
+                        PhotosPicker(selection: $selectedPhotos, maxSelectionCount: 10, matching: .images) {
+                            ConnectItem(text: "Add images", icon: "photo.fill")
+                        }
+                        .onChange(of: selectedPhotos) { _, newItems in
+                            selectedPhotos = []
+                            selectedPhotosData = []
+                            for newItem in newItems {
+                                Task {
+                                    if let data = try? await newItem.loadTransferable(type: Data.self) {
+                                        selectedPhotosData.append(data)
                                     }
                                 }
-                            }) {
-                                SmallChannelPreview(channel: channel)
-                                    .overlay(
-                                        RoundedRectangle(cornerRadius: 16)
-                                            .stroke(channelsToConnect.contains(channel.slug) ? Color("surface-text-secondary") : Color.clear, lineWidth: 2)
-                                    )
-                                    .padding(.bottom, 8)
-                                    .onBecomingVisible {
-                                        if searchResults.channels.last?.id ?? -1 == channel.id {
-                                            if !channelSearchData.isLoading {
-                                                channelSearchData.loadMore()
-                                            }
-                                        }
-                                    }
                             }
-                            .buttonStyle(ConnectChannelButtonStyle())
-                        }
-                        
-                        if channelSearchData.isLoading, searchTerm != "" {
-                            CircleLoadingSpinner()
-                                .padding(.vertical, 12)
-                        }
-                        
-                        if searchResults.channels.isEmpty {
-                            EmptySearch(items: "channels", searchTerm: searchTerm)
-                        } else if channelSearchData.currentPage > channelSearchData.totalPages, searchTerm != "" {
-                            EndOfSearch()
-                        }
-                    } else if channelSearchData.isLoading, searchTerm != "" {
-                        CircleLoadingSpinner()
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
-                            .padding(.top, 64)
-                    } else {
-                        if !channelsData.isLoading, userChannels.isEmpty {
-                            EmptyUserChannels()
-                        } else {
-                            ForEach(Array(zip(userChannels.indices, userChannels)), id: \.0) { _, channel in
-                                Button(action: {
-                                    withAnimation(.easeInOut(duration: 0.1)) {
-                                        if channelsToConnect.contains(channel.slug) {
-                                            channelsToConnect.removeAll { $0 == channel.slug }
-                                        } else {
-                                            channelsToConnect.append(channel.slug)
-                                        }
-                                    }
-                                }) {
-                                    SmallChannelPreviewUser(channel: channel)
-                                        .overlay(
-                                            RoundedRectangle(cornerRadius: 16)
-                                                .stroke(channelsToConnect.contains(channel.slug) ? Color("surface-text-secondary") : Color.clear, lineWidth: 2)
-                                        )
-                                        .padding(.bottom, 8)
-                                        .onBecomingVisible {
-                                            if userChannels.count >= 1 {
-                                                if userChannels[userChannels.count - 1].id == channel.id {
-                                                    channelsData.loadMore(userId: Defaults[.userId])
-                                                }
-                                            }
-                                        }
-                                }
-                                .buttonStyle(ConnectChannelButtonStyle())
-                            }
-                            
-                            if channelsData.isLoading {
-                                CircleLoadingSpinner()
-                                    .padding(.vertical, 12)
-                            }
-                            
-                            if channelsData.currentPage > channelsData.totalPages {
-                                EndOfUser()
-                            }
+                            showConnectImagesView = true
                         }
                     }
+                    .buttonStyle(ConnectButtonStyle())
+                }
+                .frame(maxWidth: 400)
+                .padding(16)
+                .background(Color("modal"))
+                .clipShape(RoundedRectangle(cornerRadius: 24))
+                .padding(16)
+            }
+            .padding(.bottom, 32)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Text("Connect")
+                        .foregroundStyle(Color("text-primary"))
+                        .font(.system(size: 20))
+                        .fontDesign(.rounded)
+                        .fontWeight(.semibold)
                 }
             }
-            .scrollDismissesKeyboard(.immediately)
+            .toolbarBackground(Color("background"), for: .navigationBar)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .background(Color("background"))
+            .navigationDestination(isPresented: $showConnectImagesView) {
+                ConnectImagesView(selectedPhotos: $selectedPhotos, selectedPhotosData: $selectedPhotosData)
+            }
+            .navigationDestination(isPresented: $showConnectTextView) {
+                ConnectTextView()
+            }
         }
-        .contentMargins(.top, 1)
-        .contentMargins(.top, -1, for: .scrollIndicators)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+        .background(Color("background"))
+        .contentMargins(.leading, 0, for: .scrollIndicators)
+        .contentMargins(16)
     }
 }
 
