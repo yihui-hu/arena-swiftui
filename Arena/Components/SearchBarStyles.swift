@@ -20,6 +20,8 @@ struct SearchBarStyle: TextFieldStyle {
             .fontDesign(.rounded)
             .fontWeight(.medium)
             .tint(Color.primary)
+            .autocorrectionDisabled()
+            .textInputAutocapitalization(.never)
     }
 }
 
@@ -35,6 +37,8 @@ struct ConnectSearchBarStyle: TextFieldStyle {
             .fontDesign(.rounded)
             .fontWeight(.medium)
             .tint(Color.primary)
+            .autocorrectionDisabled()
+            .textInputAutocapitalization(.never)
     }
 }
 
@@ -50,6 +54,8 @@ struct OnboardingInputStyle: TextFieldStyle {
             .fontDesign(.rounded)
             .fontWeight(.medium)
             .tint(Color.primary)
+            .autocorrectionDisabled()
+            .textInputAutocapitalization(.never)
     }
 }
 
@@ -65,5 +71,7 @@ struct ConnectInputStyle: TextFieldStyle {
             .fontDesign(.rounded)
             .fontWeight(.medium)
             .tint(Color.primary)
+            .autocorrectionDisabled()
+            .textInputAutocapitalization(.never)
     }
 }

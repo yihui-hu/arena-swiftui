@@ -243,9 +243,13 @@ final class ArenaSearchedChannel: Codable, Equatable {
 }
 
 // MARK: - Block
-final class Block: Codable, ObservableObject, Equatable {
+final class Block: Hashable, Codable, ObservableObject, Equatable {
     static func == (lhs: Block, rhs: Block) -> Bool {
         return lhs.id == rhs.id // Compare using a unique identifier, such as the 'id' property
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
     
     let id: Int
@@ -612,5 +616,45 @@ final class ArenaFollowing: Decodable {
         self.length = length
         self.currentPage = currentPage
         self.users = users
+    }
+}
+
+// MARK: - ArenaExploreResults
+final class ArenaExploreResults: Codable {
+    let currentPage, totalPages: Int
+    var channels: [ArenaSearchedChannel]
+    var blocks: [Block]
+    var users: [User]
+    
+    enum CodingKeys: String, CodingKey {
+        case totalPages = "total_pages"
+        case currentPage = "current_page"
+        case channels, blocks, users
+    }
+    
+    init(currentPage: Int, totalPages: Int, channels: [ArenaSearchedChannel], blocks: [Block], users: [User]) {
+        self.currentPage = currentPage
+        self.totalPages = totalPages
+        self.channels = channels
+        self.blocks = blocks
+        self.users = users
+    }
+}
+
+// MARK: - ChannelConnections
+final class ChannelConnections: Codable {
+    let currentPage, totalPages: Int
+    var channels: [ArenaSearchedChannel]
+    
+    enum CodingKeys: String, CodingKey {
+        case totalPages = "total_pages"
+        case currentPage = "current_page"
+        case channels
+    }
+    
+    init(currentPage: Int, totalPages: Int, channels: [ArenaSearchedChannel]) {
+        self.currentPage = currentPage
+        self.totalPages = totalPages
+        self.channels = channels
     }
 }

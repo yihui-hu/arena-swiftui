@@ -32,7 +32,7 @@ struct ArenaView: View {
             }
             
             Tab(systemImageName: "person.fill") {
-                ProfileView(userId: Defaults[.userId], tab: $tab)
+                ProfileView(userId: Defaults[.userId])
             }
         }
     }

@@ -26,3 +26,9 @@ func dateFromString(string: String) -> Date {
     let date = dateFormatter.date(from: string) ?? Date.now
     return date
 }
+
+extension Date {
+    func currentTimeMillis() -> Int64 {
+        return Int64(self.timeIntervalSince1970 * 1000)
+    }
+}

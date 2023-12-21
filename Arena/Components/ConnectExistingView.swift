@@ -23,16 +23,16 @@ struct ConnectExistingView: View {
     }
     
     var body: some View {
-        let _ = Self._printChanges()
         let userChannels = channelsData.channels?.channels ?? []
         
         VStack(spacing: 0) {
             // Search input
             HStack(spacing: 12) {
                 TextField("Search...", text: $searchTerm)
-                    .onChange(of: searchTerm, debounceTime: .seconds(0.5)) { newValue in
-                        channelSearchData.searchTerm = newValue
-                        channelSearchData.refresh()
+                    .onChange(of: searchTerm) { _, newValue in
+                        if newValue == "" {
+                            channelSearchData.searchResults = nil
+                        }
                     }
                     .multilineTextAlignment(.leading)
                     .textFieldStyle(ConnectSearchBarStyle())
@@ -70,6 +70,8 @@ struct ConnectExistingView: View {
                                 channelsToConnect = []
                             }
                         }
+                        
+                        Defaults[.connectedItem] = true
                     }) {
                         if isConnecting {
                             CircleLoadingSpinner(customColor: "background", customBgColor: "surface")
@@ -81,7 +83,7 @@ struct ConnectExistingView: View {
                                 .foregroundStyle(Color("background"))
                         }
                     }
-                    .padding(.horizontal, 16)
+                    .padding(.horizontal, isConnecting ? 12 : 16)
                     .padding(.vertical, 12)
                     .background(Color("text-primary"))
                     .cornerRadius(64)
@@ -97,6 +99,7 @@ struct ConnectExistingView: View {
                     if let searchResults = channelSearchData.searchResults, searchTerm != "" {
                         ForEach(searchResults.channels, id: \.id) { channel in
                             Button(action: {
+                                searchInputIsFocused = false
                                 withAnimation(.easeInOut(duration: 0.1)) {
                                     if channelsToConnect.contains(channel.slug) {
                                         channelsToConnect.removeAll { $0 == channel.slug }
@@ -128,7 +131,7 @@ struct ConnectExistingView: View {
                         }
                         
                         if searchResults.channels.isEmpty {
-                            EmptySearch(items: "channels", searchTerm: searchTerm)
+                            EmptySearch(items: "channels", searchTerm: channelSearchData.searchTerm)
                         } else if channelSearchData.currentPage > channelSearchData.totalPages, searchTerm != "" {
                             EndOfSearch()
                         }
@@ -142,6 +145,7 @@ struct ConnectExistingView: View {
                         } else {
                             ForEach(Array(zip(userChannels.indices, userChannels)), id: \.0) { _, channel in
                                 Button(action: {
+                                    searchInputIsFocused = false
                                     withAnimation(.easeInOut(duration: 0.1)) {
                                         if channelsToConnect.contains(channel.slug) {
                                             channelsToConnect.removeAll { $0 == channel.slug }
@@ -169,7 +173,8 @@ struct ConnectExistingView: View {
                             
                             if channelsData.isLoading {
                                 CircleLoadingSpinner()
-                                    .padding(.vertical, 12)
+                                    .padding(.top, 16)
+                                    .padding(.bottom, 12)
                             }
                             
                             if channelsData.currentPage > channelsData.totalPages {

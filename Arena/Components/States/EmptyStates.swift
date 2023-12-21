@@ -23,7 +23,7 @@ struct EmptySearch: View {
     let searchTerm: String
     
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(spacing: 12) {
             Image(systemName: "magnifyingglass")
                 .imageScale(.large)
                 .fontWeight(.black)
@@ -33,10 +33,12 @@ struct EmptySearch: View {
                 .clipShape(RoundedRectangle(cornerRadius: 12))
             Text("No \(items) found for search term: \(searchTerm)")
                 .font(.system(size: 14))
+                .multilineTextAlignment(.center)
                 .foregroundStyle(Color("surface-tertiary"))
                 .fontDesign(.rounded)
                 .fontWeight(.semibold)
         }
+        .frame(maxWidth: UIScreen.main.bounds.width * 0.8, maxHeight: .infinity, alignment: .center)
         .padding(.top, 24)
     }
 }
@@ -53,11 +55,22 @@ struct EmptyUserChannels: View {
     }
 }
 
+struct EmptyChannelConnections: View {
+    var body: some View {
+        Text("Channel has no connections")
+            .font(.system(size: 14))
+            .foregroundStyle(Color("surface-tertiary"))
+            .fontDesign(.rounded)
+            .fontWeight(.semibold)
+            .padding(.top, 24)
+    }
+}
+
 struct EmptyBlockComments: View {
     var body: some View {
         Text("No comments found")
             .font(.system(size: 14))
-            .foregroundStyle(Color("surface-tertiary"))
+            .foregroundStyle(Color("text-secondary"))
             .fontDesign(.rounded)
             .fontWeight(.semibold)
             .padding(.vertical, 12)

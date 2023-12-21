@@ -58,7 +58,7 @@ struct ChannelCard: View {
                         
                         if let showPin = showPin, showPin {
                             if (pinnedChannels.contains(channel.id)) {
-                                Image(systemName: "pin.fill")
+                                Image(systemName: "heart.fill")
                                     .foregroundStyle(Color("surface-text-secondary"))
                                     .imageScale(.small)
                             }
@@ -76,6 +76,13 @@ struct ChannelCard: View {
             .padding(16)
             .background(Color("surface"))
             .cornerRadius(32)
-        }
+        }        
+        .simultaneousGesture(TapGesture().onEnded{
+            let id = UUID()
+            let formatter = DateFormatter()
+            formatter.dateFormat = "HH:mm E, d MMM y"
+            let timestamp = formatter.string(from: Date.now)
+            Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "channel", itemId: channel.slug, timestamp: timestamp), at: 0)
+        })
     }
 }

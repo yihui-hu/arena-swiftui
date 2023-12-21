@@ -6,10 +6,7 @@
 //
 
 import SwiftUI
-
-// Used in ChannelView
-import SwiftUI
-import BetterSafariView
+import Defaults
 
 struct ChannelContentPreview: View {
     let block: Block
@@ -17,21 +14,20 @@ struct ChannelContentPreview: View {
     let channelSlug: String
     let gridItemSize: CGFloat
     let display: String
-    @Binding var presentingConnectSheet: Bool
     
     var body: some View {
         if block.baseClass == "Block" {
             if display == "Table" {
-                BlockTablePreview(block: block, channelData: channelData, channelSlug: channelSlug, display: display, presentingConnectSheet: $presentingConnectSheet)
+                BlockTablePreview(block: block, channelData: channelData, channelSlug: channelSlug, display: display)
             } else {
-                BlockGridPreview(block: block, channelData: channelData, channelSlug: channelSlug, gridItemSize: gridItemSize, display: display, presentingConnectSheet: $presentingConnectSheet)
+                BlockGridPreview(block: block, channelData: channelData, channelSlug: channelSlug, gridItemSize: gridItemSize, display: display)
             }
         } else {
             // TODO: Added channelSlug here... might want to do something interesting in the future (preview blocks in context menu!). If not, clean up
             if display == "Table" {
-                ChannelTablePreview(block: block, channelSlug: channelSlug, display: display, presentingConnectSheet: $presentingConnectSheet)
+                ChannelTablePreview(block: block, channelSlug: channelSlug, display: display)
             } else {
-                ChannelGridPreview(block: block, channelSlug: channelSlug, gridItemSize: gridItemSize, display: display, presentingConnectSheet: $presentingConnectSheet)
+                ChannelGridPreview(block: block, channelSlug: channelSlug, gridItemSize: gridItemSize, display: display)
             }
         }
     }
@@ -42,8 +38,6 @@ struct BlockTablePreview: View {
     let channelData: ChannelData
     let channelSlug: String
     let display: String
-    @State private var presentingSafariView = false
-    @Binding var presentingConnectSheet: Bool
     
     var body: some View {
         HStack {
@@ -59,25 +53,20 @@ struct BlockTablePreview: View {
                     .frame(width: 72, alignment: .leading)
                     .lineLimit(1)
             }
+            .simultaneousGesture(TapGesture().onEnded{
+                let id = UUID()
+                let formatter = DateFormatter()
+                formatter.dateFormat = "HH:mm E, d MMM y"
+                let timestamp = formatter.string(from: Date.now)
+                Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "user", itemId: String(block.user.id), timestamp: timestamp), at: 0)
+            })
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color("background"))
         .contextMenu {
-            BlockContextMenu(block: block, showViewOption: true, channelData: channelData, channelSlug: channelSlug, presentingSafariView: $presentingSafariView)
+            BlockContextMenu(block: block, showViewOption: true, channelData: channelData, channelSlug: channelSlug)
         } preview: {
             BlockContextMenuPreview(block: block)
-        }
-        .safariView(isPresented: $presentingSafariView) {
-            SafariView(
-                url: URL(string: block.source?.url ?? "https://are.na/source/\(block.id)")!,
-                configuration: SafariView.Configuration(
-                    entersReaderIfAvailable: false,
-                    barCollapsingEnabled: true
-                )
-            )
-            .preferredBarAccentColor(.clear)
-            .preferredControlAccentColor(.accentColor)
-            .dismissButtonStyle(.done)
         }
     }
 }
@@ -86,7 +75,6 @@ struct ChannelTablePreview: View {
     let block: Block
     let channelSlug: String
     let display: String
-    @Binding var presentingConnectSheet: Bool
     
     var body: some View {
         HStack {
@@ -107,6 +95,13 @@ struct ChannelTablePreview: View {
                     .frame(width: 72, alignment: .leading)
                     .lineLimit(1)
             }
+            .simultaneousGesture(TapGesture().onEnded{
+                let id = UUID()
+                let formatter = DateFormatter()
+                formatter.dateFormat = "HH:mm E, d MMM y"
+                let timestamp = formatter.string(from: Date.now)
+                Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "user", itemId: String(block.user.id), timestamp: timestamp), at: 0)
+            })
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color("background"))
@@ -124,17 +119,14 @@ struct BlockGridPreview: View {
     let channelSlug: String
     let gridItemSize: CGFloat
     let display: String
-    @State private var presentingSafariView = false
-    @Binding var presentingConnectSheet: Bool
     
     var body: some View {
-        let _ = Self._printChanges()
         VStack(spacing: 8) {
             ChannelViewBlockPreview(blockData: block, fontSize: display == "Grid" ? 12 : display == "Feed" ? 16 : 10, display: display, isContextMenuPreview: false)
                 .frame(width: gridItemSize, height: gridItemSize)
                 .background(Color("background"))
                 .contextMenu {
-                    BlockContextMenu(block: block, showViewOption: true, channelData: channelData, channelSlug: channelSlug, presentingSafariView: $presentingSafariView)
+                    BlockContextMenu(block: block, showViewOption: true, channelData: channelData, channelSlug: channelSlug)
                 } preview: {
                     BlockContextMenuPreview(block: block)
                 }
@@ -144,18 +136,6 @@ struct BlockGridPreview: View {
                     .padding(.horizontal, 12)
             }
         }
-        .safariView(isPresented: $presentingSafariView) {
-            SafariView(
-                url: URL(string: block.source?.url ?? "https://are.na/source/\(block.id)")!,
-                configuration: SafariView.Configuration(
-                    entersReaderIfAvailable: false,
-                    barCollapsingEnabled: true
-                )
-            )
-            .preferredBarAccentColor(.clear)
-            .preferredControlAccentColor(.accentColor)
-            .dismissButtonStyle(.done)
-        }
     }
 }
 
@@ -164,7 +144,6 @@ struct ChannelGridPreview: View {
     let channelSlug: String
     let gridItemSize: CGFloat
     let display: String
-    @Binding var presentingConnectSheet: Bool
     
     var body: some View {
         VStack(spacing: 8) {

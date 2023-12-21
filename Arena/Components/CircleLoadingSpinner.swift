@@ -22,7 +22,7 @@ public struct CircleLoadingSpinner: View {
             Circle()
                 .trim(from: 0, to: 0.25)
                 .stroke(style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
-                .foregroundColor(Color((customColor != nil) ? customColor! : "text-primary"))
+                .foregroundColor(Color((customColor != nil) ? customColor! : "text-secondary"))
                 .rotationEffect(Angle(degrees: rotationAngle))
                 .onAppear {
                     withAnimation(Animation.linear(duration: 0.8).repeatForever(autoreverses: false)) {

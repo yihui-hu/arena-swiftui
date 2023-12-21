@@ -9,10 +9,12 @@ import SwiftUI
 import Defaults
 
 struct OnboardingView: View {
-    // TODO: Reset accessToken
+    // TODO: Reset and delete accessToken in prod
     @State private var accessToken: String = "cfsNlJe3Ns9Vnj8SAKHLvDCaeh3uMm1sNwsIX6ESdeY"
     @State private var username: String = ""
     @State private var userId: Int = 0
+    @State private var userPicURL: String = ""
+    @State private var userInitials: String = ""
     @State private var isLoading: Bool = false
     @State private var apiCheckPassed: Bool = false
     @State private var error: String = ""
@@ -32,7 +34,7 @@ struct OnboardingView: View {
 
                     VStack(spacing: 20) {
                         VStack(spacing: 16) {
-                            TextField("Are.na Access Token", text: $accessToken)
+                            SecureField("Are.na Access Token", text: $accessToken)
                             TextField("Are.na Username", text: $username)
                         }
                         .focused($inputIsFocused)
@@ -57,7 +59,9 @@ struct OnboardingView: View {
                     destination: VerificationView(
                         accessToken: $accessToken,
                         username: $username,
-                        userId: $userId
+                        userId: $userId,
+                        userPicURL: $userPicURL,
+                        userInitials: $userInitials
                     ),
                     isActive: $apiCheckPassed
                 ) {
@@ -76,14 +80,14 @@ struct OnboardingView: View {
                     
                     Button(action: {
                         inputIsFocused = false
-                        getUserData(username: username, accessToken: accessToken, userId: $userId, errorMessage: $error)
+                        getUserData(username: username, accessToken: accessToken, userId: $userId, userPicURL: $userPicURL, userInitials: $userInitials, errorMessage: $error)
                     }) {
                         VStack {
                             if isLoading {
                                 CircleLoadingSpinner(customColor: "spinner-blue", customBgColor: "spinner-blue-bg")
                             } else {
                                 Text("Next")
-                                    .fontWeight(.medium)
+                                    .fontWeight(.semibold)
                                     .fontDesign(.rounded)
                             }
                         }
@@ -100,10 +104,10 @@ struct OnboardingView: View {
         }
     }
 
-    func getUserData(username: String, accessToken: String, userId: Binding<Int>, errorMessage: Binding<String>) {
+    func getUserData(username: String, accessToken: String, userId: Binding<Int>, userPicURL: Binding<String>, userInitials: Binding<String>, errorMessage: Binding<String>) {
         isLoading = true
         
-        guard let url = URL(string: "https://api.are.na/v2/users/\(username.lowercased())/channels") else {
+        guard let url = URL(string: "https://api.are.na/v2/users/\(username.lowercased())/") else {
             isLoading = false
             return
         }
@@ -121,9 +125,11 @@ struct OnboardingView: View {
             if let data = data {
                 let decoder = JSONDecoder()
                 do {
-                    let userData = try decoder.decode(ArenaChannels.self, from: data)
+                    let userData = try decoder.decode(User.self, from: data)
                     DispatchQueue.main.async {
                         userId.wrappedValue = userData.id
+                        userPicURL.wrappedValue = userData.avatarImage.display
+                        userInitials.wrappedValue = userData.initials
                         errorMessage.wrappedValue = ""
                         isLoading = false
                         apiCheckPassed = true
@@ -149,10 +155,23 @@ struct VerificationView: View {
     @Binding var accessToken: String
     @Binding var username: String
     @Binding var userId: Int
+    @Binding var userPicURL: String
+    @Binding var userInitials: String
+    
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationView {
             VStack {
+                Spacer()
+                
+                VStack(spacing: 16) {
+                    ProfilePic(imageURL: userPicURL, initials: userInitials, fontSize: 40, dimension: 120, cornerRadius: 64)
+                    Text("\(username)")
+                        .fontWeight(.semibold)
+                        .fontDesign(.rounded)
+                }
+                
                 Spacer()
                 
                 VStack(spacing: 20) {
@@ -172,12 +191,27 @@ struct VerificationView: View {
                             .frame(maxWidth: .infinity, maxHeight: 48)
                             .background(Color.blue)
                             .foregroundColor(Color.white)
+                            .fontWeight(.semibold)
+                            .fontDesign(.rounded)
                             .cornerRadius(16)
                     }
                 }
             }
             .padding(32)
         }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    BackButton()
+                }
+            }
+        }
+        .toolbarBackground(Color("background"), for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
     }
 }
 

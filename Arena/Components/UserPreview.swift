@@ -15,9 +15,18 @@ struct UserPreview: View {
             ProfilePic(imageURL: user.avatarImage.display, initials: user.initials, cornerRadius: 64)
             
             Text("\(user.username)")
-                .foregroundStyle(Color.primary)
+                .foregroundStyle(Color("text-primary"))
                 .lineLimit(1)
                 .fontWeight(.medium)
+                .fontDesign(.rounded)
+            
+            Spacer()
+            
+            Text("\(user.channelCount) channels")
+                .font(.system(size: 14))
+                .foregroundStyle(Color("text-secondary"))
+                .lineLimit(1)
+                .fontWeight(.regular)
                 .fontDesign(.rounded)
         }
         .frame(maxWidth: .infinity, alignment: .leading)

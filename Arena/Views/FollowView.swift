@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Defaults
 
 struct FollowView: View {
     let userId: Int
@@ -40,6 +41,13 @@ struct FollowView: View {
                             }
                         }
                     }
+                    .simultaneousGesture(TapGesture().onEnded{
+                        let id = UUID()
+                        let formatter = DateFormatter()
+                        formatter.dateFormat = "HH:mm E, d MMM y"
+                        let timestamp = formatter.string(from: Date.now)
+                        Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "user", itemId: String(user.id), timestamp: timestamp), at: 0)
+                    })
                 }
                 
                 if (followData.isLoading) {

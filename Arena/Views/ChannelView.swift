@@ -24,29 +24,32 @@ enum DisplayOption: String, CaseIterable {
 
 enum ContentOption: String, CaseIterable {
     case all = "All"
-    case blocks = "Blocks"
-    case channels = "Channels"
+//    case blocks = "Blocks"
+//    case channels = "Channels"
     case connections = "Connections"
 }
 
 struct ChannelView: View {
     @StateObject private var channelData: ChannelData
+    @StateObject private var channelConnectionsData: ChannelConnectionsData
     let channelSlug: String
     
     @State private var selection = SortOption.position
     @State private var display = DisplayOption.grid
     @State private var content = ContentOption.all
+    @State private var channelPinned = false
+    @State private var clickedPin = false
+    @State private var showingConnections = false
     let sortOptions = SortOption.allCases
     let displayOptions = DisplayOption.allCases
     let contentOptions = ContentOption.allCases
-    
-    @State private var presentingConnectSheet: Bool = false
-    
+
     @Environment(\.dismiss) private var dismiss
     
     init(channelSlug: String) {
         self.channelSlug = channelSlug
         self._channelData = StateObject(wrappedValue: ChannelData(channelSlug: channelSlug, selection: SortOption.position))
+        self._channelConnectionsData = StateObject(wrappedValue: ChannelConnectionsData(channelSlug: channelSlug))
     }
     
     var displayLabel: some View {
@@ -56,25 +59,25 @@ struct ChannelView: View {
                 .resizable()
                 .scaledToFit()
                 .fontWeight(.semibold)
-                .frame(width: 16, height: 16)
+                .frame(width: 18, height: 18)
         case .largeGrid:
             return Image(systemName: "square.grid.3x3")
                 .resizable()
                 .scaledToFit()
                 .fontWeight(.semibold)
-                .frame(width: 16, height: 16)
+                .frame(width: 18, height: 18)
         case .table:
             return Image(systemName: "rectangle.grid.1x2")
                 .resizable()
                 .scaledToFit()
                 .fontWeight(.semibold)
-                .frame(width: 16, height: 16)
+                .frame(width: 18, height: 18)
         case .feed:
             return Image(systemName: "square")
                 .resizable()
                 .scaledToFit()
                 .fontWeight(.semibold)
-                .frame(width: 16, height: 16)
+                .frame(width: 18, height: 18)
         }
     }
     
@@ -91,11 +94,18 @@ struct ChannelView: View {
     private func ChannelViewContents(gridItemSize: CGFloat) -> some View {
         ForEach(channelData.contents ?? [], id: \.self.id) { block in
             NavigationLink(destination: destinationView(for: block, channelData: channelData, channelSlug: channelSlug)) {
-                ChannelContentPreview(block: block, channelData: channelData, channelSlug: channelSlug, gridItemSize: gridItemSize, display: display.rawValue, presentingConnectSheet: $presentingConnectSheet)
+                ChannelContentPreview(block: block, channelData: channelData, channelSlug: channelSlug, gridItemSize: gridItemSize, display: display.rawValue)
             }
             .onAppear {
                 loadMoreChannelData(channelData: channelData, channelSlug: self.channelSlug, block: block)
             }
+            .simultaneousGesture(TapGesture().onEnded{
+                let id = UUID()
+                let formatter = DateFormatter()
+                formatter.dateFormat = "HH:mm E, d MMM y"
+                let timestamp = formatter.string(from: Date.now)
+                Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "block", itemId: String(block.id), timestamp: timestamp), at: 0)
+            })
         }
     }
     
@@ -115,115 +125,207 @@ struct ChannelView: View {
         display.rawValue == "Grid" ? (displayWidth - (gridGap * 3)) / 2 :
         display.rawValue == "Large Grid" ? (displayWidth - (gridGap * 4)) / 3 :
         (displayWidth - (gridGap * 2))
+        let channelCreator = channelData.channel?.user.slug ?? ""
+        let channelId = channelData.channel?.id ?? 0
         
-        ScrollViewReader { proxy in
-            ScrollView {
-                ZStack {}.id(0) // Hacky implementation of scroll to top when switching sorting option
-                
-                ChannelViewHeader(channelData: channelData, content: $content, contentOptions: contentOptions)
-                
-                if display.rawValue == "Table" {
-                    LazyVStack(spacing: 8) {
-                        ChannelViewContents(gridItemSize: gridItemSize)
+        ZStack {
+            ScrollViewReader { proxy in
+                ScrollView {
+                    ZStack {}.id(0) // Hacky implementation of scroll to top when switching sorting option
+                    
+                    ChannelViewHeader(channelData: channelData, content: $content, showingConnections: $showingConnections, contentOptions: contentOptions)
+                    
+                    if showingConnections {
+                        if !channelConnectionsData.isLoading, channelConnectionsData.channelConnections.isEmpty {
+                            EmptyChannelConnections()
+                        } else {
+                            ForEach(channelConnectionsData.channelConnections, id: \.id) { channel in
+                                NavigationLink(destination: ChannelView(channelSlug: channel.slug)) {
+                                    SearchChannelPreview(channel: channel)
+                                }
+                                .onBecomingVisible {
+                                    if channelConnectionsData.channelConnections.last?.id ?? -1 == channel.id {
+                                        if !channelConnectionsData.isLoading {
+                                            channelConnectionsData.loadMore(channelSlug: self.channelSlug)
+                                        }
+                                    }
+                                }
+                                .simultaneousGesture(TapGesture().onEnded{
+                                    let id = UUID()
+                                    let formatter = DateFormatter()
+                                    formatter.dateFormat = "HH:mm E, d MMM y"
+                                    let timestamp = formatter.string(from: Date.now)
+                                    Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "channel", itemId: channel.slug, timestamp: timestamp), at: 0)
+                                })
+                            }
+                            
+                            if channelConnectionsData.isLoading {
+                                CircleLoadingSpinner()
+                                    .padding(.top, 24)
+                                    .padding(.bottom, 72)
+                            }
+                            
+                            if channelConnectionsData.currentPage > channelConnectionsData.totalPages {
+                                EndOfChannelConnections()
+                                    .padding(.bottom, 72)
+                            }
+                        }
+                    } else {
+                        if display.rawValue == "Table" {
+                            LazyVStack(spacing: 8) {
+                                ChannelViewContents(gridItemSize: gridItemSize)
+                            }
+                        } else {
+                            LazyVGrid(columns: gridColumns, spacing: gridSpacing) {
+                                ChannelViewContents(gridItemSize: gridItemSize)
+                            }
+                        }
+                        
+                        if (channelData.isLoading || channelData.isContentsLoading) {
+                            CircleLoadingSpinner()
+                                .padding(.top, 24)
+                                .padding(.bottom, 72)
+                        }
+                        
+                        if let channelContents = channelData.contents, channelContents.isEmpty {
+                            EmptyChannel()
+                        } else if channelData.currentPage > channelData.totalPages {
+                            EndOfChannel()
+                                .padding(.bottom, 72)
+                        }
                     }
-                } else {
-                    LazyVGrid(columns: gridColumns, spacing: gridSpacing) {
-                        ChannelViewContents(gridItemSize: gridItemSize)
+                }
+                .padding(.bottom, 4)
+                .background(Color("background"))
+                .contentMargins(gridGap)
+                .contentMargins(.leading, 0, for: .scrollIndicators)
+                .refreshable {
+                    do { try await Task.sleep(nanoseconds: 500_000_000) } catch {}
+                    if showingConnections {
+                        channelData.refresh(channelSlug: self.channelSlug, selection: selection)
+                    } else {
+                        channelConnectionsData.refresh(channelSlug: self.channelSlug)
                     }
                 }
-                
-                if (channelData.isLoading || channelData.isContentsLoading) {
-                    CircleLoadingSpinner()
-                        .padding(.vertical, 12)
-                }
-                
-                if let channelContents = channelData.contents, channelContents.isEmpty {
-                    EmptyChannel()
-                } else if channelData.currentPage > channelData.totalPages {
-                    EndOfChannel()
-                }
-            }
-            .sheet(isPresented: $presentingConnectSheet) {
-                ConnectExistingView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                    .presentationDetents([.fraction(0.64), .large])
-                    .presentationContentInteraction(.scrolls)
-                    .presentationCornerRadius(32)
-                    .contentMargins(16)
-            }
-            .padding(.bottom, 4)
-            .background(Color("background"))
-            .contentMargins(gridGap)
-            .contentMargins(.leading, 0, for: .scrollIndicators)
-            .refreshable {
-                do { try await Task.sleep(nanoseconds: 500_000_000) } catch {}
-                channelData.refresh(channelSlug: self.channelSlug, selection: selection)
-            }
-            .navigationBarTitleDisplayMode(.inline)
-            .navigationBarBackButtonHidden()
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        BackButton()
-                    }
-                }
-                
-                ToolbarItem(placement: .topBarTrailing) {
-                    HStack(spacing: 8) {
+                .navigationBarTitleDisplayMode(.inline)
+                .navigationBarBackButtonHidden()
+                .toolbar {
+                    ToolbarItem(placement: .topBarLeading) {
                         Button(action: {
-                            togglePin(channelData.channel?.id ?? 0)
+                            dismiss()
                         }) {
-                            Image(systemName: Defaults[.pinnedChannels].contains(channelData.channel?.id ?? 0) ? "pin.slash.fill" : "pin.fill")
-                                .resizable()
-                                .scaledToFit()
-                                .fontWeight(.semibold)
-                                .frame(width: 20, height: 20)
-                        }
-                        
-                        Menu {
-                            Picker("Select a display mode", selection: $display) {
-                                ForEach(displayOptions, id: \.self) {
-                                    Text($0.rawValue)
-                                }
-                            }
-                        } label: {
-                            displayLabel
-                        }
-                        
-                        Menu {
-                            Picker("Select a sort order", selection: $selection) {
-                                ForEach(sortOptions, id: \.self) {
-                                    Text($0.rawValue)
-                                }
-                            }
-                        } label: {
-                            Image(systemName: "arrow.up.arrow.down")
-                                .resizable()
-                                .scaledToFit()
-                                .fontWeight(.semibold)
-                                .frame(width: 20, height: 20)
+                            BackButton()
                         }
                     }
-                    .foregroundStyle(Color("surface-text-secondary"))
+                    
+                    ToolbarItem(placement: .topBarTrailing) {
+                        if !showingConnections {
+                            HStack(spacing: 8) {
+                                Menu {
+                                    Picker("Select a display mode", selection: $display) {
+                                        ForEach(displayOptions, id: \.self) {
+                                            Text($0.rawValue)
+                                        }
+                                    }
+                                } label: {
+                                    displayLabel
+                                }
+                                
+                                Menu {
+                                    Picker("Select a sort order", selection: $selection) {
+                                        ForEach(sortOptions, id: \.self) {
+                                            Text($0.rawValue)
+                                        }
+                                    }
+                                } label: {
+                                    Image(systemName: "arrow.up.arrow.down")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .fontWeight(.semibold)
+                                        .frame(width: 20, height: 20)
+                                }
+                            }
+                            .foregroundStyle(Color("surface-text-secondary"))
+                        }
+                    }
                 }
-            }
-            .toolbarBackground(Color("background"), for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
-            .onChange(of: selection, initial: true) { oldSelection, newSelection in
-                if oldSelection != newSelection {
-                    proxy.scrollTo(0) // TODO: Decide if want withAnimation { proxy.scrollTo(0) }
-                    channelData.selection = newSelection
-                    channelData.refresh(channelSlug: self.channelSlug, selection: newSelection)
+                .toolbarBackground(Color("background"), for: .navigationBar)
+                .toolbarBackground(.visible, for: .navigationBar)
+                .onChange(of: selection, initial: true) { oldSelection, newSelection in
+                    if oldSelection != newSelection {
+                        proxy.scrollTo(0) // TODO: Decide if want withAnimation { proxy.scrollTo(0) }
+                        channelData.selection = newSelection
+                        channelData.refresh(channelSlug: self.channelSlug, selection: newSelection)
+                    }
                 }
-            }
-            .onChange(of: display, initial: true) { oldDisplay, newDisplay in
-                if oldDisplay != newDisplay {
-                    proxy.scrollTo(0)
+                .onChange(of: display, initial: true) { oldDisplay, newDisplay in
+                    if oldDisplay != newDisplay {
+                        proxy.scrollTo(0)
+                    }
                 }
             }
         }
+        .overlay(alignment: .bottom) {
+            HStack(spacing: 8) {
+                ShareLink(item: URL(string: "https://are.na/\(channelCreator)/\(channelSlug)")!) {
+                    Image(systemName: "square.and.arrow.up")
+                        .fontWeight(.bold)
+                        .imageScale(.small)
+                        .foregroundStyle(Color("text-primary"))
+                        .padding(.bottom, 4)
+                        .frame(width: 40, height: 40)
+                        .background(.thinMaterial)
+                        .clipShape(Circle())
+                }
+                
+                Button(action: {
+                    Defaults[.connectSheetOpen] = true
+                    Defaults[.connectItemId] = channelId
+                    Defaults[.connectItemType] = "Channel"
+                }) {
+                    Text("Connect")
+                        .foregroundStyle(Color("text-primary"))
+                        .font(.system(size: 16))
+                        .fontDesign(.rounded)
+                        .fontWeight(.medium)
+                }
+                .padding(.horizontal, 20)
+                .padding(.vertical, 11)
+                .background(.thinMaterial)
+                .cornerRadius(16)
+                
+                Button(action: {
+                    togglePin(channelId)
+                }) {
+                    Image(systemName: clickedPin ? channelPinned ? "heart.fill" : "heart" : Defaults[.pinnedChannels].contains(channelId) ? "heart.fill" : "heart")
+                        .fontWeight(.bold)
+                        .imageScale(.small)
+                        .foregroundStyle(Color("text-primary"))
+                        .frame(width: 40, height: 40)
+                        .background(.thinMaterial)
+                        .clipShape(Circle())
+                }
+            }
+            .padding(.bottom, 16)
+        }
+    }
+
+    private func togglePin(_ channelId: Int) {
+        clickedPin = true
+        channelPinned = !(Defaults[.pinnedChannels].contains(channelId))
+        
+        if Defaults[.pinnedChannels].contains(channelId) {
+            Defaults[.pinnedChannels].removeAll { $0 == channelId }
+            Defaults[.toastMessage] = "Unpinned!"
+        } else {
+            Defaults[.pinnedChannels].append(channelId)
+            Defaults[.toastMessage] = "Pinned!"
+        }
+        Defaults[.showToast] = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            Defaults[.showToast] = false
+        }
+        Defaults[.pinnedChannelsChanged] = true
     }
     
     private func loadMoreChannelData(channelData: ChannelData, channelSlug: String, block: Block) {
@@ -234,20 +336,12 @@ struct ChannelView: View {
             channelData.loadMore(channelSlug: channelSlug)
         }
     }
-    
-    private func togglePin(_ channelId: Int) {
-        if Defaults[.pinnedChannels].contains(channelId) {
-            Defaults[.pinnedChannels].removeAll { $0 == channelId }
-        } else {
-            Defaults[.pinnedChannels].append(channelId)
-        }
-        Defaults[.pinnedChannelsChanged] = true
-    }
 }
 
 struct ChannelViewHeader: View {
     @StateObject var channelData: ChannelData
     @Binding var content: ContentOption
+    @Binding var showingConnections: Bool
     @State var descriptionExpanded = false
     var contentOptions: [ContentOption]
     
@@ -326,6 +420,13 @@ struct ChannelViewHeader: View {
                         Text("\(channelOwner)")
                             .foregroundColor(Color("text-primary"))
                     }
+                    .simultaneousGesture(TapGesture().onEnded{
+                        let id = UUID()
+                        let formatter = DateFormatter()
+                        formatter.dateFormat = "HH:mm E, d MMM y"
+                        let timestamp = formatter.string(from: Date.now)
+                        Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "user", itemId: String(channelOwnerId), timestamp: timestamp), at: 0)
+                    })
                     
                     let collaboratorLinks = channelCollaborators.map { collaborator in
                         NavigationLink(destination: UserView(userId: collaborator.id)) {
@@ -334,6 +435,13 @@ struct ChannelViewHeader: View {
                                 .fontWeight(.medium)
                                 .foregroundColor(Color("text-primary"))
                         }
+                        .simultaneousGesture(TapGesture().onEnded{
+                            let id = UUID()
+                            let formatter = DateFormatter()
+                            formatter.dateFormat = "HH:mm E, d MMM y"
+                            let timestamp = formatter.string(from: Date.now)
+                            Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "user", itemId: String(collaborator.id), timestamp: timestamp), at: 0)
+                        })
                     }
         
                     WrappingHStack(alignment: .leading, horizontalSpacing: 4) {
@@ -376,6 +484,11 @@ struct ChannelViewHeader: View {
                 ForEach(contentOptions, id: \.self) { option in
                     Button(action: {
                         content = option
+                        if option.rawValue == "Connections" {
+                            showingConnections = true
+                        } else {
+                            showingConnections = false
+                        }
                     }) {
                         HStack(spacing: 8) {
                             Text("\(option.rawValue)")

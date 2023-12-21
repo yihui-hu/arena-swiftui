@@ -10,11 +10,11 @@ import Defaults
 
 struct ProfileView: View {
     let userId: Int
-    @Binding var tab: Int
+    @State private var path = NavigationPath()
         
     var body: some View {
-        NavigationStack {
-            UserInfo(userId: userId)
+        NavigationStack(path: $path) {
+            UserInfo(userId: userId, profileView: true)
                 .padding(.bottom, 4)
                 .navigationBarTitleDisplayMode(.inline)
                 .navigationBarBackButtonHidden()
@@ -28,26 +28,14 @@ struct ProfileView: View {
                     }
                     
                     ToolbarItem(placement: .topBarTrailing) {
-                        HStack(spacing: 8) {
-                            Button(action: {
-                                self.tab = 3
-                            }) {
-                                Image(systemName: "magnifyingglass")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 18, height: 18)
-                            }
-                            .fontWeight(.bold)
-                            .foregroundStyle(Color("surface-text-secondary"))
-                            
-                            NavigationLink(destination: SettingsView()) {
-                                Image(systemName: "gearshape.fill")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 20, height: 20)
-                            }
-                            .foregroundStyle(Color("surface-text-secondary"))
+                        NavigationLink(destination: SettingsView()) {
+                            Image(systemName: "smallcircle.filled.circle.fill")
+                                .resizable()
+                                .scaledToFit()
+                                .fontWeight(.heavy)
+                                .frame(width: 20, height: 20)
                         }
+                        .foregroundStyle(Color("surface-text-secondary"))
                     }
                 }
                 .toolbarBackground(Color("background"), for: .navigationBar)

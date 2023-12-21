@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import DebouncedOnChange
 import SmoothGradient
 import NukeUI
 import Defaults
@@ -40,9 +39,10 @@ struct SearchView: View {
                 VStack(spacing: 16) {
                     HStack(spacing: 12) {
                         TextField("Search...", text: $searchTerm)
-                            .onChange(of: searchTerm, debounceTime: .seconds(0.5)) { newValue in
-                                searchData.searchTerm = newValue
-                                searchData.refresh()
+                            .onChange(of: searchTerm) { _, newValue in
+                                if newValue == "" {
+                                    searchData.searchResults = nil
+                                }
                             }
                             .textFieldStyle(SearchBarStyle())
                             .autocorrectionDisabled()
@@ -128,7 +128,9 @@ struct SearchView: View {
                                                         .background(Color("background"))
                                                         .contextMenu {
                                                             Button {
-                                                                // Do something
+                                                                Defaults[.connectSheetOpen] = true
+                                                                Defaults[.connectItemId] = block.id
+                                                                Defaults[.connectItemType] = "Block"
                                                             } label: {
                                                                 Label("Connect", systemImage: "arrow.right")
                                                             }
@@ -136,29 +138,35 @@ struct SearchView: View {
                                                             NavigationLink(destination: SingleBlockView(block: block)) {
                                                                 Label("View", systemImage: "eye")
                                                             }
+                                                            .simultaneousGesture(TapGesture().onEnded{
+                                                                let id = UUID()
+                                                                let formatter = DateFormatter()
+                                                                formatter.dateFormat = "HH:mm E, d MMM y"
+                                                                let timestamp = formatter.string(from: Date.now)
+                                                                Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "block", itemId: String(block.id), timestamp: timestamp), at: 0)
+                                                            })
                                                         } preview: {
-                                                            let img = block.image
-                                                            if img != nil {
-                                                                ChannelViewBlockPreview(blockData: block, fontSize: 16, display: "Feed", isContextMenuPreview: false)
-                                                                    .frame(maxWidth: .infinity, maxHeight: .infinity)
-                                                            } else {
-                                                                ChannelViewBlockPreview(blockData: block, fontSize: 18, display: "Feed", isContextMenuPreview: false)
-                                                                    .padding(32)
-                                                                    .frame(width: 400, height: 400)
-                                                            }
+                                                            BlockContextMenuPreview(block: block)
                                                         }
                                                     
                                                     ContentPreviewMetadata(block: block, display: "Grid")
                                                         .padding(.horizontal, 12)
                                                 }
                                                 .onAppear {
-                                                    if searchResults.blocks.last?.id ?? -1 == block.id {
-                                                        if !searchData.isLoading {
+                                                    if searchResults.blocks.count >= 8 {
+                                                        if searchResults.blocks[searchResults.blocks.count - 8].id == block.id {
                                                             searchData.loadMore()
                                                         }
                                                     }
                                                 }
                                             }
+                                            .simultaneousGesture(TapGesture().onEnded{
+                                                let id = UUID()
+                                                let formatter = DateFormatter()
+                                                formatter.dateFormat = "HH:mm E, d MMM y"
+                                                let timestamp = formatter.string(from: Date.now)
+                                                Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "block", itemId: String(block.id), timestamp: timestamp), at: 0)
+                                            })
                                         }
                                     }
                                 } else {
@@ -166,7 +174,7 @@ struct SearchView: View {
                                         if selection == "Channels" {
                                             ForEach(searchResults.channels, id: \.id) { channel in
                                                 NavigationLink(destination: ChannelView(channelSlug: channel.slug)) {
-                                                    SearchChannelPreview(channel: channel, pinnedChannels: $pinnedChannels)
+                                                    SearchChannelPreview(channel: channel)
                                                 }
                                                 .onAppear {
                                                     if searchResults.channels.last?.id ?? -1 == channel.id {
@@ -175,6 +183,13 @@ struct SearchView: View {
                                                         }
                                                     }
                                                 }
+                                                .simultaneousGesture(TapGesture().onEnded{
+                                                    let id = UUID()
+                                                    let formatter = DateFormatter()
+                                                    formatter.dateFormat = "HH:mm E, d MMM y"
+                                                    let timestamp = formatter.string(from: Date.now)
+                                                    Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "channel", itemId: channel.slug, timestamp: timestamp), at: 0)
+                                                })
                                             }
                                         } else if selection == "Users" {
                                             ForEach(searchResults.users, id: \.id) { user in
@@ -188,6 +203,13 @@ struct SearchView: View {
                                                         }
                                                     }
                                                 }
+                                                .simultaneousGesture(TapGesture().onEnded{
+                                                    let id = UUID()
+                                                    let formatter = DateFormatter()
+                                                    formatter.dateFormat = "HH:mm E, d MMM y"
+                                                    let timestamp = formatter.string(from: Date.now)
+                                                    Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "user", itemId: String(user.id), timestamp: timestamp), at: 0)
+                                                })
                                             }
                                         }
                                     }
@@ -210,12 +232,12 @@ struct SearchView: View {
                                     .padding(.vertical, 12)
                             }
                             
-                            if selection == "Channels", searchResults.channels.isEmpty {
-                                EmptySearch(items: "channels", searchTerm: searchTerm)
-                            } else if selection == "Blocks", searchResults.blocks.isEmpty {
-                                EmptySearch(items: "blocks", searchTerm: searchTerm)
-                            } else if selection == "Users", searchResults.users.isEmpty {
-                                EmptySearch(items: "users", searchTerm: searchTerm)
+                            if selection == "Channels", searchResults.channels.isEmpty, !searchData.isLoading {
+                                EmptySearch(items: "channels", searchTerm: searchData.searchTerm)
+                            } else if selection == "Blocks", searchResults.blocks.isEmpty, !searchData.isLoading {
+                                EmptySearch(items: "blocks", searchTerm: searchData.searchTerm)
+                            } else if selection == "Users", searchResults.users.isEmpty, !searchData.isLoading {
+                                EmptySearch(items: "users", searchTerm: searchData.searchTerm)
                             } else if searchData.currentPage > searchData.totalPages, searchTerm != "" {
                                 EndOfSearch()
                             }
@@ -257,7 +279,7 @@ struct SearchView: View {
 
 struct SearchChannelPreview: View {
     let channel: ArenaSearchedChannel
-    @Binding var pinnedChannels: [Int]
+    @Default(.pinnedChannels) var pinnedChannels
     
     var body: some View {
         VStack(spacing: 8) {
@@ -270,7 +292,7 @@ struct SearchChannelPreview: View {
                     }
                     
                     Text("\(channel.title)")
-                        .foregroundStyle(Color.primary)
+                        .foregroundStyle(Color("text-primary"))
                         .font(.system(size: 16))
                         .lineLimit(1)
                         .fontDesign(.rounded)
@@ -281,7 +303,7 @@ struct SearchChannelPreview: View {
                 Spacer()
                 
                 if (pinnedChannels.contains(channel.id)) {
-                    Image(systemName: "pin.fill")
+                    Image(systemName: "heart.fill")
                         .foregroundStyle(Color("surface-text-secondary"))
                         .imageScale(.small)
                 }
@@ -300,18 +322,32 @@ struct SearchChannelPreview: View {
         .contentShape(ContentShapeKinds.contextMenuPreview, RoundedRectangle(cornerRadius: 16))
         .contextMenu {
             Button {
+                Defaults[.connectSheetOpen] = true
+                Defaults[.connectItemId] = channel.id
+                Defaults[.connectItemType] = "Channel"
+            } label: {
+                Label("Connect", systemImage: "arrow.right")
+            }
+            
+            Button {
                 togglePin(channel.id)
             } label: {
-                Label(pinnedChannels.contains(channel.id) ? "Unpin" : "Pin", systemImage: pinnedChannels.contains(channel.id) ? "pin.slash.fill" : "pin.fill")
+                Label(pinnedChannels.contains(channel.id) ? "Unpin" : "Pin", systemImage: pinnedChannels.contains(channel.id) ? "heart.fill" : "heart")
             }
         }
     }
     
-    private func togglePin(_ channelId: Int) {
-        if pinnedChannels.contains(channelId) {
-            pinnedChannels.removeAll { $0 == channelId }
+    private func togglePin(_ channelId: Int) {        
+        if Defaults[.pinnedChannels].contains(channelId) {
+            Defaults[.pinnedChannels].removeAll { $0 == channelId }
+            Defaults[.toastMessage] = "Unpinned!"
         } else {
-            pinnedChannels.append(channelId)
+            Defaults[.pinnedChannels].append(channelId)
+            Defaults[.toastMessage] = "Pinned!"
+        }
+        Defaults[.showToast] = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            Defaults[.showToast] = false
         }
         Defaults[.pinnedChannelsChanged] = true
     }

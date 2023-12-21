@@ -17,6 +17,8 @@ struct ConnectItem: View {
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
             Image(systemName: icon)
+                .imageScale(.small)
+                .fontWeight(.black)
                 .foregroundStyle(Color("surface-text-secondary"))
                 .frame(width: 40, height: 40)
                 .background(Color("surface-secondary"))
@@ -34,8 +36,11 @@ struct ConnectItem: View {
 struct ConnectView: View {
     @State private var selectedPhotos: [PhotosPickerItem] = []
     @State private var selectedPhotosData: [Data] = []
+    
+    @State private var showNewChannelView = false
     @State private var showConnectImagesView = false
     @State private var showConnectTextView = false
+    @State private var showConnectURLView = false
     
     var body: some View {
         NavigationStack {
@@ -48,7 +53,7 @@ struct ConnectView: View {
                 
                 VStack(alignment: .leading, spacing: 16) {
                     Button(action: {
-                        
+                        showNewChannelView = true
                     }) {
                         ConnectItem(text: "New channel", icon: "square.grid.2x2.fill")
                     }
@@ -62,7 +67,7 @@ struct ConnectView: View {
                     .buttonStyle(ConnectButtonStyle())
                     
                     Button(action: {
-                        
+                        showConnectURLView = true
                     }) {
                         ConnectItem(text: "Add link", icon: "link")
                     }
@@ -107,11 +112,17 @@ struct ConnectView: View {
             .toolbarBackground(Color("background"), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .background(Color("background"))
+            .navigationDestination(isPresented: $showNewChannelView) {
+                NewChannelView()
+            }
             .navigationDestination(isPresented: $showConnectImagesView) {
                 ConnectImagesView(selectedPhotos: $selectedPhotos, selectedPhotosData: $selectedPhotosData)
             }
             .navigationDestination(isPresented: $showConnectTextView) {
                 ConnectTextView()
+            }
+            .navigationDestination(isPresented: $showConnectURLView) {
+                ConnectURLView()
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)

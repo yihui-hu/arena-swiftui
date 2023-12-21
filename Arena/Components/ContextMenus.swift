@@ -15,7 +15,6 @@ struct BlockContextMenu: View {
     let channelData: ChannelData?
     let channelSlug: String?
     @Environment(\.openURL) var openURL
-    @Binding var presentingSafariView: Bool
     
     var body: some View {
         Button {
@@ -37,6 +36,9 @@ struct BlockContextMenu: View {
         
         if let imageURL = block.image?.original.url, let url = URL(string: imageURL) {
             Button {
+                Defaults[.toastMessage] = "Saving image..."
+                Defaults[.showToast] = true
+                
                 let task = URLSession.shared.dataTask(with: url) { data, response, error in
                     guard let data = data else { return }
                     DispatchQueue.main.async {
@@ -44,6 +46,9 @@ struct BlockContextMenu: View {
                         let imageSaver = ImageSaver()
                         imageSaver.writeToPhotoAlbum(image: image)
                     }
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    Defaults[.showToast] = false
                 }
                 task.resume()
             } label: {
@@ -53,6 +58,11 @@ struct BlockContextMenu: View {
             Button {
                 UIPasteboard.general.setValue((block.content ?? "Error copying block content") as String,
                             forPasteboardType: UTType.plainText.identifier)
+                Defaults[.toastMessage] = "Copied!"
+                Defaults[.showToast] = true
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    Defaults[.showToast] = false
+                }
             } label: {
                 Label("Copy", systemImage: "clipboard")
             }
@@ -60,7 +70,8 @@ struct BlockContextMenu: View {
         
         if block.contentClass == "Link" {
             Button {
-                presentingSafariView = true
+                Defaults[.safariViewURL] = block.source?.url ?? "https://are.na/source/\(block.id)"
+                Defaults[.safariViewOpen] = true
             } label: {
                 Label("Open URL", systemImage: "safari")
             }
@@ -70,6 +81,13 @@ struct BlockContextMenu: View {
             NavigationLink(destination: BlockView(blockData: block, channelData: channelData!, channelSlug: channelSlug!)) {
                 Label("View Block", systemImage: "eye")
             }
+            .simultaneousGesture(TapGesture().onEnded{
+                let id = UUID()
+                let formatter = DateFormatter()
+                formatter.dateFormat = "HH:mm E, d MMM y"
+                let timestamp = formatter.string(from: Date.now)
+                Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "block", itemId: String(block.id), timestamp: timestamp), at: 0)
+            })
         }
     }
 }
@@ -108,6 +126,13 @@ struct ChannelContextMenu: View {
             NavigationLink(destination: ChannelView(channelSlug: channel.slug ?? "")) {
                 Label("View Channel", systemImage: "eye")
             }
+            .simultaneousGesture(TapGesture().onEnded{
+                let id = UUID()
+                let formatter = DateFormatter()
+                formatter.dateFormat = "HH:mm E, d MMM y"
+                let timestamp = formatter.string(from: Date.now)
+                Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "channel", itemId: channel.slug ?? "", timestamp: timestamp), at: 0)
+            })
         }
     }
 }

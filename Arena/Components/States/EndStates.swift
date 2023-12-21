@@ -18,9 +18,31 @@ struct EndOfChannel: View {
     }
 }
 
+struct EndOfChannelConnections: View {
+    var body: some View {
+        Text("Reached end of channel connections")
+            .font(.system(size: 14))
+            .foregroundStyle(Color("surface-tertiary"))
+            .fontDesign(.rounded)
+            .fontWeight(.semibold)
+            .padding(.top, 24)
+    }
+}
+
 struct EndOfSearch: View {
     var body: some View {
         Text("Reached end of search")
+            .font(.system(size: 14))
+            .foregroundStyle(Color("surface-tertiary"))
+            .fontDesign(.rounded)
+            .fontWeight(.semibold)
+            .padding(.top, 24)
+    }
+}
+
+struct EndOfExplore: View {
+    var body: some View {
+        Text("Reached end of explore")
             .font(.system(size: 14))
             .foregroundStyle(Color("surface-tertiary"))
             .fontDesign(.rounded)

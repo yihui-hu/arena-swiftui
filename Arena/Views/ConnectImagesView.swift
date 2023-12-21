@@ -71,6 +71,7 @@ struct ConnectImagesView: View {
         }
         .padding(.bottom, 4)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .scrollDismissesKeyboard(.immediately)
         .navigationBarBackButtonHidden()
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -86,7 +87,7 @@ struct ConnectImagesView: View {
                     showConnectToChannelsView = true
                 }) {
                     Text("Next")
-                        .foregroundStyle(Color.primary)
+                        .foregroundStyle(Color("text-primary"))
                 }
             }
         }
@@ -99,14 +100,14 @@ struct ConnectImagesView: View {
                     descriptionInputFocused = false
                 }) {
                     Text("Done")
-                        .foregroundStyle(Color.primary)
+                        .foregroundStyle(Color("text-primary"))
                 }
             }
         }
         .toolbarBackground(Color("background"), for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .navigationDestination(isPresented: $showConnectToChannelsView) {
-            ConnectNewView(imageData: $selectedPhotosData, textData: $blockText, linkData: $blockLinks)
+            ConnectNewView(imageData: $selectedPhotosData, textData: $blockText, linkData: $blockLinks, titleData: $blockTitles, descriptionData: $blockDescriptions)
         }
     }
 }

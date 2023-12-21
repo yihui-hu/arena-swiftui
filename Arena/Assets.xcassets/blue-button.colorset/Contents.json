@@ -6,7 +6,7 @@
         "components" : {
           "alpha" : "1.000",
           "blue" : "255",
-          "green" : "102",
+          "green" : "100",
           "red" : "0"
         }
       },
@@ -24,7 +24,7 @@
         "components" : {
           "alpha" : "1.000",
           "blue" : "255",
-          "green" : "102",
+          "green" : "100",
           "red" : "0"
         }
       },

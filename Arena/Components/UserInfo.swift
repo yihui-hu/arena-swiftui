@@ -17,11 +17,13 @@ struct UserInfo: View {
     @StateObject var userData: UserData
     @State private var selectedChannelSlug: String?
     @State private var isShareModalPresented: Bool = false
+    @State private var isProfileView: Bool = false
     
     @Default(.pinnedChannels) var pinnedChannels
     
-    init(userId: Int) {
+    init(userId: Int, profileView: Bool) {
         self.userId = userId
+        self.isProfileView = profileView
         self._userData = StateObject(wrappedValue: UserData(userId: userId))
         self._channelsData = StateObject(wrappedValue: ChannelsData(userId: userId))
     }
@@ -41,35 +43,42 @@ struct UserInfo: View {
                 HStack(spacing: 16) {
                     ProfilePic(imageURL: userProfilePicURL, initials: userInitials, fontSize: 12, dimension: 52, cornerRadius: 64)
                     
-                    HStack {
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text("\(userFullName)")
-                                .foregroundStyle(Color("text-primary"))
-                                .fontDesign(.rounded)
-                                .fontWeight(.semibold)
+                    if userData.isLoading {
+                        Text("Loading...")
+                            .foregroundStyle(Color("text-primary"))
+                            .fontDesign(.rounded)
+                            .fontWeight(.semibold)
+                    } else {
+                        HStack(alignment: .top) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("\(userFullName)")
+                                    .foregroundStyle(Color("text-primary"))
+                                    .fontDesign(.rounded)
+                                    .fontWeight(.semibold)
+                                
+                                Text("Joined ")
+                                    .foregroundStyle(Color("surface-text-secondary"))
+                                    .font(.system(size: 14)) +
+                                Text(userCreation, style: .date)
+                                    .foregroundStyle(Color("surface-text-secondary"))
+                                    .font(.system(size: 14))
+                            }
                             
-                            Text("Joined ")
-                                .foregroundStyle(Color("surface-text-secondary"))
-                                .font(.system(size: 14)) +
-                            Text(userCreation, style: .date)
-                                .foregroundStyle(Color("surface-text-secondary"))
-                                .font(.system(size: 14))
-                        }
-                        
-                        Spacer()
-                        
-                        if userBadge != "" {
-                            Text("\(userBadge)")
-                                .font(.system(size: 14))
-                                .fontDesign(.rounded)
-                                .fontWeight(.semibold)
-                                .padding(.vertical, 6)
-                                .padding(.horizontal, 10)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 16)
-                                        .fill(Color(userBadge == "supporter" ? "supporter-bg" : userBadge == "investor" ? "investor-bg" : "premium-bg"))
-                                )
-                                .foregroundStyle(Color(userBadge == "supporter" ? "supporter" : userBadge == "investor" ? "investor" : "premium"))
+                            Spacer()
+                            
+                            if userBadge != "" {
+                                Text("\(userBadge)")
+                                    .font(.system(size: 14))
+                                    .fontDesign(.rounded)
+                                    .fontWeight(.semibold)
+                                    .padding(.vertical, 6)
+                                    .padding(.horizontal, 10)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 16)
+                                            .fill(Color(userBadge == "supporter" ? "supporter-bg" : userBadge == "investor" ? "investor-bg" : "premium-bg"))
+                                    )
+                                    .foregroundStyle(Color(userBadge == "supporter" ? "supporter" : userBadge == "investor" ? "investor" : "premium"))
+                            }
                         }
                     }
                 }
@@ -105,17 +114,30 @@ struct UserInfo: View {
                     
                     Spacer()
                     
-                    Button(action: {
-                        isShareModalPresented = true
-                    }) {
-                        Image(systemName: "square.and.arrow.up")
-                            .padding(.bottom, 4)
-                            .imageScale(.small)
-                            .fontWeight(.medium)
-                            .frame(width: 32, height: 32, alignment: .center)
-                            .background(Color("surface"))
-                            .foregroundColor(Color("surface-text-secondary"))
-                            .clipShape(Circle())
+                    if isProfileView {
+                        Button(action: {
+                            isShareModalPresented = true
+                        }) {
+                            Image(systemName: "square.and.arrow.up")
+                                .padding(.bottom, 4)
+                                .imageScale(.small)
+                                .fontWeight(.semibold)
+                                .frame(width: 32, height: 32, alignment: .center)
+                                .background(Color("surface"))
+                                .foregroundColor(Color("surface-text-secondary"))
+                                .clipShape(Circle())
+                        }
+                    } else {
+                        ShareLink(item: URL(string: "https://are.na/\(userSlug)")!) {
+                            Image(systemName: "square.and.arrow.up")
+                                .padding(.bottom, 4)
+                                .imageScale(.small)
+                                .fontWeight(.semibold)
+                                .frame(width: 32, height: 32, alignment: .center)
+                                .background(Color("surface"))
+                                .foregroundColor(Color("surface-text-secondary"))
+                                .clipShape(Circle())
+                        }
                     }
                 }
                 
@@ -145,14 +167,15 @@ struct UserInfo: View {
                                     Button {
                                         togglePin(channel.id)
                                     } label: {
-                                        Label(pinnedChannels.contains(channel.id) ? "Unpin" : "Pin", systemImage: pinnedChannels.contains(channel.id) ? "pin.slash.fill" : "pin.fill")
+                                        Label(pinnedChannels.contains(channel.id) ? "Unpin" : "Pin", systemImage: pinnedChannels.contains(channel.id) ? "heart.fill" : "heart")
                                     }
                                 }
                         }
                         
                         if channelsData.isLoading {
                             CircleLoadingSpinner()
-                                .padding(.vertical, 12)
+                                .padding(.top, 16)
+                                .padding(.bottom, 12)
                         }
                         
                         if channelsData.currentPage > channelsData.totalPages {
@@ -160,6 +183,13 @@ struct UserInfo: View {
                         }
                     }
                 }
+            }
+        }
+        .onAppear {
+            if isProfileView, Defaults[.connectedItem] {
+                channelsData.refresh(userId: userId)
+                userData.refresh(userId: userId)
+                Defaults[.connectedItem] = false
             }
         }
         .refreshable {
@@ -197,11 +227,17 @@ struct UserInfo: View {
         }
     }
     
-    private func togglePin(_ channelId: Int) {
-        if pinnedChannels.contains(channelId) {
-            pinnedChannels.removeAll { $0 == channelId }
+    private func togglePin(_ channelId: Int) {        
+        if Defaults[.pinnedChannels].contains(channelId) {
+            Defaults[.pinnedChannels].removeAll { $0 == channelId }
+            Defaults[.toastMessage] = "Unpinned!"
         } else {
-            pinnedChannels.append(channelId)
+            Defaults[.pinnedChannels].append(channelId)
+            Defaults[.toastMessage] = "Pinned!"
+        }
+        Defaults[.showToast] = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            Defaults[.showToast] = false
         }
         Defaults[.pinnedChannelsChanged] = true
     }
@@ -219,6 +255,6 @@ struct UserInfo: View {
     }
 }
 
-#Preview {
-    UserInfo(userId: 49570)
-}
+//#Preview {
+//    UserInfo(userId: 49570, profileView: true)
+//}

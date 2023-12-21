@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Defaults
-import BetterSafariView
 
 struct MenuItem: View {
     @State var iconName: String
@@ -16,14 +15,15 @@ struct MenuItem: View {
     
     var body: some View {
         HStack {
-            HStack(spacing: 12) {
+            HStack(spacing: 8) {
                 Image(systemName: iconName)
                     .foregroundStyle(Color("surface-text-secondary"))
                     .fontWeight(.semibold)
                     .frame(width: 28, height: 28)
                 Text("\(text)")
-                    .foregroundStyle(Color.primary)
+                    .foregroundStyle(Color("text-primary"))
                     .fontWeight(.medium)
+                    .fontDesign(.rounded)
             }
             
             Spacer()
@@ -48,11 +48,11 @@ struct ThemeButton: View {
         }) {
             VStack(alignment: .leading, spacing: 12) {
                 Image(systemName: iconName)
-                    .fontWeight(.semibold)
-                    .foregroundStyle(Color(selectedAppearance == appearance ? "text-primary" : "tab-unselected"))
+                    .fontWeight(.bold)
+                    .foregroundStyle(Color(selectedAppearance == appearance ? "text-primary" : "text-secondary"))
                 
                 Text("\(text)")
-                    .foregroundStyle(Color(selectedAppearance == appearance ? "text-primary" : "tab-unselected"))
+                    .foregroundStyle(Color(selectedAppearance == appearance ? "text-primary" : "text-secondary"))
                     .fontDesign(.rounded)
                     .fontWeight(.medium)
             }
@@ -61,15 +61,13 @@ struct ThemeButton: View {
             .cornerRadius(12)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(Color(selectedAppearance == appearance ? "text-primary" : "tab-unselected"), lineWidth: 2)
+                    .stroke(Color(selectedAppearance == appearance ? "text-primary" : "text-secondary"), lineWidth: 2)
             )
         }
     }
 }
 
 struct SettingsView: View {
-    @State private var presentingTwitter = false
-    @State private var presentingPrivacyPolicy = false
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) var openURL
     @AppStorage("selectedAppearance") private var selectedAppearance = 0
@@ -81,6 +79,7 @@ struct SettingsView: View {
                     VStack(alignment: .leading, spacing: 16) {
                         VStack(alignment: .leading, spacing: 12) {
                             Text("Theme")
+                                .foregroundStyle(Color("text-primary"))
                                 .fontDesign(.rounded)
                                 .fontWeight(.medium)
                             
@@ -93,6 +92,7 @@ struct SettingsView: View {
                         
                         VStack(alignment: .leading, spacing: 12) {
                             Text("App Icon")
+                                .foregroundStyle(Color("text-primary"))
                                 .fontDesign(.rounded)
                                 .fontWeight(.medium)
                             
@@ -116,21 +116,10 @@ struct SettingsView: View {
                         }
                         
                         Button(action: {
-                            self.presentingTwitter = true
+                            Defaults[.safariViewURL] = "https://twitter.com/_yihui"
+                            Defaults[.safariViewOpen] = true
                         }) {
                             MenuItem(iconName: "at", text: "Follow on Twitter", arrowName: "arrow.up.right")
-                        }
-                        .safariView(isPresented: $presentingTwitter) {
-                            SafariView(
-                                url: URL(string: "https://twitter.com/_yihui")!,
-                                configuration: SafariView.Configuration(
-                                    entersReaderIfAvailable: false,
-                                    barCollapsingEnabled: true
-                                )
-                            )
-                            .preferredBarAccentColor(.clear)
-                            .preferredControlAccentColor(.accentColor)
-                            .dismissButtonStyle(.done)
                         }
                         
                         ShareLink(item: URL(string: "https://arena-ios-app.vercel.app")!) {
@@ -138,21 +127,10 @@ struct SettingsView: View {
                         }
 
                         Button(action: {
-                            self.presentingPrivacyPolicy = true
+                            Defaults[.safariViewURL] = "https://arena-ios-app.vercel.app"
+                            Defaults[.safariViewOpen] = true
                         }) {
                             MenuItem(iconName: "eyes", text: "Privacy Policy", arrowName: "arrow.up.right")
-                        }
-                        .safariView(isPresented: $presentingPrivacyPolicy) {
-                            SafariView(
-                                url: URL(string: "https://arena-ios-app.vercel.app")!,
-                                configuration: SafariView.Configuration(
-                                    entersReaderIfAvailable: false,
-                                    barCollapsingEnabled: true
-                                )
-                            )
-                            .preferredBarAccentColor(.clear)
-                            .preferredControlAccentColor(.accentColor)
-                            .dismissButtonStyle(.done)
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -166,8 +144,9 @@ struct SettingsView: View {
                         Defaults[.onboardingDone] = false
                     }) {
                         Text("Log Out")
-                            .foregroundStyle(Color.primary)
+                            .foregroundStyle(Color("text-primary"))
                             .fontWeight(.medium)
+                            .fontDesign(.rounded)
                             .frame(maxWidth: .infinity, alignment: .center)
                             .padding(14)
                             .background(Color("surface"))
@@ -184,6 +163,7 @@ struct SettingsView: View {
                     Spacer()
                 }
             }
+            .scrollIndicators(.never)
         }
         .padding(.bottom, 4)
         .navigationBarBackButtonHidden()

@@ -22,7 +22,7 @@ struct SmallChannelPreview: View {
                     }
                     
                     Text("\(channel.title)")
-                        .foregroundStyle(Color.primary)
+                        .foregroundStyle(Color("text-primary"))
                         .font(.system(size: 16))
                         .lineLimit(1)
                         .fontDesign(.rounded)
@@ -59,7 +59,7 @@ struct SmallChannelPreviewUser: View {
                     }
                     
                     Text("\(channel.title)")
-                        .foregroundStyle(Color.primary)
+                        .foregroundStyle(Color("text-primary"))
                         .font(.system(size: 16))
                         .lineLimit(1)
                         .fontDesign(.rounded)

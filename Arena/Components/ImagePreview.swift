@@ -85,7 +85,6 @@ struct ImageLoading: View {
         CircleLoadingSpinner()
             .frame(minWidth: 132, maxWidth: .infinity, minHeight: 132, maxHeight: .infinity, alignment: .center)
             .aspectRatio(contentMode: .fit)
-            .progressViewStyle(CircularProgressViewStyle(tint: Color("surface-text-secondary")))
             .opacity(0.64)
     }
 }

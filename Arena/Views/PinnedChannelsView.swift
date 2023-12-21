@@ -28,7 +28,7 @@ struct PinnedChannelsView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 } else {
                     ScrollView {
-                        LazyVStack(spacing: 12) {
+                        LazyVStack(spacing: 16) {
                             ForEach(pinnedChannelsData.channels ?? [], id: \.id) { channel in
                                 ChannelCard(channel: channel, showPin: false)
                                     .contentShape(.contextMenuPreview, RoundedRectangle(cornerRadius: 32))
@@ -43,8 +43,13 @@ struct PinnedChannelsView: View {
                                         
                                         Button {
                                             removePinnedChannel(channel.id)
+                                            Defaults[.toastMessage] = "Unpinned!"
+                                            Defaults[.showToast] = true
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                                Defaults[.showToast] = false
+                                            }
                                         } label: {
-                                            Label(pinnedChannels.contains(channel.id) ? "Unpin" : "Pin", systemImage: pinnedChannels.contains(channel.id) ? "pin.slash.fill" : "pin.fill")
+                                            Label(pinnedChannels.contains(channel.id) ? "Unpin" : "Pin", systemImage: pinnedChannels.contains(channel.id) ? "heart.fill" : "heart")
                                         }
                                     }
                             }
@@ -92,7 +97,6 @@ struct PinnedChannelsView: View {
             pinnedChannelsData.channels = updatedChannels
         }
         
-        // Remove the channel from the pinned channels list
         pinnedChannels.removeAll { $0 == channelId }
     }
 }

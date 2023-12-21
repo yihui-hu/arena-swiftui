@@ -6,7 +6,7 @@
 //
 
 import SwiftUI
-import BetterSafariView
+import Defaults
 
 // TODO: For displaying PDFs or playing MP3s, do that in separate BlockContentScreen or something
 
@@ -14,7 +14,6 @@ import BetterSafariView
 struct BlockPreview: View {
     let blockData: Block?
     let fontSize: CGFloat?
-    @State private var presentingSafariView = false
     
     var body: some View {
         let previewContentClass = blockData?.contentClass ?? ""
@@ -52,19 +51,8 @@ struct BlockPreview: View {
                         .pinchToZoom()
                 }
                 .onTapGesture {
-                    self.presentingSafariView = true
-                }
-                .safariView(isPresented: $presentingSafariView) {
-                    SafariView(
-                        url: URL(string: previewURL!)!,
-                        configuration: SafariView.Configuration(
-                            entersReaderIfAvailable: false,
-                            barCollapsingEnabled: true
-                        )
-                    )
-                    .preferredBarAccentColor(.clear)
-                    .preferredControlAccentColor(.accentColor)
-                    .dismissButtonStyle(.done)
+                    Defaults[.safariViewURL] = previewURL ?? "https://are.na/"
+                    Defaults[.safariViewOpen] = true
                 }
             } else if previewText != "" {
                 GeometryReader { geometry in
@@ -118,7 +106,7 @@ struct ChannelViewBlockPreview: View {
     let isContextMenuPreview: Bool?
     
     var body: some View {
-        let previewImgURL = (display == "Feed" || display == "Grid") ? blockData?.image?.display.url : blockData?.image?.thumb.url ?? nil
+        let previewImgURL = display == "Feed" ? blockData?.image?.display.url : blockData?.image?.thumb.url ?? nil
         let previewText = blockData?.content ?? ""
         let previewAttachment = blockData?.attachment ?? nil
         // TODO: embeds
@@ -177,7 +165,8 @@ struct ChannelCardBlockPreview: View {
             } else if previewText != "" {
                 Text(.init(previewText))
                     .tint(.primary)
-                    .padding(16)
+                    .padding(.vertical, 8)
+                    .padding(.horizontal, 16)
                     .frame(width: 132, height: 132)
                     .foregroundStyle(Color("text-primary"))
                     .font(.system(size: fontSize ?? 16))

@@ -18,7 +18,6 @@ final class PinnedChannelsData: ObservableObject {
     }
     
     final func loadMore(pinnedChannels: [Int]) {
-        print("Fetching more pinned channels")
         fetchChannels(pinnedChannels: pinnedChannels, refresh: false)
     }
     

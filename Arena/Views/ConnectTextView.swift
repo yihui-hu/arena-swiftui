@@ -12,9 +12,10 @@ struct ConnectTextView: View {
     @State private var blockImages: [Data] = []
     @State private var blockLinks: [String] = []
     
-    @State private var blockTitle: String = ""
-    @State private var blockDescription: String = ""
+    @State private var blockTitle: [String] = [""]
+    @State private var blockDescription: [String] = [""]
     @State private var showConnectToChannelsView: Bool = false
+    @FocusState private var textInputFocused: Bool
     @FocusState private var titleInputFocused: Bool
     @FocusState private var descriptionInputFocused: Bool
     
@@ -25,10 +26,13 @@ struct ConnectTextView: View {
             VStack(spacing: 12) {
                 TextField("Text", text: $blockText, axis: .vertical)
                     .textFieldStyle(ConnectInputStyle())
-                    .focused($descriptionInputFocused)
+                    .focused($textInputFocused)
                     .lineLimit(8...8)
+                    .onAppear {
+                        self.textInputFocused = true
+                    }
                 
-                TextField("Title (optional)", text: $blockTitle)
+                TextField("Title (optional)", text: $blockTitle[0])
                     .textFieldStyle(ConnectInputStyle())
                     .focused($titleInputFocused)
                     .onAppear {
@@ -39,7 +43,7 @@ struct ConnectTextView: View {
                         descriptionInputFocused = true
                     }
                 
-                TextField("Description (optional)", text: $blockDescription, axis: .vertical)
+                TextField("Description (optional)", text: $blockDescription[0], axis: .vertical)
                     .textFieldStyle(ConnectInputStyle())
                     .focused($descriptionInputFocused)
                     .lineLimit(4...4)
@@ -47,6 +51,7 @@ struct ConnectTextView: View {
         }
         .padding(.bottom, 4)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .scrollDismissesKeyboard(.immediately)
         .navigationBarBackButtonHidden()
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
@@ -62,7 +67,7 @@ struct ConnectTextView: View {
                     showConnectToChannelsView = true
                 }) {
                     Text("Next")
-                        .foregroundStyle(Color.primary)
+                        .foregroundStyle(Color("text-primary"))
                         .opacity(blockText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? 0.5 : 1)
                 }
                 .disabled(blockText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
@@ -70,21 +75,41 @@ struct ConnectTextView: View {
         }
         .toolbar {
             ToolbarItemGroup(placement: .keyboard) {
+                if (titleInputFocused || descriptionInputFocused) {
+                    Button(action: {
+                        if titleInputFocused {
+                            textInputFocused = true
+                        } else {
+                            titleInputFocused = true
+                        }
+                    }) {
+                        Text("Prev")
+                            .foregroundStyle(Color("text-primary"))
+                    }
+                }
+                
                 Spacer()
                 
                 Button(action: {
-                    titleInputFocused = false
-                    descriptionInputFocused = false
+                    if textInputFocused {
+                        titleInputFocused = true
+                    } else if titleInputFocused {
+                        descriptionInputFocused = true
+                    } else {
+                        textInputFocused = false
+                        titleInputFocused = false
+                        descriptionInputFocused = false
+                    }
                 }) {
-                    Text("Done")
-                        .foregroundStyle(Color.primary)
+                    Text((textInputFocused || titleInputFocused) ? "Next" : "Done")
+                        .foregroundStyle(Color("text-primary"))
                 }
             }
         }
         .toolbarBackground(Color("background"), for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
         .navigationDestination(isPresented: $showConnectToChannelsView) {
-            ConnectNewView(imageData: $blockImages, textData: $blockText, linkData: $blockLinks)
+            ConnectNewView(imageData: $blockImages, textData: $blockText, linkData: $blockLinks, titleData: $blockTitle, descriptionData: $blockDescription)
         }
     }
 }
