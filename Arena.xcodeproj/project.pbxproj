@@ -31,7 +31,6 @@
 		8F5E3F302B049F3700C2B46E /* BackButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F5E3F2F2B049F3700C2B46E /* BackButton.swift */; };
 		8F60D5CF2AFFDBAF00DB3D78 /* PinchToZoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F60D5CE2AFFDBAF00DB3D78 /* PinchToZoom.swift */; };
 		8F60D5D12B0057CE00DB3D78 /* UserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F60D5D02B0057CE00DB3D78 /* UserView.swift */; };
-		8F60D5D42B009D2300DB3D78 /* StatefulTabView in Frameworks */ = {isa = PBXBuildFile; productRef = 8F60D5D32B009D2300DB3D78 /* StatefulTabView */; };
 		8F6B061C2AE41C4000EEDE9C /* SingleBlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6B061B2AE41C4000EEDE9C /* SingleBlockView.swift */; };
 		8F6B06202AE4A60F00EEDE9C /* ProfilePic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F6B061F2AE4A60F00EEDE9C /* ProfilePic.swift */; };
 		8F6B06232AE4A9EF00EEDE9C /* Giffy in Frameworks */ = {isa = PBXBuildFile; productRef = 8F6B06222AE4A9EF00EEDE9C /* Giffy */; };
@@ -79,6 +78,12 @@
 		8FE584742AFDCCC600828308 /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 8FE584732AFDCCC600828308 /* Shimmer */; };
 		8FEACE2D2B43E5D0003DBAB1 /* AddToRabbitHole.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FEACE2C2B43E5D0003DBAB1 /* AddToRabbitHole.swift */; };
 		8FEACE2F2B459DDD003DBAB1 /* HistorySingleBlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FEACE2E2B459DDD003DBAB1 /* HistorySingleBlockView.swift */; };
+		8FEACE3B2B45A3EB003DBAB1 /* Tab+Modifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FEACE342B45A3EB003DBAB1 /* Tab+Modifiers.swift */; };
+		8FEACE3C2B45A3EB003DBAB1 /* StatefulTabView+Modifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FEACE352B45A3EB003DBAB1 /* StatefulTabView+Modifiers.swift */; };
+		8FEACE3D2B45A3EB003DBAB1 /* StatefulTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FEACE362B45A3EB003DBAB1 /* StatefulTabView.swift */; };
+		8FEACE3E2B45A3EB003DBAB1 /* TabBarCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FEACE382B45A3EB003DBAB1 /* TabBarCoordinator.swift */; };
+		8FEACE3F2B45A3EB003DBAB1 /* Tab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FEACE392B45A3EB003DBAB1 /* Tab.swift */; };
+		8FEACE402B45A3EB003DBAB1 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FEACE3A2B45A3EB003DBAB1 /* TabBarController.swift */; };
 		8FF092D32B1E299A0018E8CA /* ContextMenus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF092D22B1E299A0018E8CA /* ContextMenus.swift */; };
 		8FF0C5A22AD89C3B007D5959 /* ArenaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF0C5A12AD89C3B007D5959 /* ArenaApp.swift */; };
 		8FF0C5A42AD89C3B007D5959 /* ArenaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF0C5A32AD89C3B007D5959 /* ArenaView.swift */; };
@@ -172,7 +177,6 @@
 		8F785AE12B2A0D45005101E6 /* CreateChannelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateChannelData.swift; sourceTree = "<group>"; };
 		8F7A03E62AE5EC9F005C4096 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		8F7A03E82AE6C5A0005C4096 /* OnBecomingVisible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnBecomingVisible.swift; sourceTree = "<group>"; };
-		8F8117472B01B22000B2280C /* StatefulTabView */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = StatefulTabView; path = ../StatefulTabView; sourceTree = "<group>"; };
 		8F840B892B066D2800B17F31 /* ChangeAppIconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChangeAppIconView.swift; sourceTree = "<group>"; };
 		8F8542722AFEF77F0078E82C /* UserData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserData.swift; sourceTree = "<group>"; };
 		8F8542772AFF15C20078E82C /* PinnedChannelsData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PinnedChannelsData.swift; sourceTree = "<group>"; };
@@ -201,6 +205,12 @@
 		8FD7E3F22ADB6EEC00A15E16 /* BlockPreviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockPreviews.swift; sourceTree = "<group>"; };
 		8FEACE2C2B43E5D0003DBAB1 /* AddToRabbitHole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToRabbitHole.swift; sourceTree = "<group>"; };
 		8FEACE2E2B459DDD003DBAB1 /* HistorySingleBlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistorySingleBlockView.swift; sourceTree = "<group>"; };
+		8FEACE342B45A3EB003DBAB1 /* Tab+Modifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Tab+Modifiers.swift"; sourceTree = "<group>"; };
+		8FEACE352B45A3EB003DBAB1 /* StatefulTabView+Modifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "StatefulTabView+Modifiers.swift"; sourceTree = "<group>"; };
+		8FEACE362B45A3EB003DBAB1 /* StatefulTabView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatefulTabView.swift; sourceTree = "<group>"; };
+		8FEACE382B45A3EB003DBAB1 /* TabBarCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarCoordinator.swift; sourceTree = "<group>"; };
+		8FEACE392B45A3EB003DBAB1 /* Tab.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tab.swift; sourceTree = "<group>"; };
+		8FEACE3A2B45A3EB003DBAB1 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		8FF092D22B1E299A0018E8CA /* ContextMenus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextMenus.swift; sourceTree = "<group>"; };
 		8FF0C59E2AD89C3B007D5959 /* Arena.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Arena.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FF0C5A12AD89C3B007D5959 /* ArenaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArenaApp.swift; sourceTree = "<group>"; };
@@ -245,7 +255,6 @@
 				8F8542762AFF14340078E82C /* Defaults in Frameworks */,
 				8F2844102AE1CF10001EE26D /* Modals in Frameworks */,
 				8FE584742AFDCCC600828308 /* Shimmer in Frameworks */,
-				8F60D5D42B009D2300DB3D78 /* StatefulTabView in Frameworks */,
 				8F5137022B0E72B8009A7FE7 /* AlertToast in Frameworks */,
 				8FF6EFC32AF8953E00A58631 /* BetterSafariView in Frameworks */,
 				8F566D122B01CA0200A58102 /* SmoothGradient in Frameworks */,
@@ -377,10 +386,39 @@
 			path = Data;
 			sourceTree = "<group>";
 		};
+		8FEACE322B45A3EB003DBAB1 /* StatefulTabView */ = {
+			isa = PBXGroup;
+			children = (
+				8FEACE332B45A3EB003DBAB1 /* Modifiers */,
+				8FEACE362B45A3EB003DBAB1 /* StatefulTabView.swift */,
+				8FEACE372B45A3EB003DBAB1 /* Helpers */,
+			);
+			name = StatefulTabView;
+			path = Views/StatefulTabView;
+			sourceTree = "<group>";
+		};
+		8FEACE332B45A3EB003DBAB1 /* Modifiers */ = {
+			isa = PBXGroup;
+			children = (
+				8FEACE342B45A3EB003DBAB1 /* Tab+Modifiers.swift */,
+				8FEACE352B45A3EB003DBAB1 /* StatefulTabView+Modifiers.swift */,
+			);
+			path = Modifiers;
+			sourceTree = "<group>";
+		};
+		8FEACE372B45A3EB003DBAB1 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				8FEACE382B45A3EB003DBAB1 /* TabBarCoordinator.swift */,
+				8FEACE392B45A3EB003DBAB1 /* Tab.swift */,
+				8FEACE3A2B45A3EB003DBAB1 /* TabBarController.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
 		8FF0C5952AD89C3B007D5959 = {
 			isa = PBXGroup;
 			children = (
-				8F8117472B01B22000B2280C /* StatefulTabView */,
 				8FF0C5A02AD89C3B007D5959 /* Arena */,
 				8FF0C5B12AD89C3D007D5959 /* ArenaTests */,
 				8FF0C5BB2AD89C3D007D5959 /* ArenaUITests */,
@@ -408,6 +446,7 @@
 			children = (
 				8F3A8B9B2B07B46900FC5F6D /* Rive */,
 				8FF0C5D22AD8CBBF007D5959 /* Info.plist */,
+				8FEACE322B45A3EB003DBAB1 /* StatefulTabView */,
 				8FF0C5CF2AD8CA6F007D5959 /* Views */,
 				8FD7E3F12ADB6ED200A15E16 /* Components */,
 				8F6B06322AE5AE5000EEDE9C /* Modifiers */,
@@ -529,7 +568,6 @@
 				8FE584732AFDCCC600828308 /* Shimmer */,
 				8F40195A2AFE745B003AED4E /* Pow */,
 				8F8542752AFF14340078E82C /* Defaults */,
-				8F60D5D32B009D2300DB3D78 /* StatefulTabView */,
 				8F566D112B01CA0200A58102 /* SmoothGradient */,
 				8FF2954D2B03311B008520BD /* NukeUI */,
 				8F3A8B992B07B32500FC5F6D /* RiveRuntime */,
@@ -619,7 +657,6 @@
 				8FE584722AFDCCC600828308 /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */,
 				8F4019592AFE745B003AED4E /* XCRemoteSwiftPackageReference "Pow" */,
 				8F8542742AFF14340078E82C /* XCRemoteSwiftPackageReference "Defaults" */,
-				8F60D5D22B009D2300DB3D78 /* XCRemoteSwiftPackageReference "StatefulTabView" */,
 				8F566D102B01CA0200A58102 /* XCRemoteSwiftPackageReference "SmoothGradient" */,
 				8F0A4E472B032CF500CFBC59 /* XCRemoteSwiftPackageReference "Nuke" */,
 				8F3A8B982B07B32500FC5F6D /* XCRemoteSwiftPackageReference "rive-ios" */,
@@ -690,7 +727,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				8FB5D3962B20D947006D5D59 /* ButtonStyles.swift in Sources */,
+				8FEACE3C2B45A3EB003DBAB1 /* StatefulTabView+Modifiers.swift in Sources */,
+				8FEACE3F2B45A3EB003DBAB1 /* Tab.swift in Sources */,
 				8FF0C5A42AD89C3B007D5959 /* ArenaView.swift in Sources */,
+				8FEACE3D2B45A3EB003DBAB1 /* StatefulTabView.swift in Sources */,
 				8FF510D22AE6CD8100E2EC03 /* ExploreView.swift in Sources */,
 				8F17E5B02B33F34C00549AB9 /* CustomDefaults.swift in Sources */,
 				8F2844122AE1CF1B001EE26D /* SearchView.swift in Sources */,
@@ -713,6 +753,7 @@
 				8F8542782AFF15C20078E82C /* PinnedChannelsData.swift in Sources */,
 				8F785ADA2B28A603005101E6 /* ConnectTextView.swift in Sources */,
 				8F7A03E92AE6C5A0005C4096 /* OnBecomingVisible.swift in Sources */,
+				8FEACE3B2B45A3EB003DBAB1 /* Tab+Modifiers.swift in Sources */,
 				8FD7E3F32ADB6EEC00A15E16 /* BlockPreviews.swift in Sources */,
 				8FD7E3F02ADADF9000A15E16 /* BlockData.swift in Sources */,
 				8F6B062D2AE5A80D00EEDE9C /* ChannelContentPreview.swift in Sources */,
@@ -736,11 +777,13 @@
 				8F77C6732B2658AC00276550 /* ConnectImagesView.swift in Sources */,
 				8F785AE22B2A0D45005101E6 /* CreateChannelData.swift in Sources */,
 				8F6B06202AE4A60F00EEDE9C /* ProfilePic.swift in Sources */,
+				8FEACE3E2B45A3EB003DBAB1 /* TabBarCoordinator.swift in Sources */,
 				8F9484462B309AB800A884C4 /* BlockViewBlockSource.swift in Sources */,
 				8F37FE542B0D9C630019E4AD /* UserInfo.swift in Sources */,
 				8FF0C5D12AD8CA7D007D5959 /* PinnedChannelsView.swift in Sources */,
 				8FB168B92ADA5C3B00426906 /* BlockView.swift in Sources */,
 				8F1037452B2030AD007B680C /* SmallChannelPreview.swift in Sources */,
+				8FEACE402B45A3EB003DBAB1 /* TabBarController.swift in Sources */,
 				8F8542732AFEF77F0078E82C /* UserData.swift in Sources */,
 				8FF092D32B1E299A0018E8CA /* ContextMenus.swift in Sources */,
 				8F9484442B30004800A884C4 /* ExploreData.swift in Sources */,
@@ -1230,14 +1273,6 @@
 				minimumVersion = 1.0.0;
 			};
 		};
-		8F60D5D22B009D2300DB3D78 /* XCRemoteSwiftPackageReference "StatefulTabView" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/NicholasBellucci/StatefulTabView";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.1.10;
-			};
-		};
 		8F6B06212AE4A9EF00EEDE9C /* XCRemoteSwiftPackageReference "giffy" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/tfmart/giffy";
@@ -1307,11 +1342,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 8F566D102B01CA0200A58102 /* XCRemoteSwiftPackageReference "SmoothGradient" */;
 			productName = SmoothGradient;
-		};
-		8F60D5D32B009D2300DB3D78 /* StatefulTabView */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 8F60D5D22B009D2300DB3D78 /* XCRemoteSwiftPackageReference "StatefulTabView" */;
-			productName = StatefulTabView;
 		};
 		8F6B06222AE4A9EF00EEDE9C /* Giffy */ = {
 			isa = XCSwiftPackageProductDependency;
