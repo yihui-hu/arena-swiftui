@@ -10,8 +10,6 @@ import Defaults
 
 struct OnboardingView: View {
     @State private var accessToken: String = ""
-//    @State private var accessToken: String = "cfsNlJe3Ns9Vnj8SAKHLvDCaeh3uMm1sNwsIX6ESdeY"
-//    @State private var accessToken: String = "-4S4ojYDROZsGR1TO8tiN_k5DCmYUA-Lr83McGfRUQo"
     @State private var username: String = ""
     @State private var userId: Int = 0
     @State private var userPicURL: String = ""
@@ -47,7 +45,7 @@ struct OnboardingView: View {
                         }
                         
                         Button(action: {
-                            Defaults[.safariViewURL] = "https://google.com"
+                            Defaults[.safariViewURL] = "https://github.com/yihui-hu/arena-swiftui/blob/main/GUIDE.md"
                             Defaults[.safariViewOpen] = true
                         }) {
                             Text("How to get access token & username?")
