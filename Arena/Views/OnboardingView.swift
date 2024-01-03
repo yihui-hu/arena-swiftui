@@ -9,8 +9,8 @@ import SwiftUI
 import Defaults
 
 struct OnboardingView: View {
-    // TODO: Reset and delete accessToken in prod
-    @State private var accessToken: String = "cfsNlJe3Ns9Vnj8SAKHLvDCaeh3uMm1sNwsIX6ESdeY"
+    @State private var accessToken: String = ""
+//    @State private var accessToken: String = "cfsNlJe3Ns9Vnj8SAKHLvDCaeh3uMm1sNwsIX6ESdeY"
 //    @State private var accessToken: String = "-4S4ojYDROZsGR1TO8tiN_k5DCmYUA-Lr83McGfRUQo"
     @State private var username: String = ""
     @State private var userId: Int = 0
@@ -46,11 +46,16 @@ struct OnboardingView: View {
                             UITextField.appearance().clearButtonMode = .always
                         }
                         
-                        Text("How do I get my access token & username?")
-                            .foregroundStyle(Color("text-secondary"))
-                            .font(.system(size: 14))
-                            .fontWeight(.medium)
-                            .fontDesign(.rounded)
+                        Button(action: {
+                            Defaults[.safariViewURL] = "https://google.com"
+                            Defaults[.safariViewOpen] = true
+                        }) {
+                            Text("How to get access token & username?")
+                                .foregroundStyle(Color("text-secondary"))
+                                .font(.system(size: 14))
+                                .fontWeight(.medium)
+                                .fontDesign(.rounded)
+                        }
                     }
                 }
                 

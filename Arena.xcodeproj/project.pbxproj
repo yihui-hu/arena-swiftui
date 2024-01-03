@@ -84,6 +84,8 @@
 		8FEACE3E2B45A3EB003DBAB1 /* TabBarCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FEACE382B45A3EB003DBAB1 /* TabBarCoordinator.swift */; };
 		8FEACE3F2B45A3EB003DBAB1 /* Tab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FEACE392B45A3EB003DBAB1 /* Tab.swift */; };
 		8FEACE402B45A3EB003DBAB1 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FEACE3A2B45A3EB003DBAB1 /* TabBarController.swift */; };
+		8FEACE452B45B1BB003DBAB1 /* channel-pin-dark.riv in Resources */ = {isa = PBXBuildFile; fileRef = 8FEACE432B45B1BB003DBAB1 /* channel-pin-dark.riv */; };
+		8FEACE462B45B1BB003DBAB1 /* channel-pin-light.riv in Resources */ = {isa = PBXBuildFile; fileRef = 8FEACE442B45B1BB003DBAB1 /* channel-pin-light.riv */; };
 		8FF092D32B1E299A0018E8CA /* ContextMenus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF092D22B1E299A0018E8CA /* ContextMenus.swift */; };
 		8FF0C5A22AD89C3B007D5959 /* ArenaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF0C5A12AD89C3B007D5959 /* ArenaApp.swift */; };
 		8FF0C5A42AD89C3B007D5959 /* ArenaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FF0C5A32AD89C3B007D5959 /* ArenaView.swift */; };
@@ -211,6 +213,8 @@
 		8FEACE382B45A3EB003DBAB1 /* TabBarCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarCoordinator.swift; sourceTree = "<group>"; };
 		8FEACE392B45A3EB003DBAB1 /* Tab.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tab.swift; sourceTree = "<group>"; };
 		8FEACE3A2B45A3EB003DBAB1 /* TabBarController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
+		8FEACE432B45B1BB003DBAB1 /* channel-pin-dark.riv */ = {isa = PBXFileReference; lastKnownFileType = file; path = "channel-pin-dark.riv"; sourceTree = "<group>"; };
+		8FEACE442B45B1BB003DBAB1 /* channel-pin-light.riv */ = {isa = PBXFileReference; lastKnownFileType = file; path = "channel-pin-light.riv"; sourceTree = "<group>"; };
 		8FF092D22B1E299A0018E8CA /* ContextMenus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContextMenus.swift; sourceTree = "<group>"; };
 		8FF0C59E2AD89C3B007D5959 /* Arena.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Arena.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8FF0C5A12AD89C3B007D5959 /* ArenaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArenaApp.swift; sourceTree = "<group>"; };
@@ -300,6 +304,8 @@
 		8F3A8B9B2B07B46900FC5F6D /* Rive */ = {
 			isa = PBXGroup;
 			children = (
+				8FEACE432B45B1BB003DBAB1 /* channel-pin-dark.riv */,
+				8FEACE442B45B1BB003DBAB1 /* channel-pin-light.riv */,
 				8F713C3A2B37460A005483BD /* connect-flower-dark.riv */,
 				8F713C3B2B37460A005483BD /* connect-flower-light.riv */,
 			);
@@ -690,6 +696,8 @@
 			files = (
 				8F713C3C2B37460A005483BD /* connect-flower-dark.riv in Resources */,
 				8FF0C5A92AD89C3D007D5959 /* Preview Assets.xcassets in Resources */,
+				8FEACE462B45B1BB003DBAB1 /* channel-pin-light.riv in Resources */,
+				8FEACE452B45B1BB003DBAB1 /* channel-pin-dark.riv in Resources */,
 				8F713C3D2B37460A005483BD /* connect-flower-light.riv in Resources */,
 				8FF0C5A62AD89C3D007D5959 /* Assets.xcassets in Resources */,
 			);

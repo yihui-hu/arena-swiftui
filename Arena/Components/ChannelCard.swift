@@ -89,11 +89,11 @@ struct ChannelCard: View {
             .cornerRadius(32)
         }        
         .simultaneousGesture(TapGesture().onEnded{
-            let id = channel.id
+            let id = UUID()
             let formatter = DateFormatter()
             formatter.dateFormat = "HH:mm, d MMM y"
             let timestamp = formatter.string(from: Date.now)
-            Defaults[.rabbitHole].insert(RabbitHoleItem(id: String(id), type: "channel", subtype: channel.status, itemId: channel.slug, timestamp: timestamp, mainText: channel.title, subText: String(channel.length), imageUrl: ""), at: 0)
+            Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "channel", subtype: channel.status, itemId: channel.slug, timestamp: timestamp, mainText: channel.title, subText: String(channel.length), imageUrl: String(channel.id)), at: 0)
         })
     }
 }

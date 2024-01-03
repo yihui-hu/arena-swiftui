@@ -352,11 +352,11 @@ struct HistorySingleBlockView: View {
                                                             )
                                                         }
                                                         .simultaneousGesture(TapGesture().onEnded{
-                                                            let id = connection.id
+                                                            let id = UUID()
                                                             let formatter = DateFormatter()
                                                             formatter.dateFormat = "HH:mm, d MMM y"
                                                             let timestamp = formatter.string(from: Date.now)
-                                                            Defaults[.rabbitHole].insert(RabbitHoleItem(id: String(id), type: "channel", subtype: connection.status, itemId: connection.slug, timestamp: timestamp, mainText: connection.title, subText: String(connection.length), imageUrl: ""), at: 0)
+                                                            Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "channel", subtype: connection.status, itemId: connection.slug, timestamp: timestamp, mainText: connection.title, subText: String(connection.length), imageUrl: String(connection.id)), at: 0)
                                                         })
                                                     }
                                                 } else {

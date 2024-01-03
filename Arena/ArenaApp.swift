@@ -83,6 +83,18 @@ struct ArenaApp: App {
             } else {
                 OnboardingView()
                     .preferredColorScheme(selectedAppearance == 0 ? nil : selectedAppearance == 1 ? .light : .dark)
+                    .safariView(isPresented: $safariViewOpen) {
+                        SafariView(
+                            url: URL(string: safariViewURL)!,
+                            configuration: SafariView.Configuration(
+                                entersReaderIfAvailable: false,
+                                barCollapsingEnabled: true
+                            )
+                        )
+                        .preferredBarAccentColor(.clear)
+                        .preferredControlAccentColor(.accentColor)
+                        .dismissButtonStyle(.done)
+                    }
             }
         }
     }

@@ -102,20 +102,6 @@ struct SearchView: View {
                 
                 if let searchResults = searchData.searchResults, searchTerm != "" {
                     ZStack {
-//                        GeometryReader { geometry in
-//                            LinearGradient(
-//                                gradient: .smooth(from: Color("background"), to: Color("background").opacity(0), curve: .easeInOut),
-//                                startPoint: .top,
-//                                endPoint: .bottom
-//                            )
-//                            .frame(height: 88)
-//                            .position(x: geometry.size.width / 2, y: 44)
-//                            .opacity(showGradient ? 1 : 0)
-//                            .animation(.easeInOut(duration: 0.2), value: UUID())
-//                        }
-//                        .allowsHitTesting(false) // Allows items underneath to be tapped
-//                        .zIndex(2)
-                        
                         ScrollView {
                             ScrollViewReader { proxy in
                                 if selection == "Blocks" {
@@ -176,11 +162,11 @@ struct SearchView: View {
                                                     }
                                                 }
                                                 .simultaneousGesture(TapGesture().onEnded{
-                                                    let id = channel.id
+                                                    let id = UUID()
                                                     let formatter = DateFormatter()
                                                     formatter.dateFormat = "HH:mm, d MMM y"
                                                     let timestamp = formatter.string(from: Date.now)
-                                                    Defaults[.rabbitHole].insert(RabbitHoleItem(id: String(id), type: "channel", subtype: channel.status, itemId: channel.slug, timestamp: timestamp, mainText: channel.title, subText: String(channel.length), imageUrl: ""), at: 0)
+                                                    Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "channel", subtype: channel.status, itemId: channel.slug, timestamp: timestamp, mainText: channel.title, subText: String(channel.length), imageUrl: String(channel.id)), at: 0)
                                                 })
                                             }
                                         } else if selection == "Users" {
@@ -203,17 +189,6 @@ struct SearchView: View {
                                     }
                                 }
                             }
-//                            .onChange(of: scrollOffset) { _, offset in
-//                                withAnimation {
-//                                    showGradient = offset > -4
-//                                }
-//                            }
-//                            .background(GeometryReader { proxy -> Color in
-//                                DispatchQueue.main.async {
-//                                    scrollOffset = -proxy.frame(in: .named("scroll")).origin.y
-//                                }
-//                                return Color.clear
-//                            })
                             
                             if searchData.isLoading, searchTerm != "" {
                                 CircleLoadingSpinner()
@@ -307,11 +282,11 @@ struct SearchView: View {
                                                         }
                                                     }
                                                     .simultaneousGesture(TapGesture().onEnded{
-                                                        let id = channel.id
+                                                        let id = UUID()
                                                         let formatter = DateFormatter()
                                                         formatter.dateFormat = "HH:mm, d MMM y"
                                                         let timestamp = formatter.string(from: Date.now)
-                                                        Defaults[.rabbitHole].insert(RabbitHoleItem(id: String(id), type: "channel", subtype: channel.status, itemId: channel.slug, timestamp: timestamp, mainText: channel.title, subText: String(channel.length), imageUrl: ""), at: 0)
+                                                        Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "channel", subtype: channel.status, itemId: channel.slug, timestamp: timestamp, mainText: channel.title, subText: String(channel.length), imageUrl: String(channel.id)), at: 0)
                                                     })
                                                 }
                                             } else if selection == "Users" {

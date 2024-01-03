@@ -14,127 +14,151 @@ struct RabbitHoleView: View {
     
     var body: some View {
         NavigationStack {
-            ScrollView {
-                LazyVStack(spacing: 8) {
-                    ForEach(rabbitHole, id: \.self.id) { rabbitHoleItem in
-                        if rabbitHoleItem.type == "channel" {
-                            NavigationLink(destination: ChannelView(channelSlug: rabbitHoleItem.itemId)) {
-                                VStack(alignment: .leading, spacing: 8) {
-                                    HStack(spacing: 16) {
-                                        HStack(alignment: .center, spacing: 4) {
-                                            if rabbitHoleItem.subtype != "closed" {
-                                                Image(systemName: "circle.fill")
-                                                    .scaleEffect(0.5)
-                                                    .foregroundColor(rabbitHoleItem.subtype == "public" ? Color.green : Color.red)
+            HStack {
+                if rabbitHole.count == 0 {
+                    VStack(spacing: 16) {
+                        Image(systemName: "clock.arrow.circlepath")
+                            .imageScale(.large)
+                            .frame(width: 52, height: 52)
+                            .background(Color("surface"))
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                            .foregroundStyle(Color("text-secondary"))
+                            .fontWeight(.heavy)
+                            .fontDesign(.rounded)
+                        
+                        Text("Recently viewed blocks, channels and users will show up here")
+                            .font(.system(size: 14))
+                            .foregroundStyle(Color("surface-tertiary"))
+                            .fontDesign(.rounded)
+                            .fontWeight(.semibold)
+                            .frame(width: 240)
+                            .multilineTextAlignment(.center)
+                    }
+                } else {
+                    ScrollView {
+                        LazyVStack(spacing: 8) {
+                            ForEach(rabbitHole, id: \.self.id) { rabbitHoleItem in
+                                if rabbitHoleItem.type == "channel" {
+                                    NavigationLink(destination: ChannelView(channelSlug: rabbitHoleItem.itemId)) {
+                                        VStack(alignment: .leading, spacing: 8) {
+                                            HStack(spacing: 16) {
+                                                HStack(alignment: .center, spacing: 4) {
+                                                    if rabbitHoleItem.subtype != "closed" {
+                                                        Image(systemName: "circle.fill")
+                                                            .scaleEffect(0.5)
+                                                            .foregroundColor(rabbitHoleItem.subtype == "public" ? Color.green : Color.red)
+                                                    }
+                                                    Text("\(rabbitHoleItem.mainText)")
+                                                        .font(.system(size: 16))
+                                                        .foregroundStyle(Color("text-primary"))
+                                                        .fontDesign(.rounded)
+                                                        .fontWeight(.medium)
+                                                        .lineLimit(1)
+                                                }
+                                                Spacer()
+                                                Text("\(rabbitHoleItem.subText) items")
+                                                    .font(.system(size: 14))
+                                                    .foregroundStyle(Color("text-secondary"))
                                             }
-                                            Text("\(rabbitHoleItem.mainText)")
-                                                .font(.system(size: 16))
-                                                .foregroundStyle(Color("text-primary"))
-                                                .fontDesign(.rounded)
-                                                .fontWeight(.medium)
-                                                .lineLimit(1)
-                                        }
-                                        Spacer()
-                                        Text("\(rabbitHoleItem.subText) items")
-                                            .font(.system(size: 14))
-                                            .foregroundStyle(Color("text-secondary"))
-                                    }
-                                    
-                                    Text("\(rabbitHoleItem.timestamp)")
-                                        .font(.system(size: 13))
-                                        .foregroundStyle(Color("text-secondary"))
-                                        .opacity(0.6)
-                                }
-                            }
-                            .frame(maxWidth: .infinity, maxHeight: 88, alignment: .leading)
-                            .padding(12)
-                            .background(Color("surface"))
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
-                            .contentShape(ContentShapeKinds.contextMenuPreview, RoundedRectangle(cornerRadius: 8))
-                            .contextMenu {
-                                Button {
-                                    Defaults[.connectSheetOpen] = true
-                                    Defaults[.connectItemId] = Int(rabbitHoleItem.id) ?? 0
-                                    Defaults[.connectItemType] = "Channel"
-                                } label: {
-                                    Label("Connect", systemImage: "arrow.right")
-                                }
-                                
-                                Button {
-                                    togglePin(Int(rabbitHoleItem.id) ?? 0)
-                                } label: {
-                                    Label(pinnedChannels.contains(Int(rabbitHoleItem.id) ?? 0) ? "Unpin" : "Pin", systemImage: pinnedChannels.contains(Int(rabbitHoleItem.id) ?? 0) ? "heart.fill" : "heart")
-                                }
-                            }
-                        } else if rabbitHoleItem.type == "user" {
-                            NavigationLink(destination: UserView(userId: Int(rabbitHoleItem.itemId) ?? 0)) {
-                                VStack(alignment: .leading, spacing: 8) {
-                                    HStack(spacing: 12) {
-                                        ProfilePic(imageURL: rabbitHoleItem.imageUrl, initials: rabbitHoleItem.subText)
-                                            .clipShape(Circle())
-                                        
-                                        VStack(alignment: .leading) {
-                                            Text("\(rabbitHoleItem.mainText)")
-                                                .multilineTextAlignment(.leading)
-                                                .font(.system(size: 16))
-                                                .foregroundStyle(Color("text-primary"))
-                                                .fontDesign(.rounded)
-                                                .fontWeight(.medium)
+                                            
+                                            Text("\(rabbitHoleItem.timestamp)")
+                                                .font(.system(size: 13))
+                                                .foregroundStyle(Color("text-secondary"))
+                                                .opacity(0.6)
                                         }
                                     }
-                                    
-                                    Text("\(rabbitHoleItem.timestamp)")
-                                        .font(.system(size: 13))
-                                        .foregroundStyle(Color("text-secondary"))
-                                        .opacity(0.6)
-                                }
-                                .frame(maxWidth: .infinity, maxHeight: 88, alignment: .leading)
-                                .padding(12)
-                                .background(Color("surface"))
-                                .clipShape(RoundedRectangle(cornerRadius: 16))
-                            }
-                        } else if rabbitHoleItem.type == "block" {
-                            NavigationLink(destination: HistorySingleBlockView(blockId: Int(rabbitHoleItem.itemId) ?? 0)) {
-                                VStack(alignment: .leading, spacing: 12) {
-                                    HStack(alignment: .center, spacing: 12) {
-                                        if rabbitHoleItem.subtype == "attachment" || rabbitHoleItem.subtype == "text" {
-                                            Text(.init(rabbitHoleItem.subText))
-                                                .padding(16)
-                                                .foregroundStyle(Color("text-primary"))
-                                                .frame(width: 112, height: 112)
-                                                .background(
-                                                    RoundedRectangle(cornerRadius: 8)
-                                                        .fill(Color("surface-secondary"))
-                                                )
-                                                .font(.system(size: 10))
-                                                .tint(.primary)
-                                        } else {
-                                            ImagePreview(imageURL: rabbitHoleItem.imageUrl, isChannelCard: true)
-                                                .frame(maxWidth: 112, maxHeight: 112)
-                                                .background(Color("surface-secondary"))
-                                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                    .frame(maxWidth: .infinity, maxHeight: 88, alignment: .leading)
+                                    .padding(12)
+                                    .background(Color("surface"))
+                                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                                    .contentShape(ContentShapeKinds.contextMenuPreview, RoundedRectangle(cornerRadius: 8))
+                                    .contextMenu {
+                                        Button {
+                                            Defaults[.connectSheetOpen] = true
+                                            Defaults[.connectItemId] = Int(rabbitHoleItem.imageUrl) ?? 0
+                                            Defaults[.connectItemType] = "Channel"
+                                        } label: {
+                                            Label("Connect", systemImage: "arrow.right")
                                         }
                                         
-                                        VStack {
-                                            Text(.init(rabbitHoleItem.mainText))
-                                                .font(.system(size: 16))
-                                                .foregroundStyle(Color("text-primary"))
-                                                .fontDesign(.rounded)
-                                                .fontWeight(.medium)
-                                                .tint(.primary)
+                                        Button {
+                                            togglePin(Int(rabbitHoleItem.imageUrl) ?? 0)
+                                        } label: {
+                                            Label(pinnedChannels.contains(Int(rabbitHoleItem.imageUrl) ?? 0) ? "Unpin" : "Pin", systemImage: pinnedChannels.contains(Int(rabbitHoleItem.imageUrl) ?? 0) ? "heart.fill" : "heart")
                                         }
                                     }
-                                    
-                                    Text("\(rabbitHoleItem.timestamp)")
-                                        .font(.system(size: 13))
-                                        .foregroundStyle(Color("text-secondary"))
-                                        .opacity(0.6)
+                                } else if rabbitHoleItem.type == "user" {
+                                    NavigationLink(destination: UserView(userId: Int(rabbitHoleItem.itemId) ?? 0)) {
+                                        VStack(alignment: .leading, spacing: 8) {
+                                            HStack(spacing: 12) {
+                                                ProfilePic(imageURL: rabbitHoleItem.imageUrl, initials: rabbitHoleItem.subText)
+                                                    .clipShape(Circle())
+                                                
+                                                VStack(alignment: .leading) {
+                                                    Text("\(rabbitHoleItem.mainText)")
+                                                        .multilineTextAlignment(.leading)
+                                                        .font(.system(size: 16))
+                                                        .foregroundStyle(Color("text-primary"))
+                                                        .fontDesign(.rounded)
+                                                        .fontWeight(.medium)
+                                                }
+                                            }
+                                            
+                                            Text("\(rabbitHoleItem.timestamp)")
+                                                .font(.system(size: 13))
+                                                .foregroundStyle(Color("text-secondary"))
+                                                .opacity(0.6)
+                                        }
+                                        .frame(maxWidth: .infinity, maxHeight: 88, alignment: .leading)
+                                        .padding(12)
+                                        .background(Color("surface"))
+                                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                                    }
+                                } else if rabbitHoleItem.type == "block" {
+                                    NavigationLink(destination: HistorySingleBlockView(blockId: Int(rabbitHoleItem.itemId) ?? 0)) {
+                                        VStack(alignment: .leading, spacing: 12) {
+                                            HStack(alignment: .center, spacing: 12) {
+                                                if rabbitHoleItem.subtype == "attachment" || rabbitHoleItem.subtype == "text" {
+                                                    Text(.init(rabbitHoleItem.subText))
+                                                        .padding(16)
+                                                        .foregroundStyle(Color("text-primary"))
+                                                        .frame(width: 112, height: 112)
+                                                        .background(
+                                                            RoundedRectangle(cornerRadius: 8)
+                                                                .fill(Color("surface-secondary"))
+                                                        )
+                                                        .font(.system(size: 10))
+                                                        .tint(.primary)
+                                                        .multilineTextAlignment(.leading)
+                                                } else {
+                                                    ImagePreview(imageURL: rabbitHoleItem.imageUrl, isChannelCard: true)
+                                                        .frame(maxWidth: 112, maxHeight: 112)
+                                                        .background(Color("surface-secondary"))
+                                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                                }
+                                                
+                                                VStack {
+                                                    Text(.init(rabbitHoleItem.mainText))
+                                                        .font(.system(size: 16))
+                                                        .foregroundStyle(Color("text-primary"))
+                                                        .fontDesign(.rounded)
+                                                        .fontWeight(.medium)
+                                                        .tint(.primary)
+                                                }
+                                            }
+                                            
+                                            Text("\(rabbitHoleItem.timestamp)")
+                                                .font(.system(size: 13))
+                                                .foregroundStyle(Color("text-secondary"))
+                                                .opacity(0.6)
+                                        }
+                                    }
+                                    .frame(maxWidth: .infinity, maxHeight: 144, alignment: .leading)
+                                    .padding(12)
+                                    .background(Color("surface"))
+                                    .clipShape(RoundedRectangle(cornerRadius: 16))
                                 }
                             }
-                            .frame(maxWidth: .infinity, maxHeight: 144, alignment: .leading)
-                            .padding(12)
-                            .background(Color("surface"))
-                            .clipShape(RoundedRectangle(cornerRadius: 16))
                         }
                     }
                 }
@@ -150,20 +174,19 @@ struct RabbitHoleView: View {
                         .fontWeight(.semibold)
                 }
                 
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: {
-                        rabbitHole = []
-                    }) {
-                        Image(systemName: "trash.fill")
-                            .foregroundStyle(Color("red"))
-                            .font(.system(size: 14))
-                            .fontWeight(.bold)
-                    }
-                }
+//                ToolbarItem(placement: .topBarTrailing) {
+//                    Button(action: {
+//                        rabbitHole = []
+//                    }) {
+//                        Image(systemName: "trash.fill")
+//                            .foregroundStyle(Color("red"))
+//                            .font(.system(size: 14))
+//                            .fontWeight(.bold)
+//                    }
+//                }
             }
             .toolbarBackground(Color("background"), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
-            .background(Color("background"))
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
         .background(Color("background"))

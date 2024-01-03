@@ -100,14 +100,14 @@ struct ChannelView: View {
                 loadMoreChannelData(channelData: channelData, channelSlug: self.channelSlug, block: block)
             }
             .simultaneousGesture(TapGesture().onEnded{
-                let id = block.id
+                let id = UUID()
                 let formatter = DateFormatter()
                 formatter.dateFormat = "HH:mm, d MMM y"
                 let timestamp = formatter.string(from: Date.now)
                 if block.baseClass == "Block" {
                     AddBlockToRabbitHole(block: block)
                 } else {
-                    Defaults[.rabbitHole].insert(RabbitHoleItem(id: String(id), type: "channel", subtype: block.status ?? "", itemId: block.slug ?? "", timestamp: timestamp, mainText: block.title, subText: String(block.length ?? 0), imageUrl: ""), at: 0)
+                    Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "channel", subtype: block.status ?? "", itemId: block.slug ?? "", timestamp: timestamp, mainText: block.title, subText: String(block.length ?? 0), imageUrl: String(block.id)), at: 0)
                 }
             })
         }
@@ -155,11 +155,11 @@ struct ChannelView: View {
                                     }
                                 }
                                 .simultaneousGesture(TapGesture().onEnded{
-                                    let id = channel.id
+                                    let id = UUID()
                                     let formatter = DateFormatter()
                                     formatter.dateFormat = "HH:mm, d MMM y"
                                     let timestamp = formatter.string(from: Date.now)
-                                    Defaults[.rabbitHole].insert(RabbitHoleItem(id: String(id), type: "channel", subtype: channel.status, itemId: channel.slug, timestamp: timestamp, mainText: channel.title, subText: String(channel.length), imageUrl: ""), at: 0)
+                                    Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "channel", subtype: channel.status, itemId: channel.slug, timestamp: timestamp, mainText: channel.title, subText: String(channel.length), imageUrl: String(channel.id)), at: 0)
                                 })
                             }
                             

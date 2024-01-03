@@ -130,7 +130,7 @@ struct SettingsView: View {
                         }
                         
                         Button(action: {
-                            Defaults[.safariViewURL] = "https://arena-ios-app.vercel.app"
+                            Defaults[.safariViewURL] = "https://gist.github.com/yihui-hu/96718f208b46784fe35eb9a3d274b375"
                             Defaults[.safariViewOpen] = true
                         }) {
                             MenuItem(iconName: "eyes", text: "Privacy Policy", arrowName: "arrow.up.right")
