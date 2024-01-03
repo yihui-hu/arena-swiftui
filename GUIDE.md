@@ -26,4 +26,4 @@
 <br/>
 <br/>
 
-3. Copy your username into the Are:na app, and you're done!
+3. Copy your username into the Are:na app, and you're ready to start using the app :)
