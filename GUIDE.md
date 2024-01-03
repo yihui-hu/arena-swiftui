@@ -1,3 +1,5 @@
+### This will take less than 5 minutes if you already have an Are.na account :)
+
 ## Retrieving your Are.na Access Token
 1. [Login to dev.are.na](https://dev.are.na/users/sign_in) using your personal Are.na account
 2. Click on Your Applications, then New Application
