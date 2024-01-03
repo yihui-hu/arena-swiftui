@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-// Mainly used for search results in ConnectExistingView and ConnectView
+// Mainly used for search results in ConnectExistingView and ConnectView – difference is ArenaSearchedChannel vs ArenaChannelPreview
 struct SmallChannelPreview: View {
     let channel: ArenaSearchedChannel
     

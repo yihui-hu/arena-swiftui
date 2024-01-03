@@ -45,7 +45,7 @@ struct ConnectView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                Spacer()
+//                Spacer()
                 
                 ConnectFlower()
                 
@@ -73,32 +73,31 @@ struct ConnectView: View {
                     }
                     .buttonStyle(ConnectButtonStyle())
                     
-                    Button(action: {}) {
-                        PhotosPicker(selection: $selectedPhotos, maxSelectionCount: 10, matching: .images) {
-                            ConnectItem(text: "Add images", icon: "photo.fill")
-                        }
-                        .onChange(of: selectedPhotos) { _, newItems in
-                            selectedPhotos = []
-                            selectedPhotosData = []
-                            for newItem in newItems {
-                                Task {
-                                    if let data = try? await newItem.loadTransferable(type: Data.self) {
-                                        selectedPhotosData.append(data)
-                                    }
-                                }
-                            }
-                            showConnectImagesView = true
-                        }
-                    }
-                    .buttonStyle(ConnectButtonStyle())
+//                    Button(action: {}) {
+//                        PhotosPicker(selection: $selectedPhotos, maxSelectionCount: 10, matching: .images) {
+//                            ConnectItem(text: "Add images", icon: "photo.fill")
+//                        }
+//                        .onChange(of: selectedPhotos) { _, newItems in
+//                            selectedPhotos = []
+//                            selectedPhotosData = []
+//                            for newItem in newItems {
+//                                Task {
+//                                    if let data = try? await newItem.loadTransferable(type: Data.self) {
+//                                        selectedPhotosData.append(data)
+//                                    }
+//                                }
+//                            }
+//                            showConnectImagesView = true
+//                        }
+//                    }
+//                    .buttonStyle(ConnectButtonStyle())
                 }
-                .frame(maxWidth: 400)
                 .padding(16)
                 .background(Color("modal"))
                 .clipShape(RoundedRectangle(cornerRadius: 24))
-                .padding(16)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 8)
             }
-            .padding(.bottom, 32)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {

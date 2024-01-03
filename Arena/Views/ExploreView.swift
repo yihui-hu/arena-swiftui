@@ -78,11 +78,7 @@ struct ExploreView: View {
                                                         Label("View Block", systemImage: "eye")
                                                     }
                                                     .simultaneousGesture(TapGesture().onEnded{
-                                                        let id = UUID()
-                                                        let formatter = DateFormatter()
-                                                        formatter.dateFormat = "HH:mm E, d MMM y"
-                                                        let timestamp = formatter.string(from: Date.now)
-                                                        Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "block", itemId: String(block.id), timestamp: timestamp), at: 0)
+                                                        AddBlockToRabbitHole(block: block)
                                                     })
                                                 } preview: {
                                                     BlockContextMenuPreview(block: block)
@@ -100,11 +96,7 @@ struct ExploreView: View {
                                         }
                                     }
                                     .simultaneousGesture(TapGesture().onEnded{
-                                        let id = UUID()
-                                        let formatter = DateFormatter()
-                                        formatter.dateFormat = "HH:mm E, d MMM y"
-                                        let timestamp = formatter.string(from: Date.now)
-                                        Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "block", itemId: String(block.id), timestamp: timestamp), at: 0)
+                                        AddBlockToRabbitHole(block: block)
                                     })
                                 }
                             }
@@ -123,11 +115,11 @@ struct ExploreView: View {
                                             }
                                         }
                                         .simultaneousGesture(TapGesture().onEnded{
-                                            let id = UUID()
+                                            let id = channel.id
                                             let formatter = DateFormatter()
-                                            formatter.dateFormat = "HH:mm E, d MMM y"
+                                            formatter.dateFormat = "HH:mm, d MMM y"
                                             let timestamp = formatter.string(from: Date.now)
-                                            Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "channel", itemId: channel.slug, timestamp: timestamp), at: 0)
+                                            Defaults[.rabbitHole].insert(RabbitHoleItem(id: String(id), type: "channel", subtype: channel.status, itemId: channel.slug, timestamp: timestamp, mainText: channel.title, subText: String(channel.length), imageUrl: ""), at: 0)
                                         })
                                     }
                                 } else if selection.rawValue == "Users" {
@@ -143,11 +135,7 @@ struct ExploreView: View {
                                             }
                                         }
                                         .simultaneousGesture(TapGesture().onEnded{
-                                            let id = UUID()
-                                            let formatter = DateFormatter()
-                                            formatter.dateFormat = "HH:mm E, d MMM y"
-                                            let timestamp = formatter.string(from: Date.now)
-                                            Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "user", itemId: String(user.id), timestamp: timestamp), at: 0)
+                                            AddUserToRabbitHole(user: user)
                                         })
                                     }
                                 }

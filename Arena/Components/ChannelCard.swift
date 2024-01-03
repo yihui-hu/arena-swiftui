@@ -19,14 +19,25 @@ struct ChannelCard: View {
         self.showPin = showPin
     }
     
-    struct HorizontalImageScroll: View {
+    private struct HorizontalImageScroll: View {
         let contents: [Block]
         
         var body: some View {
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: 8) {
                     ForEach(contents, id: \.id) { content in
-                        ChannelCardContentPreview(block: content)
+                        VStack {
+                            if content.baseClass == "Block" {
+                                ChannelCardBlockPreview(blockData: content, fontSize: 14)
+                                    .frame(maxWidth: 250)
+                                    .background(Color("surface-secondary"))
+                            } else {
+                                ChannelPreview(blockData: content, fontSize: 14, display: "Default")
+                                    .frame(width: 132, height: 132)
+                                    .background(Color("surface-secondary"))
+                            }
+                        }
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
                     }
                 }
             }
@@ -68,7 +79,7 @@ struct ChannelCard: View {
                 .lineLimit(1)
                 
                 if let contents = channel.contents, !contents.isEmpty {
-                    let channelContents = Array(contents.prefix(6)) // TODO: Load more for larger screen sizes?
+                    let channelContents = Array(contents.prefix(6)) // TODO: Load more for larger screen sizes
                     HorizontalImageScroll(contents: channelContents)
                 }
             }
@@ -78,11 +89,11 @@ struct ChannelCard: View {
             .cornerRadius(32)
         }        
         .simultaneousGesture(TapGesture().onEnded{
-            let id = UUID()
+            let id = channel.id
             let formatter = DateFormatter()
-            formatter.dateFormat = "HH:mm E, d MMM y"
+            formatter.dateFormat = "HH:mm, d MMM y"
             let timestamp = formatter.string(from: Date.now)
-            Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "channel", itemId: channel.slug, timestamp: timestamp), at: 0)
+            Defaults[.rabbitHole].insert(RabbitHoleItem(id: String(id), type: "channel", subtype: channel.status, itemId: channel.slug, timestamp: timestamp, mainText: channel.title, subText: String(channel.length), imageUrl: ""), at: 0)
         })
     }
 }

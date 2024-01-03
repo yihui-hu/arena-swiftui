@@ -50,11 +50,13 @@ struct ThemeButton: View {
                 Image(systemName: iconName)
                     .fontWeight(.bold)
                     .foregroundStyle(Color(selectedAppearance == appearance ? "text-primary" : "text-secondary"))
+                    .opacity(selectedAppearance == appearance ? 1 : 0.4)
                 
                 Text("\(text)")
                     .foregroundStyle(Color(selectedAppearance == appearance ? "text-primary" : "text-secondary"))
                     .fontDesign(.rounded)
                     .fontWeight(.medium)
+                    .opacity(selectedAppearance == appearance ? 1 : 0.4)
             }
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -62,6 +64,7 @@ struct ThemeButton: View {
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
                     .stroke(Color(selectedAppearance == appearance ? "text-primary" : "text-secondary"), lineWidth: 2)
+                    .opacity(selectedAppearance == appearance ? 1 : 0.4)
             )
         }
     }
@@ -125,7 +128,7 @@ struct SettingsView: View {
                         ShareLink(item: URL(string: "https://arena-ios-app.vercel.app")!) {
                             MenuItem(iconName: "square.and.arrow.up.fill", text: "Share Are:na", arrowName: "arrow.up.right")
                         }
-
+                        
                         Button(action: {
                             Defaults[.safariViewURL] = "https://arena-ios-app.vercel.app"
                             Defaults[.safariViewOpen] = true

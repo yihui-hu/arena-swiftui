@@ -148,8 +148,8 @@ struct UserInfo: View {
                         ForEach(Array(zip(userChannels.indices, userChannels)), id: \.0) { _, channel in
                             ChannelCard(channel: channel)
                                 .onAppear {
-                                    if userChannels.count >= 1 {
-                                        if userChannels[userChannels.count - 1].id == channel.id {
+                                    if userChannels.count >= 8 {
+                                        if userChannels[userChannels.count - 8].id == channel.id {
                                             channelsData.loadMore(userId: userId)
                                         }
                                     }
@@ -255,6 +255,6 @@ struct UserInfo: View {
     }
 }
 
-//#Preview {
-//    UserInfo(userId: 49570, profileView: true)
-//}
+#Preview {
+    UserInfo(userId: 49570, profileView: true)
+}

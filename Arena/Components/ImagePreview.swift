@@ -93,6 +93,7 @@ struct ImageError: View {
     var body: some View {
         Image(systemName: "questionmark.folder")
             .imageScale(.small)
+            .fontWeight(.semibold)
             .frame(minWidth: 132, maxWidth: .infinity, minHeight: 132, maxHeight: .infinity)
             .foregroundStyle(Color("surface-text-secondary"))
             .aspectRatio(contentMode: .fit)

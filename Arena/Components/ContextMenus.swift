@@ -25,14 +25,14 @@ struct BlockContextMenu: View {
             Label("Connect", systemImage: "arrow.right")
         }
         
-// TODO: Add support for downloading attachments
-//        if block.contentClass == "Attachment" {
-//            Button {
-//                print("Download attachment")
-//            } label: {
-//                Label("Download", systemImage: "square.and.arrow.down")
-//            }
-//        }
+        // TODO: Add support for downloading attachments
+        //        if block.contentClass == "Attachment" {
+        //            Button {
+        //                print("Download attachment")
+        //            } label: {
+        //                Label("Download", systemImage: "square.and.arrow.down")
+        //            }
+        //        }
         
         if let imageURL = block.image?.original.url, let url = URL(string: imageURL) {
             Button {
@@ -82,11 +82,7 @@ struct BlockContextMenu: View {
                 Label("View Block", systemImage: "eye")
             }
             .simultaneousGesture(TapGesture().onEnded{
-                let id = UUID()
-                let formatter = DateFormatter()
-                formatter.dateFormat = "HH:mm E, d MMM y"
-                let timestamp = formatter.string(from: Date.now)
-                Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "block", itemId: String(block.id), timestamp: timestamp), at: 0)
+                AddBlockToRabbitHole(block: block)
             })
         }
     }
@@ -127,11 +123,11 @@ struct ChannelContextMenu: View {
                 Label("View Channel", systemImage: "eye")
             }
             .simultaneousGesture(TapGesture().onEnded{
-                let id = UUID()
+                let id = channel.id
                 let formatter = DateFormatter()
-                formatter.dateFormat = "HH:mm E, d MMM y"
+                formatter.dateFormat = "HH:mm, d MMM y"
                 let timestamp = formatter.string(from: Date.now)
-                Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "channel", itemId: channel.slug ?? "", timestamp: timestamp), at: 0)
+                Defaults[.rabbitHole].insert(RabbitHoleItem(id: String(id), type: "channel", subtype: channel.status ?? "0", itemId: channel.slug ?? "", timestamp: timestamp, mainText: channel.title, subText: String(channel.length ?? 0), imageUrl: ""), at: 0)
             })
         }
     }

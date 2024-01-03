@@ -13,7 +13,7 @@ final class SearchData: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
     @Published var searchTerm: String = ""
-    @Published var selection: String = "All"
+    @Published var selection: String = "Blocks"
     
     var currentPage: Int = 1
     var totalPages: Int = 1

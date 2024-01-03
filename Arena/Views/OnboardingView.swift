@@ -11,6 +11,7 @@ import Defaults
 struct OnboardingView: View {
     // TODO: Reset and delete accessToken in prod
     @State private var accessToken: String = "cfsNlJe3Ns9Vnj8SAKHLvDCaeh3uMm1sNwsIX6ESdeY"
+//    @State private var accessToken: String = "-4S4ojYDROZsGR1TO8tiN_k5DCmYUA-Lr83McGfRUQo"
     @State private var username: String = ""
     @State private var userId: Int = 0
     @State private var userPicURL: String = ""
@@ -19,19 +20,19 @@ struct OnboardingView: View {
     @State private var apiCheckPassed: Bool = false
     @State private var error: String = ""
     @FocusState private var inputIsFocused: Bool
-
+    
     var body: some View {
         NavigationStack {
             VStack(alignment: .center) {
                 Spacer()
-
+                
                 VStack(spacing: 40) {
                     Image(uiImage: UIImage(named: "AppIcon-Preview")!)
                         .resizable()
                         .scaledToFit()
                         .frame(width: inputIsFocused ? 44 : 88, height: inputIsFocused ? 44 : 88)
                         .clipShape(RoundedRectangle(cornerRadius: inputIsFocused ? 12 : 24))
-
+                    
                     VStack(spacing: 20) {
                         VStack(spacing: 16) {
                             SecureField("Are.na Access Token", text: $accessToken)
@@ -52,9 +53,9 @@ struct OnboardingView: View {
                             .fontDesign(.rounded)
                     }
                 }
-
+                
                 Spacer()
-
+                
                 NavigationLink(
                     destination: VerificationView(
                         accessToken: $accessToken,
@@ -68,7 +69,7 @@ struct OnboardingView: View {
                     EmptyView()
                 }
                 .hidden()
-
+                
                 VStack(spacing: 20) {
                     if !error.isEmpty {
                         Text("\(error)")
@@ -103,7 +104,7 @@ struct OnboardingView: View {
             .padding(32)
         }
     }
-
+    
     func getUserData(username: String, accessToken: String, userId: Binding<Int>, userPicURL: Binding<String>, userInitials: Binding<String>, errorMessage: Binding<String>) {
         isLoading = true
         
@@ -111,17 +112,17 @@ struct OnboardingView: View {
             isLoading = false
             return
         }
-    
+        
         var request = URLRequest(url: url)
         request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-
+        
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
             if error != nil {
                 errorMessage.wrappedValue = "Unable to connect to Are.na servers"
                 isLoading = false
                 return
             }
-
+            
             if let data = data {
                 let decoder = JSONDecoder()
                 do {
@@ -146,7 +147,7 @@ struct OnboardingView: View {
                 isLoading = false
             }
         }
-
+        
         task.resume()
     }
 }
@@ -159,7 +160,7 @@ struct VerificationView: View {
     @Binding var userInitials: String
     
     @Environment(\.dismiss) private var dismiss
-
+    
     var body: some View {
         NavigationView {
             VStack {

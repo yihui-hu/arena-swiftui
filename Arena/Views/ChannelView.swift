@@ -24,8 +24,8 @@ enum DisplayOption: String, CaseIterable {
 
 enum ContentOption: String, CaseIterable {
     case all = "All"
-//    case blocks = "Blocks"
-//    case channels = "Channels"
+    //    case blocks = "Blocks"
+    //    case channels = "Channels"
     case connections = "Connections"
 }
 
@@ -43,7 +43,7 @@ struct ChannelView: View {
     let sortOptions = SortOption.allCases
     let displayOptions = DisplayOption.allCases
     let contentOptions = ContentOption.allCases
-
+    
     @Environment(\.dismiss) private var dismiss
     
     init(channelSlug: String) {
@@ -100,11 +100,15 @@ struct ChannelView: View {
                 loadMoreChannelData(channelData: channelData, channelSlug: self.channelSlug, block: block)
             }
             .simultaneousGesture(TapGesture().onEnded{
-                let id = UUID()
+                let id = block.id
                 let formatter = DateFormatter()
-                formatter.dateFormat = "HH:mm E, d MMM y"
+                formatter.dateFormat = "HH:mm, d MMM y"
                 let timestamp = formatter.string(from: Date.now)
-                Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "block", itemId: String(block.id), timestamp: timestamp), at: 0)
+                if block.baseClass == "Block" {
+                    AddBlockToRabbitHole(block: block)
+                } else {
+                    Defaults[.rabbitHole].insert(RabbitHoleItem(id: String(id), type: "channel", subtype: block.status ?? "", itemId: block.slug ?? "", timestamp: timestamp, mainText: block.title, subText: String(block.length ?? 0), imageUrl: ""), at: 0)
+                }
             })
         }
     }
@@ -151,11 +155,11 @@ struct ChannelView: View {
                                     }
                                 }
                                 .simultaneousGesture(TapGesture().onEnded{
-                                    let id = UUID()
+                                    let id = channel.id
                                     let formatter = DateFormatter()
-                                    formatter.dateFormat = "HH:mm E, d MMM y"
+                                    formatter.dateFormat = "HH:mm, d MMM y"
                                     let timestamp = formatter.string(from: Date.now)
-                                    Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "channel", itemId: channel.slug, timestamp: timestamp), at: 0)
+                                    Defaults[.rabbitHole].insert(RabbitHoleItem(id: String(id), type: "channel", subtype: channel.status, itemId: channel.slug, timestamp: timestamp, mainText: channel.title, subText: String(channel.length), imageUrl: ""), at: 0)
                                 })
                             }
                             
@@ -266,7 +270,7 @@ struct ChannelView: View {
             }
         }
         .overlay(alignment: .bottom) {
-            HStack(spacing: 8) {
+            HStack(spacing: 9) {
                 ShareLink(item: URL(string: "https://are.na/\(channelCreator)/\(channelSlug)")!) {
                     Image(systemName: "square.and.arrow.up")
                         .fontWeight(.bold)
@@ -290,7 +294,7 @@ struct ChannelView: View {
                         .fontWeight(.medium)
                 }
                 .padding(.horizontal, 20)
-                .padding(.vertical, 11)
+                .padding(.vertical, 10)
                 .background(.thinMaterial)
                 .cornerRadius(16)
                 
@@ -309,7 +313,7 @@ struct ChannelView: View {
             .padding(.bottom, 16)
         }
     }
-
+    
     private func togglePin(_ channelId: Int) {
         clickedPin = true
         channelPinned = !(Defaults[.pinnedChannels].contains(channelId))
@@ -354,7 +358,9 @@ struct ChannelViewHeader: View {
         let channelStatus = channelData.channel?.status ?? ""
         let channelDescription = channelData.channel?.metadata?.description ?? ""
         let channelOwner = channelData.channel?.user.fullName ?? ""
+//        let channelOwnerChannels = channelData.channel?.user.channelCount ?? 0
         let channelOwnerId = channelData.channel?.user.id ?? 0
+//        let channelOwnerImage = channelData.channel?.user.avatarImage.display ?? ""
         let channelCollaborators = channelData.channel?.collaborators ?? []
         
         VStack(spacing: 16) {
@@ -420,13 +426,11 @@ struct ChannelViewHeader: View {
                         Text("\(channelOwner)")
                             .foregroundColor(Color("text-primary"))
                     }
-                    .simultaneousGesture(TapGesture().onEnded{
-                        let id = UUID()
-                        let formatter = DateFormatter()
-                        formatter.dateFormat = "HH:mm E, d MMM y"
-                        let timestamp = formatter.string(from: Date.now)
-                        Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "user", itemId: String(channelOwnerId), timestamp: timestamp), at: 0)
-                    })
+                        .simultaneousGesture(TapGesture().onEnded{
+                            if channelData.channel != nil {
+                                AddUserToRabbitHole(user: channelData.channel!.user)
+                            }
+                        })
                     
                     let collaboratorLinks = channelCollaborators.map { collaborator in
                         NavigationLink(destination: UserView(userId: collaborator.id)) {
@@ -436,14 +440,10 @@ struct ChannelViewHeader: View {
                                 .foregroundColor(Color("text-primary"))
                         }
                         .simultaneousGesture(TapGesture().onEnded{
-                            let id = UUID()
-                            let formatter = DateFormatter()
-                            formatter.dateFormat = "HH:mm E, d MMM y"
-                            let timestamp = formatter.string(from: Date.now)
-                            Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "user", itemId: String(collaborator.id), timestamp: timestamp), at: 0)
+                            AddUserToRabbitHole(user: collaborator)
                         })
                     }
-        
+                    
                     WrappingHStack(alignment: .leading, horizontalSpacing: 4) {
                         Text("by")
                             .foregroundColor(Color("text-secondary"))
@@ -493,7 +493,7 @@ struct ChannelViewHeader: View {
                         HStack(spacing: 8) {
                             Text("\(option.rawValue)")
                                 .foregroundStyle(Color(content == option ? "background" : "surface-text-secondary"))
-
+                            
                             if option.rawValue == "All", let channelLength = channelData.channel?.length {
                                 Text("\(channelLength)")
                                     .foregroundStyle(Color(content == option ? "surface-text-secondary" : "surface-tertiary"))

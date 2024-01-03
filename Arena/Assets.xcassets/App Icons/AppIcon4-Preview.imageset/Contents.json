@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "arena4.png",
+      "filename" : "AppIcon4-Preview.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "arena4 1.png",
+      "filename" : "AppIcon4-Preview@2x.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "arena4 2.png",
+      "filename" : "AppIcon4-Preview@3x.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

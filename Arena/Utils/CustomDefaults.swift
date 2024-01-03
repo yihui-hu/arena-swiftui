@@ -11,8 +11,12 @@ import Defaults
 struct RabbitHoleItem {
     let id: String
     let type: String
+    let subtype: String
     let itemId: String
     let timestamp: String
+    let mainText: String
+    let subText: String
+    let imageUrl: String
 }
 
 struct RabbitHoleItemBridge: Defaults.Bridge {
@@ -27,8 +31,12 @@ struct RabbitHoleItemBridge: Defaults.Bridge {
         return [
             "id": value.id,
             "type": value.type,
+            "subtype": value.subtype,
             "itemId": value.itemId,
-            "timestamp": value.timestamp
+            "timestamp": value.timestamp,
+            "mainText": value.mainText,
+            "subText": value.subText,
+            "imageUrl": value.imageUrl
         ]
     }
 
@@ -37,8 +45,12 @@ struct RabbitHoleItemBridge: Defaults.Bridge {
             let object,
             let id = object["id"],
             let type = object["type"],
+            let subtype = object["subtype"],
             let itemId = object["itemId"],
-            let timestamp = object["timestamp"]
+            let timestamp = object["timestamp"],
+            let mainText = object["mainText"],
+            let subText = object["subText"],
+            let imageUrl = object["imageUrl"]
         else {
             return nil
         }
@@ -46,8 +58,12 @@ struct RabbitHoleItemBridge: Defaults.Bridge {
         return RabbitHoleItem(
             id: id,
             type: type,
+            subtype: subtype,
             itemId: itemId,
-            timestamp: timestamp
+            timestamp: timestamp,
+            mainText: mainText,
+            subText: subText,
+            imageUrl: imageUrl
         )
     }
 }

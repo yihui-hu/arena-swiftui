@@ -14,6 +14,7 @@ struct SingleBlockView: View {
     @StateObject private var connectionsViewModel = BlockConnectionsData()
     @StateObject private var commentsViewModel = BlockCommentsData()
     @State private var isLoadingBlockConnectionsComments: Bool = false
+    let bottomPaddingExtra: CGFloat = UIDevice.current.hasNotch ? 12.0 : 24.0
     
     @State private var showInfoModal: Bool = false
     @State private var selectedConnectionSlug: String?
@@ -44,28 +45,30 @@ struct SingleBlockView: View {
     var body: some View {
         let screenHeight = UIScreen.main.bounds.size.height
         let screenWidth = UIScreen.main.bounds.size.width
+        let bottomPadding: CGFloat = screenHeight * 0.4 + bottomPaddingExtra
         
-        ZStack {
+        NavigationView {
             BlockPreview(blockData: block, fontSize: 16)
-                .padding(.bottom, showInfoModal ? 308 : 48)
-                .frame(maxHeight: screenHeight * 0.72)
-                .foregroundColor(Color("text-primary"))
                 .padding(.horizontal, 16)
-                .background(Color("background"))
-                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                .navigationBarBackButtonHidden()
-                .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button(action: {
-                            dismiss()
-                        }) {
-                            BackButton()
-                        }
-                    }
+                .padding(.bottom, showInfoModal ? bottomPadding : 0)
+                .padding(.top, showInfoModal ? 16 : 0)
+                .frame(maxHeight: showInfoModal ? .infinity : screenHeight * 0.6)
+        }
+        .background(Color("background"))
+        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    BackButton()
                 }
-                .toolbarBackground(Color("background"), for: .navigationBar)
-                .toolbarBackground(.visible, for: .navigationBar)
-            
+            }
+        }
+        .toolbarBackground(Color("background"), for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .overlay(alignment: .bottom) {
             // Floating action buttons
             ZStack {
                 ShareLink(item: URL(string: "https://are.na/block/\(block.id)")!) {
@@ -78,40 +81,36 @@ struct SingleBlockView: View {
                         .background(.thinMaterial)
                         .clipShape(Circle())
                 }
-                .padding(.top, screenHeight * 0.7)
                 .offset(x: -80)
                 
-                VStack {
-                    Button(action: {
-                        Defaults[.connectSheetOpen] = true
-                        Defaults[.connectItemId] = block.id ?? 0
-                        Defaults[.connectItemType] = "Block"
-                    }) {
-                        Text("Connect")
-                            .foregroundStyle(Color("text-primary"))
-                            .font(.system(size: 16))
-                            .fontDesign(.rounded)
-                            .fontWeight(.medium)
-                    }
-                    .padding(.horizontal, 20)
-                    .padding(.vertical, 11)
-                    .background(.thinMaterial)
-                    .cornerRadius(16)
+                Button(action: {
+                    Defaults[.connectSheetOpen] = true
+                    Defaults[.connectItemId] = block.id
+                    Defaults[.connectItemType] = "Block"
+                }) {
+                    Text("Connect")
+                        .foregroundStyle(Color("text-primary"))
+                        .font(.system(size: 16))
+                        .fontDesign(.rounded)
+                        .fontWeight(.medium)
                 }
-                .padding(.top, screenHeight * 0.7)
+                .padding(.horizontal, 20)
+                .padding(.vertical, 10)
+                .background(.thinMaterial)
+                .cornerRadius(16)
                 
                 ZStack {
                     if showInfoModal {
                         HStack(alignment: .top) {
                             ScrollView(showsIndicators: false) {
                                 VStack(spacing: 20) {
-                                    let blockURL = "https://are.na/block/\(block.id ?? 0)"
-                                    let title = block.title ?? ""
+                                    let blockURL = "https://are.na/block/\(block.id)"
+                                    let title = block.title 
                                     let description = block.description ?? ""
-                                    let createdAt = block.createdAt ?? ""
-                                    let updatedAt = block.updatedAt ?? ""
-                                    let by = block.user.username ?? ""
-                                    let byId = block.user.id ?? 0
+                                    let createdAt = block.createdAt 
+                                    let updatedAt = block.updatedAt
+                                    let by = block.user.username
+                                    let byId = block.user.id
                                     let image = block.image?.filename ?? ""
                                     let imageURL = block.image?.original.url ?? blockURL
                                     let source = block.source?.title ?? block.source?.url ?? ""
@@ -187,11 +186,7 @@ struct SingleBlockView: View {
                                             }
                                             .id(byId)
                                             .simultaneousGesture(TapGesture().onEnded{
-                                                let id = UUID()
-                                                let formatter = DateFormatter()
-                                                formatter.dateFormat = "HH:mm E, d MMM y"
-                                                let timestamp = formatter.string(from: Date.now)
-                                                Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "user", itemId: String(byId), timestamp: timestamp), at: 0)
+                                                AddUserToRabbitHole(user: block.user)
                                             })
                                         }
                                         Divider().frame(height: 0.5)
@@ -350,11 +345,11 @@ struct SingleBlockView: View {
                                                             )
                                                         }
                                                         .simultaneousGesture(TapGesture().onEnded{
-                                                            let id = UUID()
+                                                            let id = connection.id
                                                             let formatter = DateFormatter()
-                                                            formatter.dateFormat = "HH:mm E, d MMM y"
+                                                            formatter.dateFormat = "HH:mm, d MMM y"
                                                             let timestamp = formatter.string(from: Date.now)
-                                                            Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "channel", itemId: connection.slug, timestamp: timestamp), at: 0)
+                                                            Defaults[.rabbitHole].insert(RabbitHoleItem(id: String(id), type: "channel", subtype: connection.status, itemId: connection.slug, timestamp: timestamp, mainText: connection.title, subText: String(connection.length), imageUrl: ""), at: 0)
                                                         })
                                                     }
                                                 } else {
@@ -367,11 +362,7 @@ struct SingleBlockView: View {
                                                                     ProfilePic(imageURL: comment.user.avatarImage.display, initials: comment.user.initials)
                                                                 }
                                                                 .simultaneousGesture(TapGesture().onEnded{
-                                                                    let id = UUID()
-                                                                    let formatter = DateFormatter()
-                                                                    formatter.dateFormat = "HH:mm E, d MMM y"
-                                                                    let timestamp = formatter.string(from: Date.now)
-                                                                    Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "user", itemId: String(comment.user.id), timestamp: timestamp), at: 0)
+                                                                    AddUserToRabbitHole(user: comment.user)
                                                                 })
                                                                 
                                                                 VStack(alignment: .leading, spacing: 4) {
@@ -383,11 +374,7 @@ struct SingleBlockView: View {
                                                                                 .fontWeight(.medium)
                                                                         }
                                                                         .simultaneousGesture(TapGesture().onEnded{
-                                                                            let id = UUID()
-                                                                            let formatter = DateFormatter()
-                                                                            formatter.dateFormat = "HH:mm E, d MMM y"
-                                                                            let timestamp = formatter.string(from: Date.now)
-                                                                            Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "user", itemId: String(comment.user.id), timestamp: timestamp), at: 0)
+                                                                            AddUserToRabbitHole(user: comment.user)
                                                                         })
                                                                         Spacer()
                                                                         Text("\(relativeTime(comment.createdAt))")
@@ -429,7 +416,7 @@ struct SingleBlockView: View {
                         .offset(x: showInfoModal ? 120 : 0, y: showInfoModal ? -40 : 0)
                         .opacity(showInfoModal ? 0 : 1)
                         .scaleEffect(showInfoModal ? 0 : 1)
-                    
+                        
                         Button(action: {
                             withAnimation(.bouncy(duration: 0.3, extraBounce: -0.1)) {
                                 showInfoModal.toggle()
@@ -456,11 +443,13 @@ struct SingleBlockView: View {
                 .background(.thinMaterial)
                 .clipShape(showInfoModal ? RoundedRectangle(cornerRadius: 24) : RoundedRectangle(cornerRadius: 100))
                 .offset(x: showInfoModal ? 0 : 80, y: showInfoModal ? -8 : 0)
-                .padding(.top, showInfoModal ? screenHeight * 0.4 : screenHeight * 0.7)
                 .padding(.horizontal, 16)
                 .zIndex(9)
             }
+            .padding(.top, showInfoModal ? screenHeight * 0.4 : 0)
+            .padding(.bottom, showInfoModal ? 4 : 16)
         }
+        .contentMargins(.top, 16)
     }
     
     private func fetchConnectionsData() {

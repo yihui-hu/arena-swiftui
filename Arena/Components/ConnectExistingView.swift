@@ -43,6 +43,7 @@ struct ConnectExistingView: View {
                     .focused($searchInputIsFocused)
                     .onSubmit {
                         if !(channelSearchData.isLoading) {
+                            channelSearchData.selection = "Channels"
                             channelSearchData.searchTerm = searchTerm
                             channelSearchData.refresh()
                         }
@@ -63,14 +64,12 @@ struct ConnectExistingView: View {
                 if !(channelsToConnect.isEmpty), !searchInputIsFocused {
                     Button(action: {
                         isConnecting = true
-                        
                         Task {
                             await connectToChannel(channels: channelsToConnect, id: Defaults[.connectItemId] , type: Defaults[.connectItemType]) {
                                 isConnecting = false
                                 channelsToConnect = []
                             }
                         }
-                        
                         Defaults[.connectedItem] = true
                     }) {
                         if isConnecting {

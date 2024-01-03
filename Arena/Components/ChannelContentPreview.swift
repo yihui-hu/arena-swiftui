@@ -23,7 +23,7 @@ struct ChannelContentPreview: View {
                 BlockGridPreview(block: block, channelData: channelData, channelSlug: channelSlug, gridItemSize: gridItemSize, display: display)
             }
         } else {
-            // TODO: Added channelSlug here... might want to do something interesting in the future (preview blocks in context menu!). If not, clean up
+            // TODO: Added channelSlug here, for previewing blocks in context menu
             if display == "Table" {
                 ChannelTablePreview(block: block, channelSlug: channelSlug, display: display)
             } else {
@@ -52,13 +52,10 @@ struct BlockTablePreview: View {
                     .font(.system(size: 12))
                     .frame(width: 72, alignment: .leading)
                     .lineLimit(1)
+                    .foregroundStyle(Color("text-primary"))
             }
             .simultaneousGesture(TapGesture().onEnded{
-                let id = UUID()
-                let formatter = DateFormatter()
-                formatter.dateFormat = "HH:mm E, d MMM y"
-                let timestamp = formatter.string(from: Date.now)
-                Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "user", itemId: String(block.user.id), timestamp: timestamp), at: 0)
+                AddUserToRabbitHole(user: block.user)
             })
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -94,13 +91,10 @@ struct ChannelTablePreview: View {
                     .font(.system(size: 12))
                     .frame(width: 72, alignment: .leading)
                     .lineLimit(1)
+                    .foregroundStyle(Color("text-primary"))
             }
             .simultaneousGesture(TapGesture().onEnded{
-                let id = UUID()
-                let formatter = DateFormatter()
-                formatter.dateFormat = "HH:mm E, d MMM y"
-                let timestamp = formatter.string(from: Date.now)
-                Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "user", itemId: String(block.user.id), timestamp: timestamp), at: 0)
+                AddUserToRabbitHole(user: block.user)
             })
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -170,12 +164,12 @@ struct ContentPreviewMetadata: View {
     
     var body: some View {
         HStack(alignment: .center, spacing: 4) {
-            // URL case
+            // URL
             if block.contentClass == "Link" {
                 Text("\(block.title != "" ? block.title : block.source?.url ?? "")")
                 Image(systemName: "link")
                     .imageScale(.small)
-                // Attachment case
+                // Attachment
             } else if block.attachment != nil {
                 Text("\(block.title != "" ? block.title : block.attachment?.filename ?? "")")
                 Text("\(block.attachment?.fileExtension ?? "file")")
@@ -189,7 +183,8 @@ struct ContentPreviewMetadata: View {
                 Text("\(block.title != "" ? block.title : block.image?.filename ?? "")")
                 // Text block
             } else if block.content != nil {
-                Text("\(display == "Table" ? block.content ?? "" : "")")
+                Text("\(block.title != "" ? block.title : display == "Table" ? block.content ?? "" : "")")
+                    .lineLimit(1)
                 // Default to title
             } else if block.title != "" {
                 Text("\(block.title != "" ? block.title : "")")

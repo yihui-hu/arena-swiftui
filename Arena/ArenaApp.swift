@@ -47,6 +47,8 @@ struct ArenaApp: App {
     init() {
         UIPageControl.appearance().currentPageIndicatorTintColor = .textPrimary
         UIPageControl.appearance().pageIndicatorTintColor = UIColor.textPrimary.withAlphaComponent(0.2)
+        self.connectSheetOpen = false
+        self.safariViewOpen = false
     }
     
     var body: some Scene {
@@ -75,13 +77,25 @@ struct ArenaApp: App {
                         .preferredControlAccentColor(.accentColor)
                         .dismissButtonStyle(.done)
                     }
-                    .toast(isPresenting: $showToast, offsetY: 64) {
+                    .toast(isPresenting: $showToast, offsetY: UIDevice.current.hasNotch ? 64 : 32) {
                         AlertToast(displayMode: .hud, type: .regular, title: toastMessage)
                     }
             } else {
                 OnboardingView()
                     .preferredColorScheme(selectedAppearance == 0 ? nil : selectedAppearance == 1 ? .light : .dark)
             }
+        }
+    }
+}
+
+extension UIDevice {
+    /// Returns `true` if the device has a notch
+    var hasNotch: Bool {
+        guard #available(iOS 11.0, *), let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first else { return false }
+        if UIDevice.current.orientation.isPortrait {
+            return window.safeAreaInsets.top >= 44
+        } else {
+            return window.safeAreaInsets.left > 0 || window.safeAreaInsets.right > 0
         }
     }
 }

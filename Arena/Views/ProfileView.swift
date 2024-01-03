@@ -11,7 +11,7 @@ import Defaults
 struct ProfileView: View {
     let userId: Int
     @State private var path = NavigationPath()
-        
+    
     var body: some View {
         NavigationStack(path: $path) {
             UserInfo(userId: userId, profileView: true)
@@ -46,4 +46,8 @@ struct ProfileView: View {
         .contentMargins(.leading, 0, for: .scrollIndicators)
         .contentMargins(16)
     }
+}
+
+#Preview {
+    ProfileView(userId: 49570)
 }

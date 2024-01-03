@@ -32,20 +32,23 @@ struct InitialPinnedChannels: View {
     
     var body: some View {
         VStack() {
-            RiveViewModel(fileName: colorScheme == .dark ? "pinned-channels-initial-dark" : "pinned-channels-initial-light").view()
-                .frame(height: 400)
-                .clipShape(IPCShape())
-                .overlay(
-                    Text("Pin your first channel!")
-                        .font(.system(size: 14))
-                        .foregroundStyle(Color("surface-tertiary"))
-                        .fontDesign(.rounded)
-                        .fontWeight(.semibold)
-                        .padding(.top, 220)
-                )
+            Text("Oops")
         }
-        .id(self.colorScheme)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+//        VStack() {
+//            RiveViewModel(fileName: colorScheme == .dark ? "pinned-channels-initial-dark" : "pinned-channels-initial-light").view()
+//                .frame(height: 400)
+//                .clipShape(IPCShape())
+//                .overlay(
+//                    Text("Pin your first channel!")
+//                        .font(.system(size: 14))
+//                        .foregroundStyle(Color("surface-tertiary"))
+//                        .fontDesign(.rounded)
+//                        .fontWeight(.semibold)
+//                        .padding(.top, 220)
+//                )
+//        }
+//        .id(self.colorScheme)
+//        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
     }
 }
 
@@ -75,33 +78,10 @@ struct ConnectFlower: View {
     var body: some View {
         VStack() {
             RiveViewModel(fileName: colorScheme == .dark ? "connect-flower-dark" : "connect-flower-light").view()
-                .frame(height: 400)
-                .clipShape(CFShape())
         }
         .id(self.colorScheme)
     }
 }
-
-// Custom clip shape for Pinned Channels Rive animation
-struct CFShape: Shape {
-    func path(in rect: CGRect) -> Path {
-        let width: CGFloat = rect.width
-        let height: CGFloat = 480
-        
-        let xOffset = (rect.width - width) / 2
-        let yOffset = (rect.height - height) / 2 - 100
-        
-        var path = Path()
-        path.move(to: CGPoint(x: xOffset, y: yOffset))
-        path.addLine(to: CGPoint(x: xOffset + width, y: yOffset))
-        path.addLine(to: CGPoint(x: xOffset + width, y: yOffset + height))
-        path.addLine(to: CGPoint(x: xOffset, y: yOffset + height))
-        path.closeSubpath()
-        
-        return path
-    }
-}
-
 
 #Preview {
     // InitialSearch()

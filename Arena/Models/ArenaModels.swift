@@ -277,6 +277,8 @@ final class Block: Hashable, Codable, ObservableObject, Equatable {
     let collaboratorCount: Int?
     let position: Int?
     let nsfw: Bool?
+    let length: Int?
+    let status: String?
     
     enum CodingKeys: String, CodingKey {
         case title
@@ -297,9 +299,10 @@ final class Block: Hashable, Codable, ObservableObject, Equatable {
         case collaboratorCount = "collaborator_count"
         case position
         case nsfw = "nsfw?"
+        case length, status
     }
     
-    init(title: String, updatedAt: String, createdAt: String, commentCount: Int?, generatedTitle: String?, visibility: String?, content: String?, description: String?, source: ArenaSource?, image: ArenaImage?, attachment: ArenaAttachment?, metadata: Metadata?, id: Int, baseClass: String, contentClass: String, user: User, slug: String?, selected: Bool?, connectionId: Int?, connectedAt: String?, connectedByUserId: Int?, connectedByUsername: String?, connectedByUserSlug: String?, connections: [BlockConnection]?, collaboratorCount: Int?, position: Int?, nsfw: Bool?) {
+    init(title: String, updatedAt: String, createdAt: String, commentCount: Int?, generatedTitle: String?, visibility: String?, content: String?, description: String?, source: ArenaSource?, image: ArenaImage?, attachment: ArenaAttachment?, metadata: Metadata?, id: Int, baseClass: String, contentClass: String, user: User, slug: String?, selected: Bool?, connectionId: Int?, connectedAt: String?, connectedByUserId: Int?, connectedByUsername: String?, connectedByUserSlug: String?, connections: [BlockConnection]?, collaboratorCount: Int?, position: Int?, nsfw: Bool?, length: Int?, status: String?) {
         self.title = title
         self.updatedAt = updatedAt
         self.createdAt = createdAt
@@ -327,6 +330,8 @@ final class Block: Hashable, Codable, ObservableObject, Equatable {
         self.collaboratorCount = collaboratorCount
         self.position = position
         self.nsfw = nsfw
+        self.length = length
+        self.status = status
     }
 }
 

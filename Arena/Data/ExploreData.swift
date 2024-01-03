@@ -13,7 +13,6 @@ final class ExploreData: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
     @Published var selection: String = "Blocks"
-//    @Published var sortOption: String = "Created"
     
     var currentPage: Int = 1
     var totalPages: Int = 1
@@ -64,17 +63,6 @@ final class ExploreData: ObservableObject {
         default:
             "channels"
         }
-        
-//        let sortOption: String = switch sortOption {
-//        case "Created":
-//            "created_at"
-//        case "Updated":
-//            "updated_at"
-//        case "Random":
-//            "random"
-//        default: 
-//            "created_at"
-//        }
         
         guard let url = URL(string: "https://api.are.na/v2/search/explore?sort=random&filter=\(option)&per=20") else {
             self.isLoading = false

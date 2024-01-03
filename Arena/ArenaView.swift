@@ -20,7 +20,7 @@ struct ArenaView: View {
             }
             
             Tab(systemImageName: "asterisk") {
-                ExploreView()
+                RabbitHoleView()
             }
             
             Tab(systemImageName: "plus.app.fill") {

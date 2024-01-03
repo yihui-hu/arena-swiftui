@@ -1,38 +1,52 @@
 //
-//  BlockView.swift
+//  HistorySingleBlockView.swift
 //  Arena
 //
-//  Created by Yihui Hu on 14/10/23.
+//  Created by Yihui Hu on 3/1/24.
 //
 
 import SwiftUI
-import SmoothGradient
-import AlertToast
 import Defaults
 
-struct BlockView: View {
-    let blockData: Block
-    let channelSlug: String
-    let bottomPaddingExtra: CGFloat = UIDevice.current.hasNotch ? 12.0 : 24.0
-    @StateObject private var channelData: ChannelData
+struct HistorySingleBlockView: View {
+    let blockId: Int
+    @StateObject private var blockData: BlockData
+    
+    @Environment(\.dismiss) private var dismiss
     @StateObject private var connectionsViewModel = BlockConnectionsData()
     @StateObject private var commentsViewModel = BlockCommentsData()
-    @Environment(\.dismiss) private var dismiss
-    
-    @State private var currentIndex: Int
-    @State private var showInfoModal: Bool = false
     @State private var isLoadingBlockConnectionsComments: Bool = false
+    let bottomPaddingExtra: CGFloat = UIDevice.current.hasNotch ? 12.0 : 24.0
+    
+    @State private var showInfoModal: Bool = false
     @State private var selectedConnectionSlug: String?
+    @State private var scrollOffset: CGFloat = 0
+    @State private var showGradient: Bool = false
     @State private var titleExpanded: Bool = false
     @State private var descriptionExpanded: Bool = false
-    @State private var isToastPresenting = false
     @State private var isConnectionsView = true
     
-    init(blockData: Block, channelData: ChannelData, channelSlug: String) {
-        self.blockData = blockData
-        self.channelSlug = channelSlug
-        self._channelData = StateObject(wrappedValue: channelData)
-        self._currentIndex = State(initialValue: channelData.contents?.firstIndex(where: { $0.id == blockData.id }) ?? 0)
+    init(blockId: Int) {
+        self.blockId = blockId
+        self._blockData = StateObject(wrappedValue: BlockData(blockId: blockId))
+    }
+    
+    struct InfoModalButton: View {
+        @Binding var showInfoModal: Bool
+        var icon: String
+        
+        var body: some View {
+            Button(action: {
+                withAnimation(.bouncy(duration: 0.3, extraBounce: -0.1)) {
+                    showInfoModal.toggle()
+                }
+            }) {
+                Image(systemName: icon)
+                    .foregroundStyle(Color("text-primary"))
+                    .fontWeight(.semibold)
+            }
+            .sensoryFeedback(.impact(flexibility: .solid, intensity: 0.4), trigger: showInfoModal)
+        }
     }
     
     var body: some View {
@@ -40,51 +54,31 @@ struct BlockView: View {
         let screenWidth = UIScreen.main.bounds.size.width
         let bottomPadding: CGFloat = screenHeight * 0.4 + bottomPaddingExtra
         
-        ZStack {
-            TabView(selection: $currentIndex) {
-                ForEach(channelData.contents ?? [], id: \.self.id) { block in
-                    if block.baseClass == "Block" {
-                        BlockPreview(blockData: block, fontSize: 16)
-                            .padding(.horizontal, 4)
-                            .padding(.bottom, showInfoModal ? bottomPadding : 0)
-                            .padding(.top, showInfoModal ? 16 : 0)
-                            .frame(maxHeight: showInfoModal ? .infinity : screenHeight * 0.6)
-                            .foregroundColor(Color("text-primary"))
-                            .tag(channelData.contents?.firstIndex(of: block) ?? 0)
-                            .onAppear {
-                                if channelData.contents?.last?.id ?? -1 == block.id {
-                                    if !channelData.isContentsLoading {
-                                        channelData.loadMore(channelSlug: self.channelSlug)
-                                        isToastPresenting = true
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                            isToastPresenting = false
-                                        }
-                                    }
-                                }
-                            }
-                    }
-                }
-            }
-            .padding(.horizontal, 12)
-            .background(Color("background"))
-            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-            .navigationBarBackButtonHidden()
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        BackButton()
-                    }
-                }
-            }
-            .toolbarBackground(Color("background"), for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
+        NavigationView {
+            BlockPreview(blockData: blockData.block, fontSize: 16)
+                .padding(.horizontal, 16)
+                .padding(.bottom, showInfoModal ? bottomPadding : 0)
+                .padding(.top, showInfoModal ? 16 : 0)
+                .frame(maxHeight: showInfoModal ? .infinity : screenHeight * 0.6)
         }
+        .background(Color("background"))
+        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    BackButton()
+                }
+            }
+        }
+        .toolbarBackground(Color("background"), for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
         .overlay(alignment: .bottom) {
             // Floating action buttons
             ZStack {
-                ShareLink(item: URL(string: "https://are.na/block/\(blockData.id)")!) {
+                ShareLink(item: URL(string: "https://are.na/block/\(blockData.block?.id ?? 0)")!) {
                     Image(systemName: "square.and.arrow.up")
                         .fontWeight(.bold)
                         .imageScale(.small)
@@ -98,7 +92,7 @@ struct BlockView: View {
                 
                 Button(action: {
                     Defaults[.connectSheetOpen] = true
-                    Defaults[.connectItemId] = channelData.contents?[currentIndex].id ?? 0
+                    Defaults[.connectItemId] = blockData.block?.id ?? 0
                     Defaults[.connectItemType] = "Block"
                 }) {
                     Text("Connect")
@@ -117,22 +111,19 @@ struct BlockView: View {
                         HStack(alignment: .top) {
                             ScrollView(showsIndicators: false) {
                                 VStack(spacing: 20) {
-                                    let currentBlock = channelData.contents?[currentIndex]
-                                    let blockURL = "https://are.na/block/\(currentBlock?.id ?? 0)"
-                                    let title = currentBlock?.title ?? ""
-                                    let description = currentBlock?.description ?? ""
-                                    let connectedAt = currentBlock?.connectedAt ?? ""
-                                    let updatedAt = currentBlock?.updatedAt ?? ""
-                                    let connectedBy = currentBlock?.connectedByUsername ?? ""
-                                    let connectedById = currentBlock?.connectedByUserId ?? 0
-                                    let by = currentBlock?.user.username ?? ""
-                                    let byId = currentBlock?.user.id ?? 0
-                                    let image = currentBlock?.image?.filename ?? ""
-                                    let imageURL = currentBlock?.image?.original.url ?? blockURL
-                                    let source = currentBlock?.source?.title ?? currentBlock?.source?.url ?? ""
-                                    let sourceURL = currentBlock?.source?.url ?? blockURL
-                                    let attachment = currentBlock?.attachment?.filename ?? ""
-                                    let attachmentURL = currentBlock?.attachment?.url ?? blockURL
+                                    let blockURL = "https://are.na/block/\(blockData.block?.id ?? 0)"
+                                    let title = blockData.block?.title ?? ""
+                                    let description = blockData.block?.description ?? ""
+                                    let createdAt = blockData.block?.createdAt ?? ""
+                                    let updatedAt = blockData.block?.updatedAt ?? ""
+                                    let by = blockData.block?.user.username ?? ""
+                                    let byId = blockData.block?.user.id ?? 0
+                                    let image = blockData.block?.image?.filename ?? ""
+                                    let imageURL = blockData.block?.image?.original.url ?? blockURL
+                                    let source = blockData.block?.source?.title ?? blockData.block?.source?.url ?? ""
+                                    let sourceURL = blockData.block?.source?.url ?? blockURL
+                                    let attachment = blockData.block?.attachment?.filename ?? ""
+                                    let attachmentURL = blockData.block?.attachment?.url ?? blockURL
                                     
                                     // Title and Description
                                     VStack(alignment: .leading, spacing: 4) {
@@ -168,11 +159,11 @@ struct BlockView: View {
                                     VStack(spacing: 4) {
                                         // Added date
                                         HStack(spacing: 20) {
-                                            Text("Added")
+                                            Text("Created")
                                                 .fontDesign(.rounded)
                                                 .fontWeight(.semibold)
                                             Spacer()
-                                            Text("\(connectedAt != "" ? relativeTime(connectedAt) : "unknown")")
+                                            Text("\(createdAt != "" ? relativeTime(createdAt) : "unknown")")
                                                 .foregroundStyle(Color("surface-text-secondary"))
                                         }
                                         Divider().frame(height: 0.5)
@@ -188,46 +179,22 @@ struct BlockView: View {
                                         }
                                         Divider().frame(height: 0.5)
                                         
-                                        // Connected by
-                                        HStack(spacing: 20) {
-                                            Text("Connected by")
-                                                .fontDesign(.rounded)
-                                                .fontWeight(.semibold)
-                                            Spacer()
-                                            NavigationLink(destination: UserView(userId: connectedById)) {
-                                                Text("\(connectedBy != "" ? connectedBy : "unknown")")
-                                                    .foregroundStyle(Color("text-primary"))
-                                                    .fontWeight(.medium)
-                                                    .lineLimit(1)
-                                            }
-                                            .simultaneousGesture(TapGesture().onEnded{
-                                                if currentBlock != nil {
-                                                    AddUserToRabbitHole(user: currentBlock!.user)
-                                                }
-                                            })
-                                            .id(connectedById)
-                                        }
-                                        Divider().frame(height: 0.5)
-                                        
-                                        
                                         // By
                                         HStack(spacing: 20) {
                                             Text("By")
                                                 .fontDesign(.rounded)
                                                 .fontWeight(.semibold)
                                             Spacer()
-                                            NavigationLink(destination: UserView(userId: byId)) {
+                                            NavigationLink(destination: UserView(userId: byId ?? 0)) {
                                                 Text("\(by != "" ? by : "unknown")")
                                                     .foregroundStyle(Color("text-primary"))
                                                     .fontWeight(.medium)
                                                     .lineLimit(1)
                                             }
-                                            .simultaneousGesture(TapGesture().onEnded{
-                                                if currentBlock != nil {
-                                                    AddUserToRabbitHole(user: currentBlock!.user)
-                                                }
-                                            })
                                             .id(byId)
+                                            .simultaneousGesture(TapGesture().onEnded{
+                                                AddUserToRabbitHole(user: blockData.block!.user)
+                                            })
                                         }
                                         Divider().frame(height: 0.5)
                                         
@@ -248,7 +215,7 @@ struct BlockView: View {
                                     HStack {
                                         Button(action: {
                                             Defaults[.connectSheetOpen] = true
-                                            Defaults[.connectItemId] = channelData.contents?[currentIndex].id ?? 0
+                                            Defaults[.connectItemId] = blockData.block?.id ?? 0
                                             Defaults[.connectItemType] = "Block"
                                         }) {
                                             Text("Connect")
@@ -269,7 +236,7 @@ struct BlockView: View {
                                                 Label("Share", systemImage: "square.and.arrow.up")
                                             }
                                             
-                                            if currentBlock?.contentClass == "Image" {
+                                            if blockData.block?.contentClass == "Image" {
                                                 Button(action: {
                                                     Defaults[.safariViewURL] = "https://lens.google.com/uploadbyurl?url=\(imageURL)"
                                                     Defaults[.safariViewOpen] = true
@@ -278,7 +245,7 @@ struct BlockView: View {
                                                 }
                                             }
                                             
-                                            if currentBlock?.contentClass == "Image", let url = URL(string: imageURL) {
+                                            if blockData.block?.contentClass == "Image", let url = URL(string: imageURL) {
                                                 Button {
                                                     Defaults[.toastMessage] = "Saving image..."
                                                     Defaults[.showToast] = true
@@ -338,10 +305,10 @@ struct BlockView: View {
                                         
                                         HStack(spacing: 0) {
                                             Rectangle()
-                                                .fill(Color(isConnectionsView ? "text-primary" : "surface-text-secondary"))
+                                                .fill(Color(isConnectionsView ? "text-primary" : "text-secondary"))
                                                 .frame(maxWidth: .infinity, maxHeight: 1)
                                             Rectangle()
-                                                .fill(Color(isConnectionsView ? "surface-text-secondary" : "text-primary"))
+                                                .fill(Color(isConnectionsView ? "text-secondary" : "text-primary"))
                                                 .frame(maxWidth: .infinity, maxHeight: 1)
                                         }
                                         
@@ -478,16 +445,6 @@ struct BlockView: View {
                             fetchCommentsData()
                         }
                     }
-                    .onChange(of: currentIndex) { _, _ in
-                        if showInfoModal {
-                            fetchConnectionsData()
-                            fetchCommentsData()
-                        }
-                        
-                        if channelData.contents != nil {
-                            AddBlockToRabbitHole(block: channelData.contents![currentIndex])
-                        }
-                    }
                 }
                 .frame(maxWidth: showInfoModal ? 360 : 40, maxHeight: showInfoModal ? screenHeight * 0.4 : 40, alignment: .top)
                 .background(.thinMaterial)
@@ -499,26 +456,21 @@ struct BlockView: View {
             .padding(.top, showInfoModal ? screenHeight * 0.4 : 0)
             .padding(.bottom, showInfoModal ? 4 : 16)
         }
-        .toast(isPresenting: $isToastPresenting, offsetY: 64) {
-            AlertToast(displayMode: .hud, type: .regular, title: "Loading...")
-        }
+        .contentMargins(.top, 16)
     }
     
     private func fetchConnectionsData() {
-        if let blockId = channelData.contents?[currentIndex].id {
-            isLoadingBlockConnectionsComments = true
-            connectionsViewModel.fetchBlockConnections(blockId: blockId) { success in
-                isLoadingBlockConnectionsComments = false
-            }
+        isLoadingBlockConnectionsComments = true
+        connectionsViewModel.fetchBlockConnections(blockId: blockData.block?.id ?? 0) { success in
+            isLoadingBlockConnectionsComments = false
         }
     }
     
     private func fetchCommentsData() {
-        if let blockId = channelData.contents?[currentIndex].id {
-            isLoadingBlockConnectionsComments = true
-            commentsViewModel.fetchBlockComments(blockId: blockId) { success in
-                isLoadingBlockConnectionsComments = false
-            }
+        isLoadingBlockConnectionsComments = true
+        commentsViewModel.fetchBlockComments(blockId: blockData.block?.id ?? 0) { success in
+            isLoadingBlockConnectionsComments = false
         }
     }
 }
+

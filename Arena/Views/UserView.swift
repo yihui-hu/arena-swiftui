@@ -35,6 +35,6 @@ struct UserView: View {
     }
 }
 
-//#Preview {
-//    UserView(userId: 49570)
-//}
+#Preview {
+    UserView(userId: 49570)
+}

@@ -18,6 +18,17 @@ struct EmptyChannel: View {
     }
 }
 
+struct EmptyChannelConnections: View {
+    var body: some View {
+        Text("Channel has no connections")
+            .font(.system(size: 14))
+            .foregroundStyle(Color("surface-tertiary"))
+            .fontDesign(.rounded)
+            .fontWeight(.semibold)
+            .padding(.top, 24)
+    }
+}
+
 struct EmptySearch: View {
     let items: String
     let searchTerm: String
@@ -47,17 +58,6 @@ struct EmptySearch: View {
 struct EmptyUserChannels: View {
     var body: some View {
         Text("User has no channels")
-            .font(.system(size: 14))
-            .foregroundStyle(Color("surface-tertiary"))
-            .fontDesign(.rounded)
-            .fontWeight(.semibold)
-            .padding(.top, 24)
-    }
-}
-
-struct EmptyChannelConnections: View {
-    var body: some View {
-        Text("Channel has no connections")
             .font(.system(size: 14))
             .foregroundStyle(Color("surface-tertiary"))
             .fontDesign(.rounded)
