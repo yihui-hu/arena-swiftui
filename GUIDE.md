@@ -3,7 +3,7 @@
 ## Retrieving your Are.na Access Token
 1. [Login to dev.are.na](https://dev.are.na/users/sign_in) using your personal Are.na account
 2. Click on Your Applications, then New Application
-3. Fill out the application as follows (you can write whatever you want for the name and description):
+3. Fill out the application as follows:
 
 <br/>
 <img width="1290" alt="Screenshot 2024-01-03 at 11 19 47 AM" src="https://github.com/yihui-hu/arena-swiftui/assets/90987235/e7a5d859-f920-48d9-8a19-159047802370">
