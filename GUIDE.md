@@ -1,4 +1,4 @@
-### This will take less than 5 minutes if you already have an Are.na account :)
+### This will take less than 5 minutes if you already have an Are.na account :) If you don't have one already, sign up [here](https://www.are.na/sign_up)!
 
 ## Retrieving your Are.na Access Token
 1. [Login to dev.are.na](https://dev.are.na/users/sign_in) using your personal Are.na account
@@ -17,7 +17,7 @@
 <br/>
 <br/>
 
-5. Copy your Personal Access Token into the Are:na app, and you're almost done!
+5. Copy your Personal Access Token into the Are:na app, and you're almost done! (**NOTE**: Your personal access token is stored on device, and never uploaded to or shared with the developer or any third party)
 
 ## Retrieving your Are.na username
 1. Navigate to your profile on Are.na
