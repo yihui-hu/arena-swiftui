@@ -57,5 +57,5 @@ func AddUserToRabbitHole(user: User) {
     formatter.dateFormat = "HH:mm, d MMM y"
     let timestamp = formatter.string(from: Date.now)
     
-    Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "user", subtype: "", itemId: String(user.id), timestamp: timestamp, mainText: user.fullName, subText: user.initials, imageUrl: user.avatarImage.thumb), at: 0)
+    Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "user", subtype: "", itemId: String(user.id), timestamp: timestamp, mainText: user.fullName, subText: user.initials, imageUrl: user.avatarImage.display), at: 0)
 }

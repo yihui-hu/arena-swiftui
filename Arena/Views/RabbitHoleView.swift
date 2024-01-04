@@ -165,7 +165,7 @@ struct RabbitHoleView: View {
                             Button(role: .destructive) {
                                 rabbitHole = []
                             } label: {
-                                Label("Erase history", systemImage: "trash")
+                                Label("Erase history", systemImage: "eraser.line.dashed.fill")
                             }
                         } label: {
                             Image(systemName: "eraser.line.dashed.fill")

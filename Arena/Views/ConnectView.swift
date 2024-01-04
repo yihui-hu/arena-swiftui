@@ -71,6 +71,8 @@ struct ConnectView: View {
                     }
                     .buttonStyle(ConnectButtonStyle())
                     
+                    Text("Connecting images support support view")
+                    
 //                    Button(action: {}) {
 //                        PhotosPicker(selection: $selectedPhotos, maxSelectionCount: 10, matching: .images) {
 //                            ConnectItem(text: "Add images", icon: "photo.fill")

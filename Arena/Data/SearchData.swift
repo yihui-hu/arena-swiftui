@@ -75,7 +75,9 @@ final class SearchData: ObservableObject {
             "channels"
         }
         
-        guard let url = URL(string: "https://api.are.na/v2/search/\(option)?q=\(searchTerm)&page=\(currentPage)&per=20") else {
+        let encodedSearchTerm = searchTerm.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
+        
+        guard let url = URL(string: "https://api.are.na/v2/search/\(option)?q=\(encodedSearchTerm ?? searchTerm)&page=\(currentPage)&per=20") else {
             self.isLoading = false
             errorMessage = "Invalid URL"
             return
