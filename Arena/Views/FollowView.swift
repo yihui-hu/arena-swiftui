@@ -79,6 +79,7 @@ struct FollowView: View {
         }
         .toolbarBackground(Color("background"), for: .navigationBar)
         .toolbarBackground(.visible, for: .navigationBar)
+        .contentMargins(.top, 16)
     }
 }
 

@@ -58,6 +58,28 @@ struct ConnectFlower: View {
     }
 }
 
+struct InitialHistory: View {
+    @Environment(\.colorScheme) var colorScheme
+    
+    var body: some View {
+        VStack() {
+            RiveViewModel(fileName: colorScheme == .dark ? "history-dark" : "history-light").view()
+                .overlay(
+                    Text("Recently viewed blocks, channels and users will show up here")
+                        .font(.system(size: 14))
+                        .foregroundStyle(Color("surface-tertiary"))
+                        .fontDesign(.rounded)
+                        .fontWeight(.semibold)
+                        .frame(width: 240)
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 292)
+                )
+        }
+        .id(self.colorScheme)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
+    }
+}
+
 #Preview {
     // InitialSearch()
     // InitialPinnedChannels()

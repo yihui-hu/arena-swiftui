@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Defaults
+import RiveRuntime
 
 struct RabbitHoleView: View {
     @Default(.rabbitHole) var rabbitHole
@@ -16,24 +17,7 @@ struct RabbitHoleView: View {
         NavigationStack {
             HStack {
                 if rabbitHole.count == 0 {
-                    VStack(spacing: 16) {
-                        Image(systemName: "clock.arrow.circlepath")
-                            .imageScale(.large)
-                            .frame(width: 52, height: 52)
-                            .background(Color("surface"))
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
-                            .foregroundStyle(Color("text-secondary"))
-                            .fontWeight(.heavy)
-                            .fontDesign(.rounded)
-                        
-                        Text("Recently viewed blocks, channels and users will show up here")
-                            .font(.system(size: 14))
-                            .foregroundStyle(Color("surface-tertiary"))
-                            .fontDesign(.rounded)
-                            .fontWeight(.semibold)
-                            .frame(width: 240)
-                            .multilineTextAlignment(.center)
-                    }
+                    InitialHistory()
                 } else {
                     ScrollView {
                         LazyVStack(spacing: 8) {
@@ -66,8 +50,8 @@ struct RabbitHoleView: View {
                                                 .foregroundStyle(Color("text-secondary"))
                                                 .opacity(0.6)
                                         }
+                                        .frame(maxWidth: .infinity, maxHeight: 88, alignment: .leading)
                                     }
-                                    .frame(maxWidth: .infinity, maxHeight: 88, alignment: .leading)
                                     .padding(12)
                                     .background(Color("surface"))
                                     .clipShape(RoundedRectangle(cornerRadius: 16))
@@ -91,8 +75,7 @@ struct RabbitHoleView: View {
                                     NavigationLink(destination: UserView(userId: Int(rabbitHoleItem.itemId) ?? 0)) {
                                         VStack(alignment: .leading, spacing: 8) {
                                             HStack(spacing: 12) {
-                                                ProfilePic(imageURL: rabbitHoleItem.imageUrl, initials: rabbitHoleItem.subText)
-                                                    .clipShape(Circle())
+                                                ProfilePic(imageURL: rabbitHoleItem.imageUrl, initials: rabbitHoleItem.subText, cornerRadius: 80, background: "surface-secondary")
                                                 
                                                 VStack(alignment: .leading) {
                                                     Text("\(rabbitHoleItem.mainText)")
@@ -117,7 +100,7 @@ struct RabbitHoleView: View {
                                 } else if rabbitHoleItem.type == "block" {
                                     NavigationLink(destination: HistorySingleBlockView(blockId: Int(rabbitHoleItem.itemId) ?? 0)) {
                                         VStack(alignment: .leading, spacing: 12) {
-                                            HStack(alignment: .center, spacing: 12) {
+                                            HStack(alignment: .center, spacing: 16) {
                                                 if rabbitHoleItem.subtype == "attachment" || rabbitHoleItem.subtype == "text" {
                                                     Text(.init(rabbitHoleItem.subText))
                                                         .padding(16)
@@ -144,6 +127,8 @@ struct RabbitHoleView: View {
                                                         .fontDesign(.rounded)
                                                         .fontWeight(.medium)
                                                         .tint(.primary)
+                                                        .multilineTextAlignment(.leading)
+                                                        .lineLimit(4)
                                                 }
                                             }
                                             
@@ -152,11 +137,11 @@ struct RabbitHoleView: View {
                                                 .foregroundStyle(Color("text-secondary"))
                                                 .opacity(0.6)
                                         }
+                                        .frame(maxWidth: .infinity, maxHeight: 144, alignment: .leading)
+                                        .padding(12)
+                                        .background(Color("surface"))
+                                        .clipShape(RoundedRectangle(cornerRadius: 16))
                                     }
-                                    .frame(maxWidth: .infinity, maxHeight: 144, alignment: .leading)
-                                    .padding(12)
-                                    .background(Color("surface"))
-                                    .clipShape(RoundedRectangle(cornerRadius: 16))
                                 }
                             }
                         }
@@ -174,16 +159,22 @@ struct RabbitHoleView: View {
                         .fontWeight(.semibold)
                 }
                 
-//                ToolbarItem(placement: .topBarTrailing) {
-//                    Button(action: {
-//                        rabbitHole = []
-//                    }) {
-//                        Image(systemName: "trash.fill")
-//                            .foregroundStyle(Color("red"))
-//                            .font(.system(size: 14))
-//                            .fontWeight(.bold)
-//                    }
-//                }
+                if rabbitHole.count > 0 {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Menu {
+                            Button(role: .destructive) {
+                                rabbitHole = []
+                            } label: {
+                                Label("Erase history", systemImage: "trash")
+                            }
+                        } label: {
+                            Image(systemName: "eraser.line.dashed.fill")
+                                .foregroundStyle(Color("surface-text-secondary"))
+                                .font(.system(size: 14))
+                                .fontWeight(.bold)
+                        }
+                    }
+                }
             }
             .toolbarBackground(Color("background"), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)

@@ -45,8 +45,6 @@ struct ConnectView: View {
     var body: some View {
         NavigationStack {
             VStack {
-//                Spacer()
-                
                 ConnectFlower()
                 
                 Spacer()

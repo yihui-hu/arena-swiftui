@@ -499,6 +499,7 @@ struct BlockView: View {
             .padding(.top, showInfoModal ? screenHeight * 0.4 : 0)
             .padding(.bottom, showInfoModal ? 4 : 16)
         }
+        .contentMargins(.top, 16)
         .toast(isPresenting: $isToastPresenting, offsetY: 64) {
             AlertToast(displayMode: .hud, type: .regular, title: "Loading...")
         }

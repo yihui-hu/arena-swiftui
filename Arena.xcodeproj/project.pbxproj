@@ -73,6 +73,8 @@
 		8FB5D3982B210D17006D5D59 /* ConnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB5D3972B210D17006D5D59 /* ConnectView.swift */; };
 		8FB8CF2F2B19A3DA0073BBA9 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB8CF2E2B19A3DA0073BBA9 /* SettingsView.swift */; };
 		8FBBCE9B2B20413100149A62 /* ConnectExistingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FBBCE9A2B20413100149A62 /* ConnectExistingView.swift */; };
+		8FD329FC2B4671C000BC02DC /* history-dark.riv in Resources */ = {isa = PBXBuildFile; fileRef = 8FD329FA2B4671C000BC02DC /* history-dark.riv */; };
+		8FD32A012B4674EA00BC02DC /* history-light.riv in Resources */ = {isa = PBXBuildFile; fileRef = 8FD32A002B4674EA00BC02DC /* history-light.riv */; };
 		8FD7E3F02ADADF9000A15E16 /* BlockData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD7E3EF2ADADF9000A15E16 /* BlockData.swift */; };
 		8FD7E3F32ADB6EEC00A15E16 /* BlockPreviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD7E3F22ADB6EEC00A15E16 /* BlockPreviews.swift */; };
 		8FE584742AFDCCC600828308 /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 8FE584732AFDCCC600828308 /* Shimmer */; };
@@ -132,14 +134,14 @@
 /* Begin PBXCopyFilesBuildPhase section */
 		8F3853CD2B1301540020C643 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
+			buildActionMask = 8;
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
 				8F9BDD432B140B85002A2D44 /* BlockWidgetExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
+			runOnlyForDeploymentPostprocessing = 1;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
@@ -203,6 +205,8 @@
 		8FB5D3972B210D17006D5D59 /* ConnectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectView.swift; sourceTree = "<group>"; };
 		8FB8CF2E2B19A3DA0073BBA9 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		8FBBCE9A2B20413100149A62 /* ConnectExistingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectExistingView.swift; sourceTree = "<group>"; };
+		8FD329FA2B4671C000BC02DC /* history-dark.riv */ = {isa = PBXFileReference; lastKnownFileType = file; path = "history-dark.riv"; sourceTree = "<group>"; };
+		8FD32A002B4674EA00BC02DC /* history-light.riv */ = {isa = PBXFileReference; lastKnownFileType = file; path = "history-light.riv"; sourceTree = "<group>"; };
 		8FD7E3EF2ADADF9000A15E16 /* BlockData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockData.swift; sourceTree = "<group>"; };
 		8FD7E3F22ADB6EEC00A15E16 /* BlockPreviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockPreviews.swift; sourceTree = "<group>"; };
 		8FEACE2C2B43E5D0003DBAB1 /* AddToRabbitHole.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddToRabbitHole.swift; sourceTree = "<group>"; };
@@ -304,6 +308,8 @@
 		8F3A8B9B2B07B46900FC5F6D /* Rive */ = {
 			isa = PBXGroup;
 			children = (
+				8FD32A002B4674EA00BC02DC /* history-light.riv */,
+				8FD329FA2B4671C000BC02DC /* history-dark.riv */,
 				8FEACE432B45B1BB003DBAB1 /* channel-pin-dark.riv */,
 				8FEACE442B45B1BB003DBAB1 /* channel-pin-light.riv */,
 				8F713C3A2B37460A005483BD /* connect-flower-dark.riv */,
@@ -700,6 +706,8 @@
 				8FEACE452B45B1BB003DBAB1 /* channel-pin-dark.riv in Resources */,
 				8F713C3D2B37460A005483BD /* connect-flower-light.riv in Resources */,
 				8FF0C5A62AD89C3D007D5959 /* Assets.xcassets in Resources */,
+				8FD329FC2B4671C000BC02DC /* history-dark.riv in Resources */,
+				8FD32A012B4674EA00BC02DC /* history-light.riv in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1037,10 +1045,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Arena/Preview Content\"";
-				DEVELOPMENT_TEAM = 5T685YSQDF;
+				DEVELOPMENT_TEAM = DWPGCY8DQB;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Arena/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Are:na";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Allow to save photos and media from Are.na channels";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -1051,7 +1061,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.childrenofthesun.Arena;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yihuihu.Arena;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -1068,10 +1078,12 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Arena/Preview Content\"";
-				DEVELOPMENT_TEAM = 5T685YSQDF;
+				DEVELOPMENT_TEAM = DWPGCY8DQB;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Arena/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Are:na";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Allow to save photos and media from Are.na channels";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -1082,7 +1094,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.childrenofthesun.Arena;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yihuihu.Arena;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

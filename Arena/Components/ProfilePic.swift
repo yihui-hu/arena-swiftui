@@ -15,13 +15,15 @@ struct ProfilePic: View {
     let fontSize: CGFloat?
     let dimension: CGFloat?
     let cornerRadius: CGFloat?
+    let background: String?
     
-    init(imageURL: String, initials: String, fontSize: CGFloat? = 12, dimension: CGFloat? = 40, cornerRadius: CGFloat? = 8) {
+    init(imageURL: String, initials: String, fontSize: CGFloat? = 12, dimension: CGFloat? = 40, cornerRadius: CGFloat? = 8, background: String? = "surface") {
         self.imageURL = imageURL
         self.initials = initials
         self.fontSize = fontSize
         self.dimension = dimension
         self.cornerRadius = cornerRadius
+        self.background = background
     }
     
     var body: some View {
@@ -35,11 +37,11 @@ struct ProfilePic: View {
                     Image(systemName: "photo")
                         .foregroundColor(Color("surface-text-secondary"))
                         .frame(width: dimension ?? 40, height: dimension ?? 40)
-                        .background(Color("surface"))
+                        .background(Color(background ?? "surface"))
                         .clipShape(RoundedRectangle(cornerRadius: cornerRadius ?? 8))
                 case .success(let image):
                     ZStack {
-                        Color("surface")
+                        Color(background ?? "surface")
                         
                         Text(initials)
                             .font(.system(size: fontSize ?? 12))
@@ -55,7 +57,7 @@ struct ProfilePic: View {
             LazyImage(url: url) { state in
                 if let image = state.image {
                     ZStack {
-                        Color("surface")
+                        Color(background ?? "surface")
                         
                         Text(initials)
                             .font(.system(size: fontSize ?? 12))
@@ -70,13 +72,13 @@ struct ProfilePic: View {
                     Image(systemName: "questionmark.folder.fill")
                         .foregroundColor(Color("surface-text-secondary"))
                         .frame(width: dimension ?? 40, height: dimension ?? 40)
-                        .background(Color("surface"))
+                        .background(Color(background ?? "surface"))
                         .clipShape(RoundedRectangle(cornerRadius: cornerRadius ?? 8))
                 } else {
                     Image(systemName: "photo")
                         .foregroundColor(Color("surface-text-secondary"))
                         .frame(width: dimension ?? 40, height: dimension ?? 40)
-                        .background(Color("surface"))
+                        .background(Color(background ?? "surface"))
                         .clipShape(RoundedRectangle(cornerRadius: cornerRadius ?? 8))
                 }
             }
