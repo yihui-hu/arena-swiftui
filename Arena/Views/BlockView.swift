@@ -13,7 +13,7 @@ import Defaults
 struct BlockView: View {
     let blockData: Block
     let channelSlug: String
-    let bottomPaddingExtra: CGFloat = UIDevice.current.hasNotch ? 12.0 : 24.0
+    let bottomPaddingExtra: CGFloat = Defaults[.hasNotch] ? 12.0 : 24.0
     @StateObject private var channelData: ChannelData
     @StateObject private var connectionsViewModel = BlockConnectionsData()
     @StateObject private var commentsViewModel = BlockCommentsData()

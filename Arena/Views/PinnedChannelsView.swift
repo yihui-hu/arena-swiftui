@@ -20,7 +20,7 @@ struct PinnedChannelsView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(alignment: .center) {
+            HStack(alignment: .center) {
                 if pinnedChannels.isEmpty {
                     InitialPinnedChannels()
                 } else if pinnedChannelsData.isLoading {
@@ -28,7 +28,7 @@ struct PinnedChannelsView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 } else {
                     ScrollView {
-                        LazyVStack(spacing: 16) {
+                        LazyVStack(spacing: 12) {
                             ForEach(pinnedChannelsData.channels ?? [], id: \.id) { channel in
                                 ChannelCard(channel: channel, showPin: false)
                                     .contentShape(.contextMenuPreview, RoundedRectangle(cornerRadius: 32))
@@ -49,7 +49,7 @@ struct PinnedChannelsView: View {
                                                 Defaults[.showToast] = false
                                             }
                                         } label: {
-                                            Label(pinnedChannels.contains(channel.id) ? "Unpin" : "Pin", systemImage: pinnedChannels.contains(channel.id) ? "heart.fill" : "heart")
+                                            Label(pinnedChannels.contains(channel.id) ? "Remove bookmark" : "Bookmark", systemImage: pinnedChannels.contains(channel.id) ? "bookmark.fill" : "bookmark")
                                         }
                                     }
                             }
@@ -72,7 +72,7 @@ struct PinnedChannelsView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
-                    Text("Pinned")
+                    Text("Bookmarks")
                         .foregroundStyle(Color("text-primary"))
                         .font(.system(size: 20))
                         .fontDesign(.rounded)

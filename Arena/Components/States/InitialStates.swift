@@ -32,9 +32,9 @@ struct InitialPinnedChannels: View {
     
     var body: some View {
         VStack() {
-            RiveViewModel(fileName: colorScheme == .dark ? "channel-pin-dark" : "channel-pin-light").view()
+            RiveViewModel(fileName: colorScheme == .dark ? "channel-pin-dark-2" : "channel-pin-light-2").view()
                 .overlay(
-                    Text("Pin your first channel!")
+                    Text("Bookmark any channel!")
                         .font(.system(size: 14))
                         .foregroundStyle(Color("surface-tertiary"))
                         .fontDesign(.rounded)

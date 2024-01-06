@@ -16,7 +16,7 @@ struct HistorySingleBlockView: View {
     @StateObject private var connectionsViewModel = BlockConnectionsData()
     @StateObject private var commentsViewModel = BlockCommentsData()
     @State private var isLoadingBlockConnectionsComments: Bool = false
-    let bottomPaddingExtra: CGFloat = UIDevice.current.hasNotch ? 12.0 : 24.0
+    let bottomPaddingExtra: CGFloat = Defaults[.hasNotch] ? 12.0 : 24.0
     
     @State private var showInfoModal: Bool = false
     @State private var selectedConnectionSlug: String?
@@ -185,7 +185,7 @@ struct HistorySingleBlockView: View {
                                                 .fontDesign(.rounded)
                                                 .fontWeight(.semibold)
                                             Spacer()
-                                            NavigationLink(destination: UserView(userId: byId ?? 0)) {
+                                            NavigationLink(destination: UserView(userId: byId)) {
                                                 Text("\(by != "" ? by : "unknown")")
                                                     .foregroundStyle(Color("text-primary"))
                                                     .fontWeight(.medium)

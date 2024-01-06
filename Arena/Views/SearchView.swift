@@ -390,7 +390,7 @@ struct SearchChannelPreview: View {
                 Spacer()
                 
                 if (pinnedChannels.contains(channel.id)) {
-                    Image(systemName: "heart.fill")
+                    Image(systemName: "bookmark.fill")
                         .foregroundStyle(Color("surface-text-secondary"))
                         .imageScale(.small)
                 }
@@ -419,7 +419,7 @@ struct SearchChannelPreview: View {
             Button {
                 togglePin(channel.id)
             } label: {
-                Label(pinnedChannels.contains(channel.id) ? "Unpin" : "Pin", systemImage: pinnedChannels.contains(channel.id) ? "heart.fill" : "heart")
+                Label(pinnedChannels.contains(channel.id) ? "Remove bookmark" : "Bookmark", systemImage: pinnedChannels.contains(channel.id) ? "bookmark.fill" : "bookmark")
             }
         }
     }

@@ -46,8 +46,8 @@ struct ChannelCard: View {
     
     var body: some View {
         NavigationLink(destination: ChannelView(channelSlug: channel.slug)) {
-            VStack(alignment: .leading) {
-                HStack() {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(alignment: .center) {
                     HStack(spacing: 4) {
                         if channel.status != "closed" {
                             Image(systemName: "circle.fill")
@@ -61,18 +61,25 @@ struct ChannelCard: View {
                     
                     Spacer()
                     
-                    HStack(spacing: 8) {
-                        Text("\(channel.length) items")
-                            .font(.system(size: 15))
-                            .foregroundColor(Color("surface-text-secondary"))
-                            .fontWeight(.medium)
-                        
-                        if let showPin = showPin, showPin {
-                            if (pinnedChannels.contains(channel.id)) {
-                                Image(systemName: "heart.fill")
-                                    .foregroundStyle(Color("surface-text-secondary"))
-                                    .imageScale(.small)
-                            }
+                    HStack(spacing: 2) {
+//                        if channel.status != "closed" {
+//                            Text("\(channel.status == "public" ? "open" : "private"), \(channel.length) items")
+//                                .font(.system(size: 15))
+//                                .foregroundColor(Color("surface-text-secondary"))
+//                                .fontWeight(.medium)
+//                        } else {
+                            Text("\(channel.length) items")
+                                .font(.system(size: 15))
+                                .foregroundColor(Color("surface-text-secondary"))
+                                .fontWeight(.medium)
+//                        }
+                    }
+                    
+                    if let showPin = showPin, showPin {
+                        if (pinnedChannels.contains(channel.id)) {
+                            Image(systemName: "bookmark.fill")
+                                .foregroundStyle(Color("surface-text-secondary"))
+                                .imageScale(.small)
                         }
                     }
                 }
@@ -84,10 +91,12 @@ struct ChannelCard: View {
                 }
             }
             .fontDesign(.rounded)
-            .padding(16)
+            .padding(.horizontal, 16)
+            .padding(.bottom, 16)
+            .padding(.top, 14)
             .background(Color("surface"))
             .cornerRadius(32)
-        }        
+        }
         .simultaneousGesture(TapGesture().onEnded{
             let id = UUID()
             let formatter = DateFormatter()

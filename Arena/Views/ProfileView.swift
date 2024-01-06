@@ -29,10 +29,10 @@ struct ProfileView: View {
                     
                     ToolbarItem(placement: .topBarTrailing) {
                         NavigationLink(destination: SettingsView()) {
-                            Image(systemName: "smallcircle.filled.circle.fill")
+                            Image(systemName: "gearshape.fill")
                                 .resizable()
                                 .scaledToFit()
-                                .fontWeight(.heavy)
+                                .fontWeight(.ultraLight)
                                 .frame(width: 20, height: 20)
                         }
                         .foregroundStyle(Color("surface-text-secondary"))

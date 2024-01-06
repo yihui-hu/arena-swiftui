@@ -96,7 +96,7 @@ struct OnboardingView: View {
                             }
                         }
                         .frame(maxWidth: .infinity, maxHeight: 48)
-                        .background(Color.blue)
+                        .background(Color("blue-button"))
                         .foregroundColor(Color.white)
                         .cornerRadius(16)
                     }
@@ -185,20 +185,137 @@ struct VerificationView: View {
                         .fontWeight(.medium)
                         .fontDesign(.rounded)
                     
-                    Button(action: {
-                        Defaults[.accessToken] = accessToken
-                        Defaults[.username] = username
-                        Defaults[.userId] = userId
-                        Defaults[.onboardingDone] = true
-                    }) {
-                        Text("Yes!")
-                            .frame(maxWidth: .infinity, maxHeight: 48)
-                            .background(Color.blue)
-                            .foregroundColor(Color.white)
-                            .fontWeight(.semibold)
-                            .fontDesign(.rounded)
-                            .cornerRadius(16)
+                    HStack(spacing: 12) {
+                        Button(action: {
+                            dismiss()
+                        }) {
+                            Text("No")
+                                .frame(maxWidth: .infinity, maxHeight: 48)
+                                .background(Color("surface"))
+                                .foregroundColor(Color("text-primary"))
+                                .fontWeight(.semibold)
+                                .fontDesign(.rounded)
+                                .cornerRadius(16)
+                        }
+                        
+                        NavigationLink(destination: DisclaimerView(accessToken: $accessToken, username: $username, userId: $userId)) {
+                            Text("Yes!")
+                                .frame(maxWidth: .infinity, maxHeight: 48)
+                                .background(Color("blue-button"))
+                                .foregroundColor(Color.white)
+                                .fontWeight(.semibold)
+                                .fontDesign(.rounded)
+                                .cornerRadius(16)
+                        }
                     }
+                }
+            }
+            .padding(32)
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden()
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button(action: {
+                    dismiss()
+                }) {
+                    BackButton()
+                }
+            }
+        }
+        .toolbarBackground(Color("background"), for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+    }
+}
+
+struct DisclaimerView: View {
+    @Binding var accessToken: String
+    @Binding var username: String
+    @Binding var userId: Int
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationView {
+            VStack {
+                VStack(alignment: .leading, spacing: 16) {
+                    Spacer()
+                    
+                    Text("Please note that this app is not meant to replace the existing Are.na app. Some key features currently missing include")
+                        .foregroundStyle(Color("text-primary"))
+                        .fontWeight(.medium)
+                        .fontDesign(.rounded)
+                    
+                    VStack(spacing: 12 ) {
+                        HStack(alignment: .center, spacing: 16) {
+                            Image(systemName: "camera.macro.circle.fill")
+                                .imageScale(.medium)
+                                .foregroundStyle(Color("text-secondary"))
+                            
+                            Text("Ability to upload photos")
+                                .foregroundStyle(Color("text-primary"))
+                                .fontWeight(.medium)
+                                .fontDesign(.rounded)
+                        }
+                        .padding(16)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(Color("surface"))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        
+                        HStack(alignment: .center, spacing: 16) {
+                            Image(systemName: "bell.fill")
+                                .imageScale(.medium)
+                                .foregroundStyle(Color("text-secondary"))
+                            
+                            Text("Feed and notifications")
+                                .foregroundStyle(Color("text-primary"))
+                                .fontWeight(.medium)
+                                .fontDesign(.rounded)
+                        }
+                        .padding(16)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(Color("surface"))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        
+                        HStack(alignment: .top, spacing: 16) {
+                            Image(systemName: "doc.fill")
+                                .imageScale(.medium)
+                                .foregroundStyle(Color("text-secondary"))
+                            
+                            Text("Viewing attachments (mp4, pdf, etc.)")
+                                .foregroundStyle(Color("text-primary"))
+                                .fontWeight(.medium)
+                                .fontDesign(.rounded)
+                        }
+                        .padding(16)
+                        .frame(maxWidth: .infinity, maxHeight: 76, alignment: .leading)
+                        .background(Color("surface"))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                    }
+                    
+                    Text("These omissions are due to the current limitations of Are.na's API.")
+                        .foregroundStyle(Color("text-primary"))
+                        .fontWeight(.medium)
+                        .fontDesign(.rounded)
+                    
+                    Spacer()
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                
+                Spacer()
+                            
+                Button(action: {
+                    Defaults[.accessToken] = accessToken
+                    Defaults[.username] = username
+                    Defaults[.userId] = userId
+                    Defaults[.onboardingDone] = true
+                }) {
+                    Text("I understand")
+                        .frame(maxWidth: .infinity, maxHeight: 48)
+                        .background(Color("blue-button"))
+                        .foregroundColor(Color.white)
+                        .fontWeight(.semibold)
+                        .fontDesign(.rounded)
+                        .cornerRadius(16)
                 }
             }
             .padding(32)

@@ -301,7 +301,7 @@ struct ChannelView: View {
                 Button(action: {
                     togglePin(channelId)
                 }) {
-                    Image(systemName: clickedPin ? channelPinned ? "heart.fill" : "heart" : Defaults[.pinnedChannels].contains(channelId) ? "heart.fill" : "heart")
+                    Image(systemName: clickedPin ? channelPinned ? "bookmark.fill" : "bookmark" : Defaults[.pinnedChannels].contains(channelId) ? "bookmark.fill" : "bookmark")
                         .fontWeight(.bold)
                         .imageScale(.small)
                         .foregroundStyle(Color("text-primary"))

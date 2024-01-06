@@ -167,7 +167,7 @@ struct UserInfo: View {
                                     Button {
                                         togglePin(channel.id)
                                     } label: {
-                                        Label(pinnedChannels.contains(channel.id) ? "Unpin" : "Pin", systemImage: pinnedChannels.contains(channel.id) ? "heart.fill" : "heart")
+                                        Label(pinnedChannels.contains(channel.id) ? "Remove bookmark" : "Bookmark", systemImage: pinnedChannels.contains(channel.id) ? "bookmark.fill" : "bookmark")
                                     }
                                 }
                         }

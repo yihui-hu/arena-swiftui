@@ -68,7 +68,7 @@ struct RabbitHoleView: View {
                                         Button {
                                             togglePin(Int(rabbitHoleItem.imageUrl) ?? 0)
                                         } label: {
-                                            Label(pinnedChannels.contains(Int(rabbitHoleItem.imageUrl) ?? 0) ? "Unpin" : "Pin", systemImage: pinnedChannels.contains(Int(rabbitHoleItem.imageUrl) ?? 0) ? "heart.fill" : "heart")
+                                            Label(pinnedChannels.contains(Int(rabbitHoleItem.imageUrl) ?? 0) ? "Remove bookmark" : "Bookmark", systemImage: pinnedChannels.contains(Int(rabbitHoleItem.imageUrl) ?? 0) ? "bookmark.fill" : "bookmark")
                                         }
                                     }
                                 } else if rabbitHoleItem.type == "user" {

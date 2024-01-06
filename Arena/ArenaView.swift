@@ -14,11 +14,11 @@ struct ArenaView: View {
     
     var body: some View {
         StatefulTabView(selectedIndex: $tab) {
-            Tab(systemImageName: "heart.fill") {
+            Tab(systemImageName: "bookmark.fill") {
                 PinnedChannelsView()
             }
             
-            Tab(systemImageName: "asterisk") {
+            Tab(systemImageName: "clock.fill") {
                 RabbitHoleView()
             }
             
@@ -34,17 +34,6 @@ struct ArenaView: View {
                 ProfileView(userId: Defaults[.userId])
             }
         }
-    }
-}
-
-extension UINavigationController: UIGestureRecognizerDelegate {
-    override open func viewDidLoad() {
-        super.viewDidLoad()
-        interactivePopGestureRecognizer?.delegate = self
-    }
-    
-    public func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        return viewControllers.count > 1
     }
 }
 

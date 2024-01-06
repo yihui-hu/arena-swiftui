@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Defaults
 
 public struct Tab {
     var view: AnyView
@@ -68,12 +69,13 @@ public struct Tab {
 }
 
 extension UIImage {
-    func scaledToFit(size: CGSize = CGSize(width: 24, height: 24), topPadding: CGFloat = UIDevice.current.hasNotch ? 18.0 : 8.0) -> UIImage {
+    func scaledToFit(size: CGSize = CGSize(width: 24, height: 24)) -> UIImage {
         let aspectFitSize: CGSize
         let imageSize = self.size
         let aspectWidth = size.width / imageSize.width
         let aspectHeight = size.height / imageSize.height
         let aspectRatio = min(aspectWidth, aspectHeight)
+        let topPadding = Defaults[.hasNotch] ? 18.0 : 8.0
 
         aspectFitSize = CGSize(width: imageSize.width * aspectRatio, height: imageSize.height * aspectRatio)
 
@@ -85,17 +87,5 @@ extension UIImage {
         UIGraphicsEndImageContext()
 
         return scaledImage
-    }
-}
-
-extension UIDevice {
-    /// Returns `true` if the device has a notch
-    var hasNotch: Bool {
-        guard #available(iOS 11.0, *), let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first else { return false }
-        if UIDevice.current.orientation.isPortrait {
-            return window.safeAreaInsets.top >= 44
-        } else {
-            return window.safeAreaInsets.left > 0 || window.safeAreaInsets.right > 0
-        }
     }
 }

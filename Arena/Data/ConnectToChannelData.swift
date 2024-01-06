@@ -139,7 +139,7 @@ func connectImagesToChannel(channels: [String], selectedPhotosData: [Data], titl
             request.setValue("Bearer \(Defaults[.accessToken])", forHTTPHeaderField: "Authorization")
             
             for imageData in selectedPhotosData {
-                let image = UIImage(data: imageData)
+//                let image = UIImage(data: imageData)
                 
                 let payload: [String: Any] = [
                     "source": imageData.base64EncodedString(),
