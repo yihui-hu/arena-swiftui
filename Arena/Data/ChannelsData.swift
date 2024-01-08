@@ -40,10 +40,10 @@ final class ChannelsData: ObservableObject {
         guard !isLoading else {
             return
         }
-
+        
         self.isLoading = true
         errorMessage = nil
-
+        
         guard let url = URL(string: "https://api.are.na/v2/users/\(userId)/channels?page=\(currentPage)&per=10") else {
             self.isLoading = false
             errorMessage = "Invalid URL"
@@ -53,13 +53,13 @@ final class ChannelsData: ObservableObject {
         // Create a URLRequest and set the "Authorization" header with your bearer token
         var request = URLRequest(url: url)
         request.setValue("Bearer \(Defaults[.accessToken])", forHTTPHeaderField: "Authorization")
-
+        
         let task = URLSession.shared.dataTask(with: request) { [unowned self] (data, response, error) in
             if error != nil {
                 errorMessage = "Error retrieving data."
                 return
             }
-
+            
             if let data = data {
                 let decoder = JSONDecoder()
                 do {
@@ -73,6 +73,11 @@ final class ChannelsData: ObservableObject {
                         }
                         self.totalPages = newChannels.totalPages
                         self.currentPage += 1
+                        
+                        // Fetch contents for each channel
+//                        for channel in newChannels.channels {
+//                            self.fetchChannelContents(for: channel)
+//                        }
                     }
                 } catch let decodingError {
                     // Print the decoding error for debugging
@@ -86,39 +91,41 @@ final class ChannelsData: ObservableObject {
                 self.isLoading = false
             }
         }
-
+        
         task.resume()
     }
-
-//    // Function to fetch contents for a specific channel
-//    private func fetchChannelContents(for channel: Channel, atIndex index: Int) {
-//        guard let url = URL(string: "https://api.are.na/v2/\(channel.id)/contents") else {
-//            // Handle invalid URL
+    
+//    private func fetchChannelContents(for channel: ArenaChannelPreview) {
+//        print(channel.slug)
+//        
+//        guard let url = URL(string: "https://api.are.na/v2/\(channel.slug)/contents?page=1&sort=position&direction=asc") else {
 //            return
 //        }
-//
-//        // Create a URLRequest
+//        
 //        var request = URLRequest(url: url)
-//        // Set the Authorization header, etc.
-//
-//        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
-//            if error != nil {
-//                // Handle error
+//        request.setValue("Bearer \(Defaults[.accessToken])", forHTTPHeaderField: "Authorization")
+//        
+//        
+//        URLSession.shared.dataTask(with: request) { [unowned self] (data, response, error) in
+//            if let error = error {
+//                print("Error fetching channel contents: \(error.localizedDescription)")
 //                return
 //            }
-//
+//            
 //            if let data = data {
+//                let decoder = JSONDecoder()
 //                do {
-//                    let contents = try JSONDecoder().decode(ChannelContents.self, from: data)
+//                    let contents = try decoder.decode(ArenaChannelContents.self, from: data)
 //                    DispatchQueue.main.async {
-//                        self.channels?.channels[index].contents = contents
+//                        if let index = self.channels?.channels.firstIndex(where: { $0.id == channel.id }) {
+//                            self.channels?.channels[index].contents = contents.contents
+//                        }
 //                    }
 //                } catch {
-//                    // Handle decoding error
+//                    print("Error decoding channel contents: \(error.localizedDescription)")
 //                }
 //            }
 //        }
-//
-//        task.resume()
+//        .resume()
 //    }
 }

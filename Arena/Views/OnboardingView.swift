@@ -240,7 +240,7 @@ struct DisclaimerView: View {
                 VStack(alignment: .leading, spacing: 16) {
                     Spacer()
                     
-                    Text("Please note that this app is not meant to replace the existing Are.na app. Some key features currently missing include")
+                    Text("Please note that this app is not meant to replace the existing Are.na app. Some key features currently missing include:")
                         .foregroundStyle(Color("text-primary"))
                         .fontWeight(.medium)
                         .fontDesign(.rounded)

@@ -54,62 +54,48 @@ struct ArenaApp: App {
     
     var body: some Scene {
         WindowGroup {
-            GeometryReader { geometry in
-                VStack {
-                    if onboardingDone {
-                        ArenaView()
-                            .preferredColorScheme(selectedAppearance == 0 ? nil : selectedAppearance == 1 ? .light : .dark)
-                            .sheet(isPresented: $connectSheetOpen) {
-                                ConnectExistingView()
-                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                                    .presentationDetents([.fraction(0.64), .large])
-                                    .presentationBackground(Color("sheet"))
-                                    .presentationContentInteraction(.scrolls)
-                                    .presentationCornerRadius(32)
-                                    .contentMargins(16)
-                            }
-                            .safariView(isPresented: $safariViewOpen) {
-                                SafariView(
-                                    url: URL(string: safariViewURL)!,
-                                    configuration: SafariView.Configuration(
-                                        entersReaderIfAvailable: false,
-                                        barCollapsingEnabled: true
-                                    )
-                                )
-                                .preferredBarAccentColor(.clear)
-                                .preferredControlAccentColor(.accentColor)
-                                .dismissButtonStyle(.done)
-                            }
-                            .toast(isPresenting: $showToast, offsetY: Defaults[.hasNotch] ? 64 : 32) {
-                                AlertToast(displayMode: .hud, type: .regular, title: toastMessage)
-                            }
-                    } else {
-                        OnboardingView()
-                            .preferredColorScheme(selectedAppearance == 0 ? nil : selectedAppearance == 1 ? .light : .dark)
-                            .safariView(isPresented: $safariViewOpen) {
-                                SafariView(
-                                    url: URL(string: safariViewURL)!,
-                                    configuration: SafariView.Configuration(
-                                        entersReaderIfAvailable: false,
-                                        barCollapsingEnabled: true
-                                    )
-                                )
-                                .preferredBarAccentColor(.clear)
-                                .preferredControlAccentColor(.accentColor)
-                                .dismissButtonStyle(.done)
-                            }
+            if onboardingDone {
+                ArenaView()
+                    .preferredColorScheme(selectedAppearance == 0 ? nil : selectedAppearance == 1 ? .light : .dark)
+                    .sheet(isPresented: $connectSheetOpen) {
+                        ConnectExistingView()
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                            .presentationDetents([.fraction(0.64), .large])
+                            .presentationBackground(Color("sheet"))
+                            .presentationContentInteraction(.scrolls)
+                            .presentationCornerRadius(32)
+                            .contentMargins(16)
                     }
-                }
-                .onAppear {
-                    // Check the top safe area inset
-                    let topInset = geometry.safeAreaInsets.top
-                    // Devices with a notch or dynamic island typically have a top inset greater than 20
-                    if topInset >= 44 {
-                        Defaults[.hasNotch] = true
-                    } else {
-                        Defaults[.hasNotch] = false
+                    .safariView(isPresented: $safariViewOpen) {
+                        SafariView(
+                            url: URL(string: safariViewURL)!,
+                            configuration: SafariView.Configuration(
+                                entersReaderIfAvailable: false,
+                                barCollapsingEnabled: true
+                            )
+                        )
+                        .preferredBarAccentColor(.clear)
+                        .preferredControlAccentColor(.accentColor)
+                        .dismissButtonStyle(.done)
                     }
-                }
+                    .toast(isPresenting: $showToast, offsetY: Defaults[.hasNotch] ? 64 : 32) {
+                        AlertToast(displayMode: .hud, type: .regular, title: toastMessage)
+                    }
+            } else {
+                OnboardingView()
+                    .preferredColorScheme(selectedAppearance == 0 ? nil : selectedAppearance == 1 ? .light : .dark)
+                    .safariView(isPresented: $safariViewOpen) {
+                        SafariView(
+                            url: URL(string: safariViewURL)!,
+                            configuration: SafariView.Configuration(
+                                entersReaderIfAvailable: false,
+                                barCollapsingEnabled: true
+                            )
+                        )
+                        .preferredBarAccentColor(.clear)
+                        .preferredControlAccentColor(.accentColor)
+                        .dismissButtonStyle(.done)
+                    }
             }
         }
     }
