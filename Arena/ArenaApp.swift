@@ -48,59 +48,68 @@ struct ArenaApp: App {
     init() {
         UIPageControl.appearance().currentPageIndicatorTintColor = .textPrimary
         UIPageControl.appearance().pageIndicatorTintColor = UIColor.textPrimary.withAlphaComponent(0.2)
-        if UIDevice.current.hasNotch {
-            Defaults[.hasNotch] = true
-        } else {
-            Defaults[.hasNotch] = false
-        }
         self.connectSheetOpen = false
         self.safariViewOpen = false
     }
     
     var body: some Scene {
         WindowGroup {
-            if onboardingDone {
-                ArenaView()
-                    .preferredColorScheme(selectedAppearance == 0 ? nil : selectedAppearance == 1 ? .light : .dark)
-                    .sheet(isPresented: $connectSheetOpen) {
-                        ConnectExistingView()
-                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-                            .presentationDetents([.fraction(0.64), .large])
-                            .presentationBackground(Color("sheet"))
-                            .presentationContentInteraction(.scrolls)
-                            .presentationCornerRadius(32)
-                            .contentMargins(16)
+            GeometryReader { geometry in
+                VStack {
+                    if onboardingDone {
+                        ArenaView()
+                            .preferredColorScheme(selectedAppearance == 0 ? nil : selectedAppearance == 1 ? .light : .dark)
+                            .sheet(isPresented: $connectSheetOpen) {
+                                ConnectExistingView()
+                                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+                                    .presentationDetents([.fraction(0.64), .large])
+                                    .presentationBackground(Color("sheet"))
+                                    .presentationContentInteraction(.scrolls)
+                                    .presentationCornerRadius(32)
+                                    .contentMargins(16)
+                            }
+                            .safariView(isPresented: $safariViewOpen) {
+                                SafariView(
+                                    url: URL(string: safariViewURL)!,
+                                    configuration: SafariView.Configuration(
+                                        entersReaderIfAvailable: false,
+                                        barCollapsingEnabled: true
+                                    )
+                                )
+                                .preferredBarAccentColor(.clear)
+                                .preferredControlAccentColor(.accentColor)
+                                .dismissButtonStyle(.done)
+                            }
+                            .toast(isPresenting: $showToast, offsetY: Defaults[.hasNotch] ? 64 : 32) {
+                                AlertToast(displayMode: .hud, type: .regular, title: toastMessage)
+                            }
+                    } else {
+                        OnboardingView()
+                            .preferredColorScheme(selectedAppearance == 0 ? nil : selectedAppearance == 1 ? .light : .dark)
+                            .safariView(isPresented: $safariViewOpen) {
+                                SafariView(
+                                    url: URL(string: safariViewURL)!,
+                                    configuration: SafariView.Configuration(
+                                        entersReaderIfAvailable: false,
+                                        barCollapsingEnabled: true
+                                    )
+                                )
+                                .preferredBarAccentColor(.clear)
+                                .preferredControlAccentColor(.accentColor)
+                                .dismissButtonStyle(.done)
+                            }
                     }
-                    .safariView(isPresented: $safariViewOpen) {
-                        SafariView(
-                            url: URL(string: safariViewURL)!,
-                            configuration: SafariView.Configuration(
-                                entersReaderIfAvailable: false,
-                                barCollapsingEnabled: true
-                            )
-                        )
-                        .preferredBarAccentColor(.clear)
-                        .preferredControlAccentColor(.accentColor)
-                        .dismissButtonStyle(.done)
+                }
+                .onAppear {
+                    // Check the top safe area inset
+                    let topInset = geometry.safeAreaInsets.top
+                    // Devices with a notch or dynamic island typically have a top inset greater than 20
+                    if topInset >= 44 {
+                        Defaults[.hasNotch] = true
+                    } else {
+                        Defaults[.hasNotch] = false
                     }
-                    .toast(isPresenting: $showToast, offsetY: Defaults[.hasNotch] ? 64 : 32) {
-                        AlertToast(displayMode: .hud, type: .regular, title: toastMessage)
-                    }
-            } else {
-                OnboardingView()
-                    .preferredColorScheme(selectedAppearance == 0 ? nil : selectedAppearance == 1 ? .light : .dark)
-                    .safariView(isPresented: $safariViewOpen) {
-                        SafariView(
-                            url: URL(string: safariViewURL)!,
-                            configuration: SafariView.Configuration(
-                                entersReaderIfAvailable: false,
-                                barCollapsingEnabled: true
-                            )
-                        )
-                        .preferredBarAccentColor(.clear)
-                        .preferredControlAccentColor(.accentColor)
-                        .dismissButtonStyle(.done)
-                    }
+                }
             }
         }
     }
@@ -118,21 +127,13 @@ extension UINavigationController: UIGestureRecognizerDelegate {
 }
 
 extension UIDevice {
+    /// Returns `true` if the device has a notch
     var hasNotch: Bool {
         guard #available(iOS 11.0, *), let window = UIApplication.shared.windows.filter({$0.isKeyWindow}).first else { return false }
-        //if UIDevice.current.orientation.isPortrait {  //Device Orientation != Interface Orientation
-        if let o = windowInterfaceOrientation?.isPortrait, o == true {
+        if UIDevice.current.orientation.isPortrait {
             return window.safeAreaInsets.top >= 44
         } else {
             return window.safeAreaInsets.left > 0 || window.safeAreaInsets.right > 0
-        }
-    }
-    
-    private var windowInterfaceOrientation: UIInterfaceOrientation? {
-        if #available(iOS 13.0, *) {
-            return UIApplication.shared.windows.first?.windowScene?.interfaceOrientation
-        } else {
-            return UIApplication.shared.statusBarOrientation
         }
     }
 }

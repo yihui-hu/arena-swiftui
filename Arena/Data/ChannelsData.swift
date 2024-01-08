@@ -90,4 +90,35 @@ final class ChannelsData: ObservableObject {
         task.resume()
     }
 
+//    // Function to fetch contents for a specific channel
+//    private func fetchChannelContents(for channel: Channel, atIndex index: Int) {
+//        guard let url = URL(string: "https://api.are.na/v2/\(channel.id)/contents") else {
+//            // Handle invalid URL
+//            return
+//        }
+//
+//        // Create a URLRequest
+//        var request = URLRequest(url: url)
+//        // Set the Authorization header, etc.
+//
+//        let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
+//            if error != nil {
+//                // Handle error
+//                return
+//            }
+//
+//            if let data = data {
+//                do {
+//                    let contents = try JSONDecoder().decode(ChannelContents.self, from: data)
+//                    DispatchQueue.main.async {
+//                        self.channels?.channels[index].contents = contents
+//                    }
+//                } catch {
+//                    // Handle decoding error
+//                }
+//            }
+//        }
+//
+//        task.resume()
+//    }
 }
