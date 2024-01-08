@@ -75,11 +75,16 @@ final class ChangeAppIconViewModel: ObservableObject {
 struct ChangeAppIconView: View {
     @StateObject var viewModel = ChangeAppIconViewModel()
     @Environment(\.dismiss) private var dismiss
+    @State private var showingAppIconAlert = false
     
     var body: some View {
         HStack(spacing: 12) {
             ForEach(ChangeAppIconViewModel.AppIcon.allCases) { appIcon in
                 Button(action: {
+                    if Defaults[.appIconAlert] == false {
+                        showingAppIconAlert = true
+                         Defaults[.appIconAlert] = true
+                    }
                     withAnimation {
                         viewModel.updateAppIcon(to: appIcon)
                     }
@@ -95,6 +100,9 @@ struct ChangeAppIconView: View {
                         )
                 }
                 .buttonStyle(ScaleButtonStyle())
+                .alert("You may have to restart your phone to view icon changes.", isPresented: $showingAppIconAlert) {
+                    Button("OK", role: .cancel) { }
+                }
             }
         }
     }

@@ -292,8 +292,9 @@ struct DisclaimerView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 12))
                     }
                     
-                    Text("These omissions are due to the current limitations of Are.na's API.")
-                        .foregroundStyle(Color("text-primary"))
+                    Text("Some of these omissions are due to the current limitations of Are.na's API.")
+                        .font(.system(size: 14))
+                        .foregroundStyle(Color("text-secondary"))
                         .fontWeight(.medium)
                         .fontDesign(.rounded)
                     

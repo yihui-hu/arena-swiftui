@@ -158,7 +158,7 @@ struct SettingsView: View {
                     
                     Spacer()
                     
-                    Text("Are.na (0.0.1)")
+                    Text("Are.na (0.0.2)")
                         .font(.system(size: 14))
                         .foregroundStyle(Color("surface-tertiary"))
                         .fontWeight(.semibold)

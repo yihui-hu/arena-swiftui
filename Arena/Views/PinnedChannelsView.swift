@@ -43,7 +43,7 @@ struct PinnedChannelsView: View {
                                         
                                         Button {
                                             removePinnedChannel(channel.id)
-                                            Defaults[.toastMessage] = "Unpinned!"
+                                            Defaults[.toastMessage] = "Bookmark removed!"
                                             Defaults[.showToast] = true
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                                                 Defaults[.showToast] = false

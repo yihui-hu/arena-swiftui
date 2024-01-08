@@ -29,6 +29,7 @@ extension Defaults.Keys {
     static let safariViewOpen = Key<Bool>("safariViewOpen", default: false)
     static let safariViewURL = Key<String>("safariViewURL", default: "https://arena-ios-app.vercel.app")
     static let hasNotch = Key<Bool>("hasNotch", default: true)
+    static let appIconAlert = Key<Bool>("appIconAlert", default: false)
     
     // Rabbit hole
     static let rabbitHole = Key<[RabbitHoleItem]>("rabbitHole", default: [])
