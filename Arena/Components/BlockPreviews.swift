@@ -61,7 +61,8 @@ struct BlockPreview: View {
                             .tint(.primary)
                             .foregroundStyle(Color("text-primary"))
                             .font(.system(size: fontSize ?? 16))
-                            .frame(minHeight: geometry.size.height)
+                            .multilineTextAlignment(.leading)
+                            .frame(minWidth: geometry.size.width, minHeight: geometry.size.height, alignment: .leading)
                     }
                     .scrollIndicators(.hidden)
                     // Prevents parent refreshable from activating. Pray for this colleague's health: https://www.reddit.com/r/SwiftUI/comments/ynxzkd/prevent_refreshable_on_nested_scrollviews/
@@ -72,7 +73,7 @@ struct BlockPreview: View {
                             startPoint: .bottom,
                             endPoint: .top
                         )
-                        .frame(height: 32)
+                        .frame(maxWidth: .infinity, maxHeight: 32)
                         .position(x: geometry.size.width / 2, y: geometry.size.height - 12)
                     )
                     .overlay(
@@ -81,7 +82,7 @@ struct BlockPreview: View {
                             startPoint: .top,
                             endPoint: .bottom
                         )
-                        .frame(height: 32)
+                        .frame(maxWidth: .infinity, maxHeight: 32)
                         .position(x: geometry.size.width / 2, y: 12)
                     )
                 }

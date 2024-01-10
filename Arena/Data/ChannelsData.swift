@@ -54,9 +54,9 @@ final class ChannelsData: ObservableObject {
         var request = URLRequest(url: url)
         request.setValue("Bearer \(Defaults[.accessToken])", forHTTPHeaderField: "Authorization")
         
-        let task = URLSession.shared.dataTask(with: request) { [unowned self] (data, response, error) in
+        let task = URLSession.shared.dataTask(with: request) { [weak self] (data, response, error) in
             if error != nil {
-                errorMessage = "Error retrieving data."
+                self?.errorMessage = "Error retrieving data."
                 return
             }
             
@@ -66,13 +66,13 @@ final class ChannelsData: ObservableObject {
                     // Attempt to decode the data
                     let newChannels = try decoder.decode(ArenaChannels.self, from: data)
                     DispatchQueue.main.async {
-                        if self.channels != nil, !refresh {
-                            self.channels?.channels.append(contentsOf: newChannels.channels)
+                        if self?.channels != nil, !refresh {
+                            self?.channels?.channels.append(contentsOf: newChannels.channels)
                         } else {
-                            self.channels = newChannels
+                            self?.channels = newChannels
                         }
-                        self.totalPages = newChannels.totalPages
-                        self.currentPage += 1
+                        self?.totalPages = newChannels.totalPages
+                        self?.currentPage += 1
                         
                         // Fetch contents for each channel
 //                        for channel in newChannels.channels {
@@ -82,13 +82,13 @@ final class ChannelsData: ObservableObject {
                 } catch let decodingError {
                     // Print the decoding error for debugging
                     print("Decoding Error: \(decodingError)")
-                    errorMessage = "Error decoding data: \(decodingError.localizedDescription)"
+                    self?.errorMessage = "Error decoding data: \(decodingError.localizedDescription)"
                     return
                 }
             }
             
             DispatchQueue.main.async {
-                self.isLoading = false
+                self?.isLoading = false
             }
         }
         

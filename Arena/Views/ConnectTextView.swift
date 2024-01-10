@@ -27,7 +27,7 @@ struct ConnectTextView: View {
                 TextField("Text", text: $blockText, axis: .vertical)
                     .textFieldStyle(ConnectInputStyle())
                     .focused($textInputFocused)
-                    .lineLimit(8...8)
+                    .lineLimit(8...13)
                     .onAppear {
                         self.textInputFocused = true
                     }
