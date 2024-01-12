@@ -8,6 +8,7 @@
 import SwiftUI
 import WrappingHStack
 import Defaults
+import UniformTypeIdentifiers
 
 enum SortOption: String, CaseIterable {
     case position = "Position"
@@ -272,7 +273,23 @@ struct ChannelView: View {
         .overlay(alignment: .bottom) {
             if channelId != 0 {
                 HStack(spacing: 9) {
-                    ShareLink(item: URL(string: "https://are.na/\(channelCreator)/\(channelSlug)")!) {
+                    Menu {
+                        Button(action: {
+                            UIPasteboard.general.setValue(channelSlug as String,
+                                                          forPasteboardType: UTType.plainText.identifier)
+                            Defaults[.toastMessage] = "Copied!"
+                            Defaults[.showToast] = true
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                Defaults[.showToast] = false
+                            }
+                        }) {
+                            Label("Copy channel slug", systemImage: "clipboard")
+                        }
+                        
+                        ShareLink(item: URL(string: "https://are.na/\(channelCreator)/\(channelSlug)")!) {
+                            Label("Share channel", systemImage: "square.and.arrow.up")
+                        }
+                    } label: {
                         Image(systemName: "square.and.arrow.up")
                             .fontWeight(.bold)
                             .imageScale(.small)
@@ -282,6 +299,17 @@ struct ChannelView: View {
                             .background(.thinMaterial)
                             .clipShape(Circle())
                     }
+                    
+                    //                    ShareLink(item: URL(string: "https://are.na/\(channelCreator)/\(channelSlug)")!) {
+                    //                        Image(systemName: "square.and.arrow.up")
+                    //                            .fontWeight(.bold)
+                    //                            .imageScale(.small)
+                    //                            .foregroundStyle(Color("text-primary"))
+                    //                            .padding(.bottom, 4)
+                    //                            .frame(width: 40, height: 40)
+                    //                            .background(.thinMaterial)
+                    //                            .clipShape(Circle())
+                    //                    }
                     
                     Button(action: {
                         Defaults[.connectSheetOpen] = true

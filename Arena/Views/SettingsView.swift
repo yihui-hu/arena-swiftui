@@ -112,6 +112,16 @@ struct SettingsView: View {
                             MenuItem(iconName: "sparkle", text: "What's New", arrowName: "arrow.right")
                         }
                         
+                        NavigationLink(destination: ChannelView(channelSlug: "arena-widget")) {
+                            MenuItem(iconName: "square.split.bottomrightquarter.fill", text: "Add Widget", arrowName: "arrow.right")
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(16)
+                    .background(Color("surface"))
+                    .clipShape(RoundedRectangle(cornerRadius: 24))
+                    
+                    VStack(alignment: .leading, spacing: 16) {
                         Button(action: {
                             MailFeedback()
                         }) {
@@ -135,11 +145,19 @@ struct SettingsView: View {
                         }) {
                             MenuItem(iconName: "eyes", text: "Privacy Policy", arrowName: "arrow.up.right")
                         }
+                        
+                        Button(action: {
+                            Defaults[.safariViewURL] = "https://ko-fi.com/yihui"
+                            Defaults[.safariViewOpen] = true
+                        }) {
+                            MenuItem(iconName: "hands.clap.fill", text: "Leave A Tip", arrowName: "arrow.up.right")
+                        }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(16)
                     .background(Color("surface"))
                     .clipShape(RoundedRectangle(cornerRadius: 24))
+                    
                     
                     Button(action: {
                         Defaults[.accessToken] = ""
