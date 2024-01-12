@@ -57,10 +57,12 @@ struct ConnectNewView: View {
                     .focused($searchInputIsFocused)
                     .onSubmit {
                         if !(channelSearchData.isLoading) {
+                            channelSearchData.selection = "Channels"
                             channelSearchData.searchTerm = searchTerm
                             channelSearchData.refresh()
                         }
                     }
+                    .submitLabel(.search)
                     .submitLabel(.search)
                 
                 if searchInputIsFocused {

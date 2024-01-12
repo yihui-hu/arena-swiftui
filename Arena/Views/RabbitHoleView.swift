@@ -12,6 +12,8 @@ import RiveRuntime
 struct RabbitHoleView: View {
     @Default(.rabbitHole) var rabbitHole
     @Default(.pinnedChannels) var pinnedChannels
+    @Default(.widgetTapped) var widgetTapped
+    @Default(.widgetChannelSlug) var widgetChannelSlug
     
     var body: some View {
         NavigationStack {
@@ -178,6 +180,9 @@ struct RabbitHoleView: View {
             }
             .toolbarBackground(Color("background"), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
+            .navigationDestination(isPresented: $widgetTapped) {
+                ChannelView(channelSlug: widgetChannelSlug)
+            }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
         .background(Color("background"))

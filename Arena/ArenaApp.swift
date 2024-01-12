@@ -30,6 +30,8 @@ extension Defaults.Keys {
     static let safariViewURL = Key<String>("safariViewURL", default: "https://arena-ios-app.vercel.app")
     static let hasNotch = Key<Bool>("hasNotch", default: true)
     static let appIconAlert = Key<Bool>("appIconAlert", default: false)
+    static let widgetTapped = Key<Bool>("widgetTapped", default: false)
+    static let widgetChannelSlug = Key<String>("widgetChannelSlug", default: "")
     
     // Rabbit hole
     static let rabbitHole = Key<[RabbitHoleItem]>("rabbitHole", default: [])
@@ -44,7 +46,11 @@ struct ArenaApp: App {
     @Default(.safariViewOpen) var safariViewOpen
     @Default(.safariViewURL) var safariViewURL
     @Default(.rabbitHole) var rabbitHole
+    @Default(.widgetTapped) var widgetTapped
+    @Default(.widgetChannelSlug) var widgetChannelSlug
     @AppStorage("selectedAppearance") var selectedAppearance = 0
+    @State private var channelSlug = ""
+    @State private var navigateToChannelView = false
     
     init() {
         UIPageControl.appearance().currentPageIndicatorTintColor = .textPrimary
@@ -81,6 +87,12 @@ struct ArenaApp: App {
                     }
                     .toast(isPresenting: $showToast, offsetY: Defaults[.hasNotch] ? 64 : 32) {
                         AlertToast(displayMode: .hud, type: .regular, title: toastMessage)
+                    }
+                    .onOpenURL { url in
+                        widgetChannelSlug = parseDeeplink(url)
+                        if widgetChannelSlug != "" {
+                            widgetTapped = true
+                        }
                     }
             } else {
                 OnboardingView()
@@ -123,4 +135,24 @@ extension UIDevice {
             return window.safeAreaInsets.left > 0 || window.safeAreaInsets.right > 0
         }
     }
+}
+
+private func parseDeeplink(_ url: URL) -> String {
+    guard url.scheme == "are-na" else {
+        print("Invalid url scheme")
+        return ""
+    }
+    
+    guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
+        print("Invalid URL")
+        return ""
+    }
+    
+    guard let channelSlug = components.queryItems?.first(where: { $0.name == "channelSlug" })?.value else {
+        print("Channel slug not found")
+        return ""
+    }
+    
+    print(channelSlug)
+    return channelSlug
 }

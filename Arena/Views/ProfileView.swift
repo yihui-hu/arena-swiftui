@@ -12,6 +12,9 @@ struct ProfileView: View {
     let userId: Int
     @State private var path = NavigationPath()
     
+    @Default(.widgetTapped) var widgetTapped
+    @Default(.widgetChannelSlug) var widgetChannelSlug
+    
     var body: some View {
         NavigationStack(path: $path) {
             UserInfo(userId: userId, profileView: true)
@@ -40,6 +43,9 @@ struct ProfileView: View {
                 }
                 .toolbarBackground(Color("background"), for: .navigationBar)
                 .toolbarBackground(.visible, for: .navigationBar)
+                .navigationDestination(isPresented: $widgetTapped) {
+                    ChannelView(channelSlug: widgetChannelSlug)
+                }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
         .background(Color("background"))

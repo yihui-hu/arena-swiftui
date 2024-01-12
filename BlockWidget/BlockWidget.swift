@@ -13,11 +13,11 @@ struct Provider: AppIntentTimelineProvider {
     typealias Intent = ConfigurationAppIntent
     
     func placeholder(in _: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), image: UIImage(named: "placeholder")!, configuration: ConfigurationAppIntent())
+        SimpleEntry(date: Date(), image: UIImage(named: "placeholder")!, channelSlug: "", configuration: ConfigurationAppIntent())
     }
     
     func snapshot(for configuration: ConfigurationAppIntent, in context: Context) async -> SimpleEntry {
-        return .init(date: Date(), image: UIImage(named: "placeholder")!, configuration: ConfigurationAppIntent())
+        return .init(date: Date(), image: UIImage(named: "placeholder")!, channelSlug: "", configuration: ConfigurationAppIntent())
     }
     
     func timeline(for configuration: ConfigurationAppIntent, in context: Context) async -> Timeline<SimpleEntry> {
@@ -27,7 +27,7 @@ struct Provider: AppIntentTimelineProvider {
             return Timeline(entries: [], policy: .after(nextUpdate))
         }
         
-        let entry = SimpleEntry(date: Date(), image: image, configuration: ConfigurationAppIntent())
+        let entry = SimpleEntry(date: Date(), image: image, channelSlug: configuration.channelSlug, configuration: ConfigurationAppIntent())
         
         return Timeline(entries: [entry], policy: .after(nextUpdate))
     }
@@ -36,6 +36,7 @@ struct Provider: AppIntentTimelineProvider {
 struct SimpleEntry: TimelineEntry {
     let date: Date
     let image: UIImage
+    let channelSlug: String
     let configuration: ConfigurationAppIntent
 }
 
@@ -48,6 +49,11 @@ struct BlockWidgetEntryView : View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .edgesIgnoringSafeArea(.all)
             .scaledToFit()
+            .widgetURL(channelURL(for: entry.channelSlug))
+    }
+    
+    private func channelURL(for channelSlug: String) -> URL? {
+        return URL(string: "are-na://goToChannel?channelSlug=\(channelSlug)")
     }
 }
 
@@ -60,9 +66,9 @@ struct BlockWidget: Widget {
                 .containerBackground(.fill.tertiary, for: .widget)
         }
         .configurationDisplayName("Block Widget")
-        .description("Random block from Are.na Channel")
+        .description("Displays a random block from Are.na Channel")
         .supportedFamilies([
-            .systemSmall, .systemMedium, .systemLarge
+            .systemSmall, .systemMedium, .systemLarge,
         ])
         .contentMarginsDisabled()
     }
@@ -72,7 +78,7 @@ struct BlockWidget: Widget {
 extension ConfigurationAppIntent {
     fileprivate static var ui: ConfigurationAppIntent {
         let intent = ConfigurationAppIntent()
-        intent.channelSlug = "ui"
+        intent.channelSlug = "arena-widget"
         return intent
     }
 }
@@ -80,7 +86,7 @@ extension ConfigurationAppIntent {
 #Preview(as: .systemSmall) {
     BlockWidget()
 } timeline: {
-    SimpleEntry(date: .now, image: UIImage(named: "placeholder")!, configuration: ConfigurationAppIntent())
+    SimpleEntry(date: .now, image: UIImage(named: "placeholder")!, channelSlug: "", configuration: ConfigurationAppIntent())
 }
 
 struct WidgetChannelData {
@@ -91,18 +97,26 @@ struct WidgetChannelData {
         let (data, _) = try await URLSession.shared.data(from: url)
         let channelData = try JSONDecoder().decode(WidgetChannel.self, from: data)
         let totalPages = Int(ceil(Double(channelData.length) / Double(20)))
-        let page = Int.random(in: 1..<totalPages)
+        let page = totalPages > 1 ? Int.random(in: 1..<totalPages) : 1
         
         let newUrl = URL(string: "https://api.are.na/v2/channels/\(channelSlug)?page=\(page)")!
         let (newData, _) = try await URLSession.shared.data(from: newUrl)
         let newChannelData = try JSONDecoder().decode(WidgetChannel.self, from: newData)
-        let randomIndex = Int.random(in: 1..<20)
-        
-        imageURL = newChannelData.contents?[randomIndex].image?.display.url ?? "placeholder"
-        let (imageData, _) = try await URLSession.shared.data(from: URL(string: imageURL)!)
-        let image = UIImage(data: imageData)!
-        
-        return image
+        let blocksCount = newChannelData.contents?.count ?? -1
+        if blocksCount != -1 {
+            var randomIndex = 0
+            if blocksCount > 1 {
+                randomIndex = Int.random(in: 0..<blocksCount)
+            }
+            
+            imageURL = newChannelData.contents?[randomIndex].image?.display.url ?? "placeholder"
+            let (imageData, _) = try await URLSession.shared.data(from: URL(string: imageURL)!)
+            let image = UIImage(data: imageData)!
+            
+            return image
+        } else {
+            return UIImage(named: "error")!
+        }
     }
 }
 

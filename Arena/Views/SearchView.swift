@@ -22,6 +22,8 @@ struct SearchView: View {
     @State private var showGradient = false
     
     @Default(.pinnedChannels) var pinnedChannels
+    @Default(.widgetTapped) var widgetTapped
+    @Default(.widgetChannelSlug) var widgetChannelSlug
     
     init() {
         self._searchData = StateObject(wrappedValue: SearchData())
@@ -213,127 +215,101 @@ struct SearchView: View {
                         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
                 } else {
                     if let exploreResults = exploreData.exploreResults {
-                        ZStack {
-//                            GeometryReader { geometry in
-//                                LinearGradient(
-//                                    gradient: .smooth(from: Color("background"), to: Color("background").opacity(0), curve: .easeInOut),
-//                                    startPoint: .top,
-//                                    endPoint: .bottom
-//                                )
-//                                .frame(height: 88)
-//                                .position(x: geometry.size.width / 2, y: 44)
-//                                .opacity(showGradient ? 1 : 0)
-//                                .animation(.easeInOut(duration: 0.2), value: UUID())
-//                            }
-//                            .allowsHitTesting(false) // Allows items underneath to be tapped
-//                            .zIndex(2)
-                            
-                            ScrollView {
-                                ScrollViewReader { proxy in
-                                    if selection == "Blocks" {
-                                        LazyVGrid(columns: gridColumns, spacing: gridSpacing) {
-                                            ForEach(Array(zip(exploreResults.blocks.indices, exploreResults.blocks)), id: \.0) { _, block in
-                                                NavigationLink(destination: SingleBlockView(block: block)) {
-                                                    VStack(spacing: 8) {
-                                                        ChannelViewBlockPreview(blockData: block, fontSize: 12, display: "Grid", isContextMenuPreview: false)
-                                                            .frame(width: gridItemSize, height: gridItemSize)
-                                                            .background(Color("background"))
-                                                            .contextMenu {
-                                                                BlockContextMenu(block: block, showViewOption: false, channelData: nil, channelSlug: "")
-                                                                
-                                                                NavigationLink(destination: SingleBlockView(block: block)) {
-                                                                    Label("View Block", systemImage: "eye")
-                                                                }
-                                                                .simultaneousGesture(TapGesture().onEnded{
-                                                                    AddBlockToRabbitHole(block: block)
-                                                                })
-                                                            } preview: {
-                                                                BlockContextMenuPreview(block: block)
+                        ScrollView {
+                            ScrollViewReader { proxy in
+                                if selection == "Blocks" {
+                                    LazyVGrid(columns: gridColumns, spacing: gridSpacing) {
+                                        ForEach(Array(zip(exploreResults.blocks.indices, exploreResults.blocks)), id: \.0) { _, block in
+                                            NavigationLink(destination: SingleBlockView(block: block)) {
+                                                VStack(spacing: 8) {
+                                                    ChannelViewBlockPreview(blockData: block, fontSize: 12, display: "Grid", isContextMenuPreview: false)
+                                                        .frame(width: gridItemSize, height: gridItemSize)
+                                                        .background(Color("background"))
+                                                        .contextMenu {
+                                                            BlockContextMenu(block: block, showViewOption: false, channelData: nil, channelSlug: "")
+                                                            
+                                                            NavigationLink(destination: SingleBlockView(block: block)) {
+                                                                Label("View Block", systemImage: "eye")
                                                             }
-                                                        
-                                                        ContentPreviewMetadata(block: block, display: "Grid")
-                                                            .padding(.horizontal, 12)
+                                                            .simultaneousGesture(TapGesture().onEnded{
+                                                                AddBlockToRabbitHole(block: block)
+                                                            })
+                                                        } preview: {
+                                                            BlockContextMenuPreview(block: block)
+                                                        }
+                                                    
+                                                    ContentPreviewMetadata(block: block, display: "Grid")
+                                                        .padding(.horizontal, 12)
+                                                }
+                                                .onAppear {
+                                                    if exploreResults.blocks.count >= 8 {
+                                                        if exploreResults.blocks[exploreResults.blocks.count - 8].id == block.id {
+                                                            exploreData.loadMore()
+                                                        }
                                                     }
-                                                    .onAppear {
-                                                        if exploreResults.blocks.count >= 8 {
-                                                            if exploreResults.blocks[exploreResults.blocks.count - 8].id == block.id {
-                                                                exploreData.loadMore()
-                                                            }
+                                                }
+                                            }
+                                            .simultaneousGesture(TapGesture().onEnded{
+                                                AddBlockToRabbitHole(block: block)
+                                            })
+                                        }
+                                    }
+                                } else {
+                                    LazyVStack(alignment: .leading, spacing: 8) {
+                                        if selection == "Channels" {
+                                            ForEach(exploreResults.channels, id: \.id) { channel in
+                                                NavigationLink(destination: ChannelView(channelSlug: channel.slug)) {
+                                                    SearchChannelPreview(channel: channel)
+                                                }
+                                                .onAppear {
+                                                    if exploreResults.channels.count >= 8 {
+                                                        if exploreResults.channels[exploreResults.channels.count - 8].id == channel.id {
+                                                            exploreData.loadMore()
                                                         }
                                                     }
                                                 }
                                                 .simultaneousGesture(TapGesture().onEnded{
-                                                    AddBlockToRabbitHole(block: block)
+                                                    let id = UUID()
+                                                    let formatter = DateFormatter()
+                                                    formatter.dateFormat = "HH:mm, d MMM y"
+                                                    let timestamp = formatter.string(from: Date.now)
+                                                    Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "channel", subtype: channel.status, itemId: channel.slug, timestamp: timestamp, mainText: channel.title, subText: String(channel.length), imageUrl: String(channel.id)), at: 0)
+                                                })
+                                            }
+                                        } else if selection == "Users" {
+                                            ForEach(exploreResults.users, id: \.id) { user in
+                                                NavigationLink(destination: UserView(userId: user.id)) {
+                                                    UserPreview(user: user)
+                                                }
+                                                .onAppear {
+                                                    if exploreResults.users.count >= 8 {
+                                                        if exploreResults.users[exploreResults.users.count - 8].id == user.id {
+                                                            exploreData.loadMore()
+                                                        }
+                                                    }
+                                                }
+                                                .simultaneousGesture(TapGesture().onEnded{
+                                                    AddUserToRabbitHole(user: user)
                                                 })
                                             }
                                         }
-                                    } else {
-                                        LazyVStack(alignment: .leading, spacing: 8) {
-                                            if selection == "Channels" {
-                                                ForEach(exploreResults.channels, id: \.id) { channel in
-                                                    NavigationLink(destination: ChannelView(channelSlug: channel.slug)) {
-                                                        SearchChannelPreview(channel: channel)
-                                                    }
-                                                    .onAppear {
-                                                        if exploreResults.channels.count >= 8 {
-                                                            if exploreResults.channels[exploreResults.channels.count - 8].id == channel.id {
-                                                                exploreData.loadMore()
-                                                            }
-                                                        }
-                                                    }
-                                                    .simultaneousGesture(TapGesture().onEnded{
-                                                        let id = UUID()
-                                                        let formatter = DateFormatter()
-                                                        formatter.dateFormat = "HH:mm, d MMM y"
-                                                        let timestamp = formatter.string(from: Date.now)
-                                                        Defaults[.rabbitHole].insert(RabbitHoleItem(id: id.uuidString, type: "channel", subtype: channel.status, itemId: channel.slug, timestamp: timestamp, mainText: channel.title, subText: String(channel.length), imageUrl: String(channel.id)), at: 0)
-                                                    })
-                                                }
-                                            } else if selection == "Users" {
-                                                ForEach(exploreResults.users, id: \.id) { user in
-                                                    NavigationLink(destination: UserView(userId: user.id)) {
-                                                        UserPreview(user: user)
-                                                    }
-                                                    .onAppear {
-                                                        if exploreResults.users.count >= 8 {
-                                                            if exploreResults.users[exploreResults.users.count - 8].id == user.id {
-                                                                exploreData.loadMore()
-                                                            }
-                                                        }
-                                                    }
-                                                    .simultaneousGesture(TapGesture().onEnded{
-                                                        AddUserToRabbitHole(user: user)
-                                                    })
-                                                }
-                                            }
-                                        }
-                                    }
-                                    
-                                    if exploreData.isLoading {
-                                        CircleLoadingSpinner()
-                                            .padding(.top, 16)
-                                            .padding(.bottom, 12)
                                     }
                                 }
-//                                .onChange(of: scrollOffset) { _, offset in
-//                                    withAnimation {
-//                                        showGradient = offset > -4
-//                                    }
-//                                }
-//                                .background(GeometryReader { proxy -> Color in
-//                                    DispatchQueue.main.async {
-//                                        scrollOffset = -proxy.frame(in: .named("explore-scroll")).origin.y
-//                                    }
-//                                    return Color.clear
-//                                })
+                                
+                                if exploreData.isLoading {
+                                    CircleLoadingSpinner()
+                                        .padding(.top, 16)
+                                        .padding(.bottom, 12)
+                                }
                             }
-                            .refreshable {
-                                do { try await Task.sleep(nanoseconds: 500_000_000) } catch {}
-                                exploreData.refresh()
-                            }
-                            .scrollDismissesKeyboard(.immediately)
-                            .coordinateSpace(name: "explore-scroll")
                         }
+                        .refreshable {
+                            do { try await Task.sleep(nanoseconds: 500_000_000) } catch {}
+                            exploreData.refresh()
+                        }
+                        .scrollDismissesKeyboard(.immediately)
+                        .coordinateSpace(name: "explore-scroll")
+                        
                     } else if exploreData.isLoading {
                         CircleLoadingSpinner()
                             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
@@ -348,12 +324,8 @@ struct SearchView: View {
                     searchData.refresh()
                 }
             }
-            .onChange(of: selection, initial: true) { oldSelection, newSelection in
-                if oldSelection != newSelection {
-                    exploreData.selection = newSelection
-                    exploreData.isLoading = false
-                    exploreData.refresh()
-                }
+            .navigationDestination(isPresented: $widgetTapped) {
+                ChannelView(channelSlug: widgetChannelSlug)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)

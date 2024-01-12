@@ -76,14 +76,13 @@ final class SearchData: ObservableObject {
         }
         
         let encodedSearchTerm = searchTerm.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed)
-        print(encodedSearchTerm ?? "")
         
         guard let url = URL(string: "https://api.are.na/v2/search/\(option)?q=\(encodedSearchTerm ?? searchTerm)&page=\(currentPage)&per=20") else {
             self.isLoading = false
             errorMessage = "Invalid URL"
             return
         }
-        
+                
         // Create a URLRequest and set the "Authorization" header with your bearer token
         var request = URLRequest(url: url)
         request.setValue("Bearer \(Defaults[.accessToken])", forHTTPHeaderField: "Authorization")

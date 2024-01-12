@@ -270,47 +270,49 @@ struct ChannelView: View {
             }
         }
         .overlay(alignment: .bottom) {
-            HStack(spacing: 9) {
-                ShareLink(item: URL(string: "https://are.na/\(channelCreator)/\(channelSlug)")!) {
-                    Image(systemName: "square.and.arrow.up")
-                        .fontWeight(.bold)
-                        .imageScale(.small)
-                        .foregroundStyle(Color("text-primary"))
-                        .padding(.bottom, 4)
-                        .frame(width: 40, height: 40)
-                        .background(.thinMaterial)
-                        .clipShape(Circle())
+            if channelId != 0 {
+                HStack(spacing: 9) {
+                    ShareLink(item: URL(string: "https://are.na/\(channelCreator)/\(channelSlug)")!) {
+                        Image(systemName: "square.and.arrow.up")
+                            .fontWeight(.bold)
+                            .imageScale(.small)
+                            .foregroundStyle(Color("text-primary"))
+                            .padding(.bottom, 4)
+                            .frame(width: 40, height: 40)
+                            .background(.thinMaterial)
+                            .clipShape(Circle())
+                    }
+                    
+                    Button(action: {
+                        Defaults[.connectSheetOpen] = true
+                        Defaults[.connectItemId] = channelId
+                        Defaults[.connectItemType] = "Channel"
+                    }) {
+                        Text("Connect")
+                            .foregroundStyle(Color("text-primary"))
+                            .font(.system(size: 16))
+                            .fontDesign(.rounded)
+                            .fontWeight(.medium)
+                    }
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 10)
+                    .background(.thinMaterial)
+                    .cornerRadius(16)
+                    
+                    Button(action: {
+                        togglePin(channelId)
+                    }) {
+                        Image(systemName: clickedPin ? channelPinned ? "bookmark.fill" : "bookmark" : Defaults[.pinnedChannels].contains(channelId) ? "bookmark.fill" : "bookmark")
+                            .fontWeight(.bold)
+                            .imageScale(.small)
+                            .foregroundStyle(Color("text-primary"))
+                            .frame(width: 40, height: 40)
+                            .background(.thinMaterial)
+                            .clipShape(Circle())
+                    }
                 }
-                
-                Button(action: {
-                    Defaults[.connectSheetOpen] = true
-                    Defaults[.connectItemId] = channelId
-                    Defaults[.connectItemType] = "Channel"
-                }) {
-                    Text("Connect")
-                        .foregroundStyle(Color("text-primary"))
-                        .font(.system(size: 16))
-                        .fontDesign(.rounded)
-                        .fontWeight(.medium)
-                }
-                .padding(.horizontal, 20)
-                .padding(.vertical, 10)
-                .background(.thinMaterial)
-                .cornerRadius(16)
-                
-                Button(action: {
-                    togglePin(channelId)
-                }) {
-                    Image(systemName: clickedPin ? channelPinned ? "bookmark.fill" : "bookmark" : Defaults[.pinnedChannels].contains(channelId) ? "bookmark.fill" : "bookmark")
-                        .fontWeight(.bold)
-                        .imageScale(.small)
-                        .foregroundStyle(Color("text-primary"))
-                        .frame(width: 40, height: 40)
-                        .background(.thinMaterial)
-                        .clipShape(Circle())
-                }
+                .padding(.bottom, 16)
             }
-            .padding(.bottom, 16)
         }
     }
     
@@ -358,9 +360,9 @@ struct ChannelViewHeader: View {
         let channelStatus = channelData.channel?.status ?? ""
         let channelDescription = channelData.channel?.metadata?.description ?? ""
         let channelOwner = channelData.channel?.user.fullName ?? ""
-//        let channelOwnerChannels = channelData.channel?.user.channelCount ?? 0
+        //        let channelOwnerChannels = channelData.channel?.user.channelCount ?? 0
         let channelOwnerId = channelData.channel?.user.id ?? 0
-//        let channelOwnerImage = channelData.channel?.user.avatarImage.display ?? ""
+        //        let channelOwnerImage = channelData.channel?.user.avatarImage.display ?? ""
         let channelCollaborators = channelData.channel?.collaborators ?? []
         
         VStack(spacing: 16) {
@@ -391,9 +393,12 @@ struct ChannelViewHeader: View {
                             .font(.system(size: 14))
                     }
                 } else {
-                    Text("loading...")
-                        .font(.system(size: 18))
-                        .fontWeight(.semibold)
+                    VStack(spacing: 4) {
+                        Text("loading...")
+                            .font(.system(size: 18))
+                            .fontWeight(.semibold)
+                        Text("")
+                    }
                 }
             }
             .fontDesign(.rounded)

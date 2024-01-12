@@ -281,7 +281,7 @@ struct DisclaimerView: View {
                                 .imageScale(.medium)
                                 .foregroundStyle(Color("text-secondary"))
                             
-                            Text("Viewing attachments (mp4, pdf, etc.)")
+                            Text("Viewing attachments (mp3, mp4, pdf, etc.)")
                                 .foregroundStyle(Color("text-primary"))
                                 .fontWeight(.medium)
                                 .fontDesign(.rounded)

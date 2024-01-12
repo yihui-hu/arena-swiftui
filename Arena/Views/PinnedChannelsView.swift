@@ -13,6 +13,8 @@ struct PinnedChannelsView: View {
     @StateObject private var pinnedChannelsData: PinnedChannelsData
     @Default(.pinnedChannels) var pinnedChannels
     @Default(.pinnedChannelsChanged) var pinnedChannelsChanged
+    @Default(.widgetChannelSlug) var widgetChannelSlug
+    @Default(.widgetTapped) var widgetTapped
     
     init() {
         self._pinnedChannelsData = StateObject(wrappedValue: PinnedChannelsData(pinnedChannels: Defaults[.pinnedChannels]))
@@ -68,6 +70,9 @@ struct PinnedChannelsView: View {
                     pinnedChannelsData.fetchChannels(pinnedChannels: Defaults[.pinnedChannels], refresh: true)
                     Defaults[.pinnedChannelsChanged] = false
                 }
+            }
+            .navigationDestination(isPresented: $widgetTapped) {
+                ChannelView(channelSlug: widgetChannelSlug)
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

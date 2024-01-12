@@ -17,22 +17,37 @@ struct ArenaView: View {
             StatefulTabView(selectedIndex: $tab) {
                 Tab(systemImageName: "bookmark.fill") {
                     PinnedChannelsView()
-                }
-                
-                Tab(systemImageName: "clock.fill") {
-                    RabbitHoleView()
-                }
-                
-                Tab(systemImageName: "plus.app.fill") {
-                    ConnectView()
+                        .onAppear {
+                            Defaults[.widgetTapped] = false
+                        }
                 }
                 
                 Tab(systemImageName: "magnifyingglass") {
                     SearchView()
+                        .onAppear {
+                            Defaults[.widgetTapped] = false
+                        }
+                }
+                
+                Tab(systemImageName: "plus.app.fill") {
+                    ConnectView()
+                        .onAppear {
+                            Defaults[.widgetTapped] = false
+                        }
+                }
+                
+                Tab(systemImageName: "clock.fill") {
+                    RabbitHoleView()
+                        .onAppear {
+                            Defaults[.widgetTapped] = false
+                        }
                 }
                 
                 Tab(systemImageName: "person.fill") {
                     ProfileView(userId: Defaults[.userId])
+                        .onAppear {
+                            Defaults[.widgetTapped] = false
+                        }
                 }
             }
             .onAppear {

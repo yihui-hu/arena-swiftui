@@ -42,6 +42,9 @@ struct ConnectView: View {
     @State private var showConnectTextView = false
     @State private var showConnectURLView = false
     
+    @Default(.widgetTapped) var widgetTapped
+    @Default(.widgetChannelSlug) var widgetChannelSlug
+    
     var body: some View {
         NavigationStack {
             VStack {
@@ -120,6 +123,9 @@ struct ConnectView: View {
             }
             .navigationDestination(isPresented: $showConnectURLView) {
                 ConnectURLView()
+            }
+            .navigationDestination(isPresented: $widgetTapped) {
+                ChannelView(channelSlug: widgetChannelSlug)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)

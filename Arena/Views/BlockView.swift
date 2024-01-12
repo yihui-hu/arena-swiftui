@@ -407,21 +407,16 @@ struct BlockView: View {
                                                                 
                                                                 VStack(alignment: .leading, spacing: 4) {
                                                                     HStack {
-                                                                        NavigationLink(destination: UserView(userId: comment.user.id)) {
-                                                                            Text("\(comment.user.fullName)")
+                                                                        Text("\(comment.user.fullName)")
                                                                                 .foregroundStyle(Color("text-primary"))
                                                                                 .fontDesign(.rounded)
                                                                                 .fontWeight(.medium)
-                                                                        }
-                                                                        .simultaneousGesture(TapGesture().onEnded{
-                                                                            AddUserToRabbitHole(user: comment.user)
-                                                                        })
                                                                         Spacer()
                                                                         Text("\(relativeTime(comment.createdAt))")
                                                                             .foregroundStyle(Color("surface-text-secondary"))
                                                                             .font(.system(size: 14))
                                                                     }
-                                                                    Text("\(comment.body)")
+                                                                    Text(.init(comment.body))
                                                                         .foregroundStyle(Color("text-primary"))
                                                                 }
                                                                 .frame(maxWidth: .infinity, alignment: .leading)

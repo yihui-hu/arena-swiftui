@@ -11,9 +11,8 @@ import AppIntents
 @available(iOS 17.0, macOS 14.0, watchOS 10.0, *)
 struct ConfigurationAppIntent: AppIntent, WidgetConfigurationIntent {
     static var title: LocalizedStringResource = "Are.na Channel"
-    static var description = IntentDescription("Select a channel from Are.na to display blocks from")
-
+    static var description = IntentDescription("Type a public channel from Are.na to display blocks from")
     // An example configurable parameter
-    @Parameter(title: "Channel Slug", default: "posterikas")
+    @Parameter(title: "Channel Slug", default: "arena-widget")
     var channelSlug: String
 }
