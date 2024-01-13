@@ -13,7 +13,7 @@ struct RabbitHoleView: View {
     @Default(.rabbitHole) var rabbitHole
     @Default(.pinnedChannels) var pinnedChannels
     @Default(.widgetTapped) var widgetTapped
-    @Default(.widgetChannelSlug) var widgetChannelSlug
+    @Default(.widgetBlockId) var widgetBlockId
     
     var body: some View {
         NavigationStack {
@@ -181,7 +181,7 @@ struct RabbitHoleView: View {
             .toolbarBackground(Color("background"), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
             .navigationDestination(isPresented: $widgetTapped) {
-                ChannelView(channelSlug: widgetChannelSlug)
+                HistorySingleBlockView(blockId: widgetBlockId)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)

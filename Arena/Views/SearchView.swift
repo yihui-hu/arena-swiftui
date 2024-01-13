@@ -23,7 +23,7 @@ struct SearchView: View {
     
     @Default(.pinnedChannels) var pinnedChannels
     @Default(.widgetTapped) var widgetTapped
-    @Default(.widgetChannelSlug) var widgetChannelSlug
+    @Default(.widgetBlockId) var widgetBlockId
     
     init() {
         self._searchData = StateObject(wrappedValue: SearchData())
@@ -325,7 +325,7 @@ struct SearchView: View {
                 }
             }
             .navigationDestination(isPresented: $widgetTapped) {
-                ChannelView(channelSlug: widgetChannelSlug)
+                HistorySingleBlockView(blockId: widgetBlockId)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)

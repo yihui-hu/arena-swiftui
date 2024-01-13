@@ -31,7 +31,7 @@ extension Defaults.Keys {
     static let hasNotch = Key<Bool>("hasNotch", default: true)
     static let appIconAlert = Key<Bool>("appIconAlert", default: false)
     static let widgetTapped = Key<Bool>("widgetTapped", default: false)
-    static let widgetChannelSlug = Key<String>("widgetChannelSlug", default: "")
+    static let widgetBlockId = Key<Int>("widgetBlockId", default: 0)
     
     // Rabbit hole
     static let rabbitHole = Key<[RabbitHoleItem]>("rabbitHole", default: [])
@@ -47,7 +47,7 @@ struct ArenaApp: App {
     @Default(.safariViewURL) var safariViewURL
     @Default(.rabbitHole) var rabbitHole
     @Default(.widgetTapped) var widgetTapped
-    @Default(.widgetChannelSlug) var widgetChannelSlug
+    @Default(.widgetBlockId) var widgetBlockId
     @AppStorage("selectedAppearance") var selectedAppearance = 0
     @State private var channelSlug = ""
     @State private var navigateToChannelView = false
@@ -89,8 +89,9 @@ struct ArenaApp: App {
                         AlertToast(displayMode: .hud, type: .regular, title: toastMessage)
                     }
                     .onOpenURL { url in
-                        widgetChannelSlug = parseDeeplink(url)
-                        if widgetChannelSlug != "" {
+                        widgetBlockId = parseDeeplink(url)
+                        print(widgetBlockId)
+                        if widgetBlockId != 0 {
                             widgetTapped = true
                         }
                     }
@@ -137,22 +138,21 @@ extension UIDevice {
     }
 }
 
-private func parseDeeplink(_ url: URL) -> String {
+private func parseDeeplink(_ url: URL) -> Int {
     guard url.scheme == "are-na" else {
         print("Invalid url scheme")
-        return ""
+        return 0
     }
     
     guard let components = URLComponents(url: url, resolvingAgainstBaseURL: true) else {
         print("Invalid URL")
-        return ""
+        return 0
     }
     
-    guard let channelSlug = components.queryItems?.first(where: { $0.name == "channelSlug" })?.value else {
-        print("Channel slug not found")
-        return ""
+    guard let blockId = components.queryItems?.first(where: { $0.name == "blockId" })?.value else {
+        print("Block id not found")
+        return 0
     }
     
-    print(channelSlug)
-    return channelSlug
+    return Int(blockId) ?? 0
 }

@@ -13,7 +13,7 @@ struct PinnedChannelsView: View {
     @StateObject private var pinnedChannelsData: PinnedChannelsData
     @Default(.pinnedChannels) var pinnedChannels
     @Default(.pinnedChannelsChanged) var pinnedChannelsChanged
-    @Default(.widgetChannelSlug) var widgetChannelSlug
+    @Default(.widgetBlockId) var widgetBlockId
     @Default(.widgetTapped) var widgetTapped
     
     init() {
@@ -72,7 +72,7 @@ struct PinnedChannelsView: View {
                 }
             }
             .navigationDestination(isPresented: $widgetTapped) {
-                ChannelView(channelSlug: widgetChannelSlug)
+                HistorySingleBlockView(blockId: widgetBlockId)
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

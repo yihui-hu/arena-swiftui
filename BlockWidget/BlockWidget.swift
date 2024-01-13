@@ -13,21 +13,21 @@ struct Provider: AppIntentTimelineProvider {
     typealias Intent = ConfigurationAppIntent
     
     func placeholder(in _: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), image: UIImage(named: "placeholder")!, channelSlug: "", configuration: ConfigurationAppIntent())
+        SimpleEntry(date: Date(), image: UIImage(named: "placeholder")!, channelSlug: "", blockId: 0, configuration: ConfigurationAppIntent())
     }
     
     func snapshot(for configuration: ConfigurationAppIntent, in context: Context) async -> SimpleEntry {
-        return .init(date: Date(), image: UIImage(named: "placeholder")!, channelSlug: "", configuration: ConfigurationAppIntent())
+        return .init(date: Date(), image: UIImage(named: "placeholder")!, channelSlug: "", blockId: 0, configuration: ConfigurationAppIntent())
     }
     
     func timeline(for configuration: ConfigurationAppIntent, in context: Context) async -> Timeline<SimpleEntry> {
         let nextUpdate: Date = .now.addingTimeInterval(60 * 15)
         
-        guard let image = try? await WidgetChannelData.fetchChannel(configuration.channelSlug) else {
+        guard let widgetResult = try? await WidgetChannelData.fetchChannel(configuration.channelSlug) else {
             return Timeline(entries: [], policy: .after(nextUpdate))
         }
         
-        let entry = SimpleEntry(date: Date(), image: image, channelSlug: configuration.channelSlug, configuration: ConfigurationAppIntent())
+        let entry = SimpleEntry(date: Date(), image: widgetResult.image, channelSlug: configuration.channelSlug, blockId: widgetResult.id, configuration: ConfigurationAppIntent())
         
         return Timeline(entries: [entry], policy: .after(nextUpdate))
     }
@@ -37,6 +37,7 @@ struct SimpleEntry: TimelineEntry {
     let date: Date
     let image: UIImage
     let channelSlug: String
+    let blockId: Int
     let configuration: ConfigurationAppIntent
 }
 
@@ -49,11 +50,11 @@ struct BlockWidgetEntryView : View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .edgesIgnoringSafeArea(.all)
             .scaledToFit()
-            .widgetURL(channelURL(for: entry.channelSlug))
+            .widgetURL(blockId(for: entry.blockId))
     }
     
-    private func channelURL(for channelSlug: String) -> URL? {
-        return URL(string: "are-na://goToChannel?channelSlug=\(channelSlug)")
+    private func blockId(for blockId: Int) -> URL? {
+        return URL(string: "are-na://goToBlock?blockId=\(entry.blockId)")
     }
 }
 
@@ -86,12 +87,11 @@ extension ConfigurationAppIntent {
 #Preview(as: .systemSmall) {
     BlockWidget()
 } timeline: {
-    SimpleEntry(date: .now, image: UIImage(named: "placeholder")!, channelSlug: "", configuration: ConfigurationAppIntent())
+    SimpleEntry(date: .now, image: UIImage(named: "placeholder")!, channelSlug: "", blockId: 0, configuration: ConfigurationAppIntent())
 }
 
 struct WidgetChannelData {
-    static func fetchChannel(_ channelSlug: String) async throws -> UIImage {
-        var imageURL: String = "placeholder"
+    static func fetchChannel(_ channelSlug: String) async throws -> WidgetResult? {
         let url = URL(string: "https://api.are.na/v2/channels/\(channelSlug)")!
         
         let (data, _) = try await URLSession.shared.data(from: url)
@@ -109,14 +109,25 @@ struct WidgetChannelData {
                 randomIndex = Int.random(in: 0..<blocksCount)
             }
             
-            imageURL = newChannelData.contents?[randomIndex].image?.display.url ?? "placeholder"
+            let block = newChannelData.contents?[randomIndex]
+            let imageURL = block?.image?.display.url ?? "placeholder"
             let (imageData, _) = try await URLSession.shared.data(from: URL(string: imageURL)!)
             let image = UIImage(data: imageData)!
             
-            return image
+            return WidgetResult(id: block?.id ?? 0, image: image)
         } else {
-            return UIImage(named: "error")!
+            return nil
         }
+    }
+}
+
+struct WidgetResult: Identifiable {
+    let id: Int
+    let image: UIImage
+    
+    init(id: Int, image: UIImage) {
+        self.id = id
+        self.image = image
     }
 }
 

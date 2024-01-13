@@ -43,7 +43,7 @@ struct ConnectView: View {
     @State private var showConnectURLView = false
     
     @Default(.widgetTapped) var widgetTapped
-    @Default(.widgetChannelSlug) var widgetChannelSlug
+    @Default(.widgetBlockId) var widgetBlockId
     
     var body: some View {
         NavigationStack {
@@ -125,7 +125,7 @@ struct ConnectView: View {
                 ConnectURLView()
             }
             .navigationDestination(isPresented: $widgetTapped) {
-                ChannelView(channelSlug: widgetChannelSlug)
+                HistorySingleBlockView(blockId: widgetBlockId)
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)

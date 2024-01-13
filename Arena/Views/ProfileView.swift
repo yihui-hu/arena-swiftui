@@ -13,7 +13,7 @@ struct ProfileView: View {
     @State private var path = NavigationPath()
     
     @Default(.widgetTapped) var widgetTapped
-    @Default(.widgetChannelSlug) var widgetChannelSlug
+    @Default(.widgetBlockId) var widgetBlockId
     
     var body: some View {
         NavigationStack(path: $path) {
@@ -44,7 +44,7 @@ struct ProfileView: View {
                 .toolbarBackground(Color("background"), for: .navigationBar)
                 .toolbarBackground(.visible, for: .navigationBar)
                 .navigationDestination(isPresented: $widgetTapped) {
-                    ChannelView(channelSlug: widgetChannelSlug)
+                    HistorySingleBlockView(blockId: widgetBlockId)
                 }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
