@@ -9,6 +9,7 @@ import SwiftUI
 import SmoothGradient
 import NukeUI
 import Defaults
+import DebouncedOnChange
 
 struct SearchView: View {
     @StateObject private var searchData: SearchData
@@ -43,10 +44,10 @@ struct SearchView: View {
                 VStack(spacing: 16) {
                     HStack(spacing: 12) {
                         TextField("Search...", text: $searchTerm)
-                            .onChange(of: searchTerm) { _, newValue in
-                                if newValue == "" {
-                                    searchData.searchResults = nil
-                                }
+                            .onChange(of: searchTerm, debounceTime: .seconds(0.5)) { newValue in
+                                searchData.searchTerm = newValue
+                                searchData.selection = selection
+                                searchData.refresh()
                             }
                             .textFieldStyle(SearchBarStyle())
                             .autocorrectionDisabled()
@@ -55,8 +56,11 @@ struct SearchView: View {
                             }
                             .focused($searchInputIsFocused)
                             .onSubmit {
-                                searchData.searchTerm = searchTerm
-                                searchData.refresh()
+                                if !searchData.isLoading, searchData.searchTerm != searchTerm {
+                                    searchData.searchTerm = searchTerm
+                                    searchData.selection = selection
+                                    searchData.refresh()
+                                }
                             }
                             .submitLabel(.search)
                         
@@ -319,9 +323,15 @@ struct SearchView: View {
             .padding(.bottom, 4)
             .onChange(of: selection, initial: true) { oldSelection, newSelection in
                 if oldSelection != newSelection {
-                    searchData.selection = newSelection
-                    searchData.isLoading = false
-                    searchData.refresh()
+                    if searchTerm != "" {
+                        searchData.selection = newSelection
+                        searchData.isLoading = false
+                        searchData.refresh()
+                    } else {
+                        exploreData.selection = newSelection
+                        exploreData.isLoading = false
+                        exploreData.refresh()
+                    }
                 }
             }
             .navigationDestination(isPresented: $widgetTapped) {

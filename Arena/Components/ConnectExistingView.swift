@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Defaults
+import DebouncedOnChange
 
 struct ConnectExistingView: View {
     @StateObject var channelsData: ChannelsData
@@ -29,9 +30,13 @@ struct ConnectExistingView: View {
             // Search input
             HStack(spacing: 12) {
                 TextField("Search...", text: $searchTerm)
-                    .onChange(of: searchTerm) { _, newValue in
+                    .onChange(of: searchTerm, debounceTime: .seconds(0.5)) { newValue in
+                        channelSearchData.selection = "Channels"
                         if newValue == "" {
                             channelSearchData.searchResults = nil
+                        } else {
+                            channelSearchData.searchTerm = newValue
+                            channelSearchData.refresh()
                         }
                     }
                     .multilineTextAlignment(.leading)
@@ -42,7 +47,7 @@ struct ConnectExistingView: View {
                     }
                     .focused($searchInputIsFocused)
                     .onSubmit {
-                        if !(channelSearchData.isLoading) {
+                        if !channelSearchData.isLoading, searchTerm != channelSearchData.searchTerm {
                             channelSearchData.selection = "Channels"
                             channelSearchData.searchTerm = searchTerm
                             channelSearchData.refresh()
