@@ -77,11 +77,11 @@ struct ChannelTablePreview: View {
         HStack {
             ChannelPreview(blockData: block, fontSize: 8, display: display)
                 .frame(width: 64, height: 64)
-                .border(Color("arena-orange"))
+                .border(Color("text-secondary"))
             
             Text("\(block.title)")
                 .font(.system(size: 12))
-                .foregroundStyle(Color("arena-orange"))
+                .foregroundStyle(Color("text-secondary"))
                 .lineLimit(1)
             
             Spacer()
@@ -143,7 +143,7 @@ struct ChannelGridPreview: View {
         VStack(spacing: 8) {
             ChannelPreview(blockData: block, fontSize: display != "Large Grid" ? 16 : 12, display: display)
                 .frame(width: gridItemSize, height: gridItemSize)
-                .border(Color("arena-orange"))
+                .border(Color("text-secondary"))
                 .background(Color("background"))
                 .contextMenu {
                     ChannelContextMenu(channel: block, showViewOption: true)

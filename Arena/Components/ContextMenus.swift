@@ -139,9 +139,9 @@ struct ChannelContextMenuPreview: View {
     var body: some View {
         VStack {
             Text("\(channel.title)")
-                .foregroundStyle(Color("arena-orange"))
-            Text("by \(channel.user.username)")
                 .foregroundStyle(Color("text-primary"))
+            Text("by \(channel.user.username)")
+                .foregroundStyle(Color("text-secondary"))
         }
         .padding(32)
         .frame(width: 400, height: 400)

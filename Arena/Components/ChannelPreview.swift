@@ -15,9 +15,9 @@ struct ChannelPreview: View {
     var body: some View {
         VStack {
             Text("\(blockData.title)")
-                .foregroundStyle(Color("arena-orange"))
-            Text("by \(blockData.user.username)")
                 .foregroundStyle(Color("text-primary"))
+            Text("by \(blockData.user.username)")
+                .foregroundStyle(Color("text-secondary"))
         }
         .font(.system(size: fontSize ?? 16))
         .padding(display == "Table" ? 4 : display == "Large Grid" ? 12 : 16)
