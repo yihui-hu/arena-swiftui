@@ -69,6 +69,7 @@
 		8FB168B52ADA53DF00426906 /* ChannelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB168B42ADA53DF00426906 /* ChannelData.swift */; };
 		8FB168B72ADA565D00426906 /* ChannelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB168B62ADA565D00426906 /* ChannelView.swift */; };
 		8FB168B92ADA5C3B00426906 /* BlockView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB168B82ADA5C3B00426906 /* BlockView.swift */; };
+		8FB3A1D62B712EEC0019B497 /* DisplayToast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB3A1D52B712EEC0019B497 /* DisplayToast.swift */; };
 		8FB5D3962B20D947006D5D59 /* ButtonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB5D3952B20D947006D5D59 /* ButtonStyles.swift */; };
 		8FB5D3982B210D17006D5D59 /* ConnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB5D3972B210D17006D5D59 /* ConnectView.swift */; };
 		8FB8CF2F2B19A3DA0073BBA9 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FB8CF2E2B19A3DA0073BBA9 /* SettingsView.swift */; };
@@ -201,6 +202,7 @@
 		8FB168B42ADA53DF00426906 /* ChannelData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelData.swift; sourceTree = "<group>"; };
 		8FB168B62ADA565D00426906 /* ChannelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChannelView.swift; sourceTree = "<group>"; };
 		8FB168B82ADA5C3B00426906 /* BlockView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockView.swift; sourceTree = "<group>"; };
+		8FB3A1D52B712EEC0019B497 /* DisplayToast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplayToast.swift; sourceTree = "<group>"; };
 		8FB5D3952B20D947006D5D59 /* ButtonStyles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonStyles.swift; sourceTree = "<group>"; };
 		8FB5D3972B210D17006D5D59 /* ConnectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectView.swift; sourceTree = "<group>"; };
 		8FB8CF2E2B19A3DA0073BBA9 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -533,6 +535,7 @@
 				8FAD97F12B1D9B170076DB60 /* ImageSaver.swift */,
 				8F17E5AF2B33F34C00549AB9 /* CustomDefaults.swift */,
 				8FEACE2C2B43E5D0003DBAB1 /* AddToRabbitHole.swift */,
+				8FB3A1D52B712EEC0019B497 /* DisplayToast.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -757,6 +760,7 @@
 				8F2789DE2B17B8DC003A78A7 /* OnboardingView.swift in Sources */,
 				8FB5D3982B210D17006D5D59 /* ConnectView.swift in Sources */,
 				8F60D5CF2AFFDBAF00DB3D78 /* PinchToZoom.swift in Sources */,
+				8FB3A1D62B712EEC0019B497 /* DisplayToast.swift in Sources */,
 				8FAD97EE2B1CE1920076DB60 /* UserFollowData.swift in Sources */,
 				8F6B06252AE4B0A100EEDE9C /* ImagePreview.swift in Sources */,
 				8FF6EFC02AF8921300A58631 /* TimeUtils.swift in Sources */,

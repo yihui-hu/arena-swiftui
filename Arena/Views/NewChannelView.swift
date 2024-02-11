@@ -104,11 +104,7 @@ struct NewChannelView: View {
                                 newChannelSlug = channelSlug
                                 showChannelView = true
                                 channelTitle = ""
-                                Defaults[.toastMessage] = "Channel created!"
-                                Defaults[.showToast] = true
-                                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                    Defaults[.showToast] = false
-                                }
+                                displayToast("Channel created!")
                                 Defaults[.connectedItem] = true
                             case .failure(let error):
                                 print("Error creating channel: \(error)")

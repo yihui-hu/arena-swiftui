@@ -45,11 +45,7 @@ struct PinnedChannelsView: View {
                                         
                                         Button {
                                             removePinnedChannel(channel.id)
-                                            Defaults[.toastMessage] = "Bookmark removed!"
-                                            Defaults[.showToast] = true
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                                Defaults[.showToast] = false
-                                            }
+                                            displayToast("Bookmark removed!")
                                         } label: {
                                             Label(pinnedChannels.contains(channel.id) ? "Remove bookmark" : "Bookmark", systemImage: pinnedChannels.contains(channel.id) ? "bookmark.fill" : "bookmark")
                                         }

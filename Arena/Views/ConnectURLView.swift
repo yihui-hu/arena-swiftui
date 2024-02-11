@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Defaults
 
 struct ConnectURLView: View {
     @State private var blockText: String = ""
@@ -35,19 +36,53 @@ struct ConnectURLView: View {
                 Button(action: {
                     let pasteboard = UIPasteboard.general
                     if let pasteboardText = pasteboard.string {
-                        blockLinks[0] = pasteboardText
+                        if pasteboardText.isValidURL {
+                            blockLinks[0] = pasteboardText
+                            displayToast("URL pasted")
+                        } else {
+                            displayToast("Invalid URL")
+
+                        }
+                    } else {
+                        displayToast("Nothing to paste")
+
                     }
                 }) {
                     Text("Paste URL")
+                        .foregroundColor(Color("background-inverse"))
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.vertical, 12)
+                .cornerRadius(48)
+                .clipShape(RoundedRectangle(cornerRadius: 48))
+                .overlay(
+                    RoundedRectangle(cornerRadius: 48)
+                        .stroke(Color("background-inverse"), lineWidth: 2)
+                )
+                .fontDesign(.rounded)
+                .fontWeight(.medium)
+                .buttonStyle(ConnectButtonStyle())
+                
+                Button(action: {
+                    if blockLinks.isEmpty {
+                        displayToast("No URL entered")
+                    } else if blockLinks[0].isValidURL {
+                        showConnectToChannelsView = true
+                    } else {
+                        displayToast("Enter a valid URL")
+                    }
+                }) {
+                    Text("Next")
                         .foregroundColor(Color("background"))
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.vertical, 12)
-                .background(Color("background-inverse"))
+                .background(Color("background-inverse").opacity(!(blockLinks[0].isValidURL) ? 0.6 : 1))
                 .cornerRadius(48)
                 .fontDesign(.rounded)
                 .fontWeight(.medium)
                 .buttonStyle(ConnectButtonStyle())
+                .disabled(!(blockLinks[0].isValidURL))
             }
         }
         .padding(.bottom, 4)
@@ -61,17 +96,6 @@ struct ConnectURLView: View {
                 }) {
                     BackButton()
                 }
-            }
-            
-            ToolbarItem(placement: .topBarTrailing) {
-                Button(action: {
-                    showConnectToChannelsView = true
-                }) {
-                    Text("Next")
-                        .foregroundStyle(Color("text-primary"))
-                        .opacity(!(blockLinks[0].isValidURL) ? 0.5 : 1)
-                }
-                .disabled(!(blockLinks[0].isValidURL))
             }
         }
         .toolbar {

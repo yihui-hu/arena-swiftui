@@ -193,14 +193,10 @@ struct RabbitHoleView: View {
     private func togglePin(_ channelId: Int) {
         if Defaults[.pinnedChannels].contains(channelId) {
             Defaults[.pinnedChannels].removeAll { $0 == channelId }
-            Defaults[.toastMessage] = "Bookmark removed!"
+            displayToast("Bookmark removed!")
         } else {
             Defaults[.pinnedChannels].append(channelId)
-            Defaults[.toastMessage] = "Bookmarked!"
-        }
-        Defaults[.showToast] = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            Defaults[.showToast] = false
+            displayToast("Bookmarked!")
         }
         Defaults[.pinnedChannelsChanged] = true
     }

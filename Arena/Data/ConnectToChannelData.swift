@@ -53,11 +53,7 @@ func connectToChannel(channels: [String], id: Int, type: String, completion: @es
     dispatchGroup.notify(queue: .main) {
         completion()
         Defaults[.connectSheetOpen] = false
-        Defaults[.toastMessage] = "Connected!"
-        Defaults[.showToast] = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            Defaults[.showToast] = false
-        }
+        displayToast("Connected!")
     }
 }
 
@@ -113,11 +109,7 @@ func connectTextToChannel(channels: [String], text: String, title: [String], des
     dispatchGroup.notify(queue: .main) {
         completion()
         Defaults[.connectSheetOpen] = false
-        Defaults[.toastMessage] = "Connected!"
-        Defaults[.showToast] = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            Defaults[.showToast] = false
-        }
+        displayToast("Connected!")
     }
 }
 
@@ -178,11 +170,7 @@ func connectImagesToChannel(channels: [String], selectedPhotosData: [Data], titl
     dispatchGroup.notify(queue: .main) {
         completion()
         Defaults[.connectSheetOpen] = false
-        Defaults[.toastMessage] = "Connected!"
-        Defaults[.showToast] = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            Defaults[.showToast] = false
-        }
+        displayToast("Connected!")
     }
 }
 
@@ -239,11 +227,7 @@ func connectLinksToChannel(channels: [String], links: [String], title: [String],
     dispatchGroup.notify(queue: .main) {
         completion()
         Defaults[.connectSheetOpen] = false
-        Defaults[.toastMessage] = "Connected!"
-        Defaults[.showToast] = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            Defaults[.showToast] = false
-        }
+        displayToast("Connected!")
     }
 }
 
